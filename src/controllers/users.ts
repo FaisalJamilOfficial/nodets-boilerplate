@@ -26,9 +26,8 @@ export const addUser = async (params: any) => {
   if (password) userObj.password = password;
   if (phone) userObj.phone = phone;
   if (type) userObj.type = type;
-  const user = await usersModel.create(userObj);
-  // typescript-error
-  // await user.setPassword(password);
+  const user: any = await usersModel.create(userObj);
+  await user.setPassword(password);
 
   return {
     success: true,
@@ -74,15 +73,13 @@ export const updateUser = async (params: any) => {
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
 
-  let userExists = await usersModel.findById(user);
+  let userExists: any = await usersModel.findById(user);
   if (!userExists) throw new Error("User not found!|||404");
 
   if (email) userExists.email = email;
-  // typescript-error
-  // if (password) await userExists.setPassword(password);
+  if (password) await userExists.setPassword(password);
   if (phone) userExists.phone = phone;
-  // typescript-error
-  // if (type) userExists.type = type;
+  if (type) userExists.type = type;
   if (status) userExists.status = status;
   if (fcm) {
     if (fcm?.token && fcm?.device) {
@@ -110,15 +107,14 @@ export const updateUser = async (params: any) => {
       new FilesDeleter().deleteImage({ image: userExists.image });
     userExists.image = image;
   }
-  // typescript-error
-  // if (coordinates) {
-  //   if (coordinates?.length === 2)
-  //     userExists.location.coordinates = coordinates;
-  //   else
-  //     throw new Error(
-  //       "Please enter location longitude and latitude both!|||400"
-  //     );
-  // }
+  if (coordinates) {
+    if (coordinates?.length === 2)
+      userExists.location.coordinates = coordinates;
+    else
+      throw new Error(
+        "Please enter location longitude and latitude both!|||400"
+      );
+  }
 
   if (customer)
     if (await customersModel.exists({ _id: customer })) {
@@ -179,8 +175,7 @@ export const getUser = async (params: any) => {
   let userExists = await usersModel
     .findOne(query)
     .select("-createdAt -updatedAt -__v -fcms");
-  // typescript-error
-  // if (userExists) userExists = await userExists.populate(userExists.type);
+  if (userExists) userExists = await userExists.populate(userExists.type);
   return {
     success: !!userExists,
     data: userExists,

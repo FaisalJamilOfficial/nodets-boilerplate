@@ -49,11 +49,10 @@ export const register = async (params: any) => {
   if (profileResponse?.success) await usersController.updateUser(userObj);
   else throw new Error("User profile creation failed!");
 
-  // typescript-error
-  // const token = user.getSignedjwtToken();
+  const token = user.getSignedjwtToken();
   return {
     success: true,
-    // token,
+    token,
   };
 };
 
@@ -72,18 +71,14 @@ export const login = async (params: any) => {
   if (email && password) query.email = email;
   else throw new Error("Please enter login credentials!|||400");
 
-  // typescript-error
-  // const userExists = await usersModel.findOne(query).populate();
-  const userExists = await usersModel.findOne(query).populate("");
+  const userExists: any = await usersModel.findOne(query);
   if (!userExists) throw new Error("User not registered!|||404");
 
-  // typescript-error
-  // if (userExists.type !== type)
-  //   throw new Error("Invalid type login credentials!|||401");
+  if (userExists.type !== type)
+    throw new Error("Invalid type login credentials!|||401");
 
-  // typescript-error
-  // if (!(await userExists.validatePassword(password)))
-  //   throw new Error("Invalid password!|||401");
+  if (!(await userExists.validatePassword(password)))
+    throw new Error("Invalid password!|||401");
 
   if (userExists.status !== ACTIVE)
     throw new Error(`User ${userExists.status}!|||403`);
@@ -93,11 +88,10 @@ export const login = async (params: any) => {
     { lastLogin: new Date() }
   );
 
-  // typescript-error
-  // const token = userExists.getSignedjwtToken();
+  const token = userExists.getSignedjwtToken();
   return {
     success: true,
-    // token,
+    token,
   };
 };
 
@@ -179,7 +173,7 @@ export const emailWelcomeUser = async (params: any) => {
  */
 export const generateEmailToken = async (params: any) => {
   const { email, tokenExpirationTime } = params;
-  const userExists = await usersModel.findOne({ email });
+  const userExists: any = await usersModel.findOne({ email });
   if (!userExists)
     throw new Error("User with given email doesn't exist!|||404");
   let userTokenExists = await userTokensModel.findOne({
@@ -188,8 +182,7 @@ export const generateEmailToken = async (params: any) => {
   if (!userTokenExists) {
     const userTokenObj: any = {};
     userTokenObj.user = userExists._id;
-    // typescript-error
-    // userTokenObj.token = userExists.getSignedjwtToken();
+    userTokenObj.token = userExists.getSignedjwtToken();
     userTokenObj.expireAt = tokenExpirationTime;
     const UserTokensModel = userTokensModel;
     userTokenExists = await new UserTokensModel(userTokenObj).save();
@@ -210,7 +203,7 @@ export const generateEmailToken = async (params: any) => {
 export const resetPassword = async (params: any) => {
   const { password, user, token } = params;
 
-  const userExists = await usersModel.findById(user);
+  const userExists: any = await usersModel.findById(user);
   if (!userExists) throw new Error("Invalid link!|||400");
 
   const userTokenExists = await userTokensModel.findOne({
@@ -219,8 +212,7 @@ export const resetPassword = async (params: any) => {
   });
   if (!userTokenExists) throw new Error("Invalid or expired link!|||400");
 
-  // typescript-error
-  // await userExists.setPassword(password);
+  await userExists.setPassword(password);
   await userTokenExists.delete();
 
   return { success: true, message: "Password reset successfully!" };
@@ -244,8 +236,7 @@ export const verifyUserEmail = async (params: any) => {
   });
   if (!userTokenExists) throw new Error("Invalid or expired link!|||400");
 
-  // typescript-error
-  // userExists.isEmailVerified = true;
+  userExists.isEmailVerified = true;
   await userExists.save();
   await userTokenExists.delete();
 
@@ -269,11 +260,10 @@ export const addAdmin = async (params: any) => {
   const userResponse = await usersController.addUser(userObj);
   const user = userResponse?.data;
 
-  // typescript-error
-  // const token = user.getSignedjwtToken();
+  const token = user.getSignedjwtToken();
   return {
     success: true,
-    // data: user,
-    // token,
+    data: user,
+    token,
   };
 };

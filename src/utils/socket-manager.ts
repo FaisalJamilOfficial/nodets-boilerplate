@@ -12,10 +12,11 @@ import * as usersController from "../controllers/users.js";
 //   databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`,
 // });
 
+let socketIO: any;
 class SocketManager {
-  // constructor() {
-  //   this.connection = connection;
-  // }
+  constructor() {
+    // this.connection = connection;
+  }
 
   /**
    * @description Emit event
@@ -26,8 +27,7 @@ class SocketManager {
    */
   async emitEvent(params: any) {
     const { to, event, data } = params;
-    // typescript-error
-    // const response = await global.io.to(to).emit(event, data);
+    const response = await socketIO.to(to).emit(event, data);
     // // response = await connection
     // // 	.firestore()
     // // 	.collection("socket")
@@ -40,7 +40,7 @@ class SocketManager {
     // // 			})
     // // 		)
     // // 	);
-    // return response;
+    return response;
   }
 
   /**
@@ -51,9 +51,8 @@ class SocketManager {
    */
   async emitGroupEvent(params: any) {
     const { event, data } = params;
-    // typescript-error
-    // const response = await global.io.emit(event, data);
-    // return response;
+    const response = await socketIO.emit(event, data);
+    return response;
   }
 
   /**
@@ -67,10 +66,9 @@ class SocketManager {
         origin: "*",
       },
     });
-    // typescript-error
-    // global.io = io;
-    io.on("connection", (socket) => {
-      socket.on("join", async (data) => {
+    socketIO = io;
+    io.on("connection", (socket: any) => {
+      socket.on("join", async (data: any) => {
         socket.join(data);
         console.log(`${data} joined`);
         try {
@@ -80,9 +78,8 @@ class SocketManager {
           console.log(error);
         }
       });
-      socket.on("leave", async (data) => {
-        // typescript-error
-        // socket.leave();
+      socket.on("leave", async (data: any) => {
+        socket.leave();
         console.log(`${data} left`);
         try {
           const args = { user: data, isOnline: false };
@@ -91,7 +88,7 @@ class SocketManager {
           console.log(error);
         }
       });
-      socket.on("disconnect", (reason) => {
+      socket.on("disconnect", (reason: any) => {
         console.log("user disconnected " + reason);
       });
     });

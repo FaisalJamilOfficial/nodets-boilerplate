@@ -338,45 +338,44 @@ class StripeManager {
   //     });
   //   }
 
-  //   /**
-  //    * @description Construct stripe webhook event
-  //    * @param {String} rawBody body from stripe request
-  //    * @param {String} signature stripe signature from request headers
-  //    * @param {String} endpointSecret stripe CLI webhook secret
-  //    * @returns {Object} stripe webhook event
-  //    */
-  //   async constructWebhooksEvent(params: any) {
-  //     const { rawBody, signature } = params;
+  // /**
+  //  * @description Construct stripe webhook event
+  //  * @param {String} rawBody body from stripe request
+  //  * @param {String} signature stripe signature from request headers
+  //  * @param {String} endpointSecret stripe CLI webhook secret
+  //  * @returns {Object} stripe webhook event
+  //  */
+  // async constructWebhooksEvent(params: any) {
+  //   const { rawBody, signature } = params;
 
-  //     const rawBodyString = JSON.stringify(rawBody, null, 2);
+  //   const rawBodyString = JSON.stringify(rawBody, null, 2);
 
-  //     const header = stripe.webhooks.generateTestHeaderString({
-  //       payload: rawBodyString,
-  //       secret: STRIPE_ENDPOINT_SECRET,
-  //     });
+  //   const header = stripe.webhooks.generateTestHeaderString({
+  //     payload: rawBodyString,
+  //     secret: STRIPE_ENDPOINT_SECRET,
+  //   });
 
-  //     const event = stripe.webhooks.constructEvent(
-  //       rawBodyString,
-  //       signature ?? header,
-  //       STRIPE_ENDPOINT_SECRET
-  //     );
+  //   const event = stripe.webhooks.constructEvent(
+  //     rawBodyString,
+  //     signature ?? header,
+  //     STRIPE_ENDPOINT_SECRET
+  //   );
 
-  //     if (event.type === "account.external_account.created") {
-  //       console.log("EVENT: ", JSON.stringify(event));
+  //   if (event.type === "account.external_account.created") {
+  //     console.log("EVENT: ", JSON.stringify(event));
 
-  //       const { data: paymentAccountExists } =
-  //         await paymentAccountsController.getPaymentAccount({
-  //           key: "account.id",
-  //           value: rawBody.account,
-  //         });
-  //       await usersController.updateUser({
-  //         // typescript-error
-  //         // user: paymentAccountExists.user,
-  //         isStripeConnected: true,
+  //     const { data: paymentAccountExists } =
+  //       await paymentAccountsController.getPaymentAccount({
+  //         key: "account.id",
+  //         value: rawBody.account,
   //       });
-  //     }
-  //     return event;
+  //     await usersController.updateUser({
+  //       user: paymentAccountExists?.user,
+  //       isStripeConnected: true,
+  //     });
   //   }
+  //   return event;
+  // }
 }
 
 // export const constructWebhooksEvent = async (params: any) => {

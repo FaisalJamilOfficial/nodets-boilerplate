@@ -282,7 +282,7 @@ export const send = async (params: any) => {
     ],
   };
 
-  let conversationExists = await conversationsModel.findOne(query);
+  let conversationExists: any = await conversationsModel.findOne(query);
   if (conversationExists) {
     conversation = conversationExists._id;
     if (conversationExists.status === PENDING) {
@@ -305,8 +305,8 @@ export const send = async (params: any) => {
 
   conversationExists.lastMessage = message._id;
   await conversationExists.save();
-  // typescript-error
-  // conversationExists.lastMessage = message;
+
+  conversationExists.lastMessage = message;
   // socket event emission
   await new SocketManager().emitEvent({
     to: message.userTo.toString(),

@@ -39,15 +39,16 @@ const userSchema = new Schema(
         validator: function (v: string) {
           return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v);
         },
-        message: (props) => `${props.value} is not a valid email address!`,
+        message: (props: any) => `${props.value} is not a valid email address!`,
       },
       index: true,
     },
-    // password: {
-    //   type: String,
-    //   required: [true, "Please enter password!"],
-    //   select: false,
-    // },
+    password: {
+      type: String,
+      // required: [true, "Please enter password!"],
+      required: true,
+      select: false,
+    },
     phone: {
       type: String,
       trim: true,
@@ -90,12 +91,13 @@ const userSchema = new Schema(
         required: true,
       },
     },
-    // type: {
-    //   type: String,
-    //   enum: [CUSTOMER, ADMIN, SUPER_ADMIN, MULTI],
-    //   required: [true, "Please enter user type!"],
-    //   index: true,
-    // },
+    type: {
+      type: String,
+      enum: [CUSTOMER, ADMIN, SUPER_ADMIN, MULTI],
+      // required: [true, "Please enter user type!"],
+      required: true,
+      index: true,
+    },
     status: {
       type: String,
       enum: [ACTIVE, DELETED],
@@ -108,6 +110,12 @@ const userSchema = new Schema(
       index: true,
     },
     isPasswordSet: {
+      type: Boolean,
+      default: true,
+      select: false,
+      required: true,
+    },
+    isEmailVerified: {
       type: Boolean,
       default: true,
       select: false,

@@ -22,11 +22,13 @@ const router = express.Router();
 router.post(
   "/register",
   asyncHandler(async (req: any, res: any) => {
+    const { type } = req.query;
     const { email, password, name } = req.body;
     const args = {
       email,
       password,
       name,
+      type,
     };
     const response = await authController.register(args);
     res.json(response);
