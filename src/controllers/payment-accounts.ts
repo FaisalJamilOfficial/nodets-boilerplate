@@ -24,8 +24,7 @@ export const addPaymentAccount = async (params: any) => {
   if (account) paymentAccountObj.account = account;
   if (type) paymentAccountObj.type = type;
 
-  const paymentAccount = await paymentAccountsModel.create(paymentAccountObj);
-  return { success: true, data: paymentAccount };
+  return await paymentAccountsModel.create(paymentAccountObj);
 };
 
 /**
@@ -46,15 +45,12 @@ export const getPaymentAccount = async (params: any) => {
     .select("-createdAt -updatedAt -__v");
   // if (paymentAccountExists);
   // else throw new Error("PaymentAccount not found!|||404");
-  return {
-    success: true,
-    data: paymentAccountExists,
-  };
+  return paymentAccountExists;
 };
 
 /**
  * @description Get paymentAccounts
- * @param {String} q search keyword
+ * @param {String} keyword search keyword
  * @param {Number} limit paymentAccounts limit
  * @param {Number} page paymentAccounts page number
  * @returns {Object} paymentAccount data
@@ -90,11 +86,5 @@ export const getPaymentAccounts = async (params: any) => {
       },
     },
   ]);
-  return {
-    success: true,
-    data: [],
-    totalCount: 0,
-    totalPages: 0,
-    ...paymentAccounts[0],
-  };
+  return { data: [], totalCount: 0, totalPages: 0, ...paymentAccounts[0] };
 };

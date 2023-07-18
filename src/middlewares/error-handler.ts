@@ -32,7 +32,6 @@ const error = (err: any, req: any, res: any, next: any) => {
   }
 
   res.status(Number(error.statusCode)).json({
-    success: false,
     error: error.message || "Server Error",
   });
 };

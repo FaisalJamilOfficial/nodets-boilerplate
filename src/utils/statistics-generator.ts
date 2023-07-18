@@ -5,12 +5,12 @@
 class StatisticsGenerator {
   /**
    * Generate weekly statistics
-   * @param {object} model mongo database model
-   * @param {object} query query
-   * @param {number} year year number
-   * @param {number} month month number
-   * @param {number} week week number
-   * @returns {object} statistics
+   * @param {Object} model mongo database model
+   * @param {Object} query query
+   * @param {Number} year year number
+   * @param {Number} month month number
+   * @param {Number} week week number
+   * @returns {Object} statistics
    */
   async generateWeeklyStatistics(params: any) {
     const { model } = params;
@@ -56,7 +56,7 @@ class StatisticsGenerator {
       },
     ];
 
-    const data = await model.aggregate([
+    return await model.aggregate([
       { $match: query },
       {
         $match: {
@@ -99,22 +99,19 @@ class StatisticsGenerator {
         },
       },
     ]);
-    return {
-      success: true,
-      data,
-    };
   }
 
   /**
    * Generate monthly statistics
-   * @param {object} model mongo database model
-   * @param {object} query query
-   * @param {number} year year number
-   * @param {number} month month number
-   * @returns {object} statistics
+   * @param {Object} model mongo database model
+   * @param {Object} query query
+   * @param {Number} year year number
+   * @param {Number} month month number
+   * @param {Boolean} isCustom custom query check
+   * @returns {Object} statistics
    */
   async generateMonthlyStatistics(params: any) {
-    const { model } = params;
+    const { model, isCustom } = params;
     let { query, month, year } = params;
 
     if (!model) return null;
@@ -125,26 +122,28 @@ class StatisticsGenerator {
     if (!year) year = date.getFullYear();
     if (!month) month = date.getMonth() + 1;
 
-    const queryTime = [
-      {
-        $eq: [
-          {
-            $year: "$createdAt",
-          },
-          year,
-        ],
-      },
-      {
-        $eq: [
-          {
-            $month: "$createdAt",
-          },
-          month,
-        ],
-      },
-    ];
+    let queryTime: any = [];
+    if (!isCustom)
+      queryTime = [
+        {
+          $eq: [
+            {
+              $year: "$createdAt",
+            },
+            year,
+          ],
+        },
+        {
+          $eq: [
+            {
+              $month: "$createdAt",
+            },
+            month,
+          ],
+        },
+      ];
 
-    const data = await model.aggregate([
+    return await model.aggregate([
       { $match: query },
       {
         $match: {
@@ -181,18 +180,14 @@ class StatisticsGenerator {
         },
       },
     ]);
-    return {
-      success: true,
-      data,
-    };
   }
 
   /**
    * Generate yearly statistics
-   * @param {object} model mongo database model
-   * @param {object} query query
-   * @param {number} year year number
-   * @returns {object} statistics
+   * @param {Object} model mongo database model
+   * @param {Object} query query
+   * @param {Number} year year number
+   * @returns {Object} statistics
    */
   async generateYearlyStatistics(params: any) {
     const { model } = params;
@@ -216,7 +211,7 @@ class StatisticsGenerator {
       },
     ];
 
-    const data = await model.aggregate([
+    return await model.aggregate([
       { $match: query },
       {
         $match: {
@@ -252,10 +247,6 @@ class StatisticsGenerator {
         },
       },
     ]);
-    return {
-      success: true,
-      data,
-    };
   }
 }
 

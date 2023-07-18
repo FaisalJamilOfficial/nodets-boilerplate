@@ -1,12 +1,12 @@
 // file imports
 import SharpManager from "../utils/sharp-manager.js";
 import directories from "../configs/directories.js";
-import { asyncHandler } from "./async-handler.js";
+import { exceptionHandler } from "./exception-handler.js";
 
 // destructuring assignments
 const { IMAGES_DIRECTORY } = directories;
 
-export const resizeImages = asyncHandler(
+export const resizeImages = exceptionHandler(
   async (req: any, res: any, next: any) => {
     const { images } = req.files || {};
     if (images) {

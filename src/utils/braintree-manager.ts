@@ -185,8 +185,7 @@ class BraintreeManager {
   //    */
   //   async holdTransaction(params: any) {
   //     const { transactionId } = params;
-  //     const hold = await gateway.transaction.holdInEscrow(transactionId);
-  //     return hold;
+  //     return await gateway.transaction.holdInEscrow(transactionId);
   //   }
 
   //   /**

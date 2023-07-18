@@ -29,10 +29,7 @@ export const addUser = async (params: any) => {
   const user: any = await usersModel.create(userObj);
   await user.setPassword(password);
 
-  return {
-    success: true,
-    data: user,
-  };
+  return user;
 };
 
 /**
@@ -66,8 +63,10 @@ export const updateUser = async (params: any) => {
     image,
     customer,
     admin,
+    isOnline,
+    coordinates,
+    fcm,
   } = params;
-  let { isOnline, coordinates, fcm } = params;
 
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
@@ -94,10 +93,7 @@ export const updateUser = async (params: any) => {
         userExists.fcms.push({ device: fcm.device, token: fcm.token });
     } else throw new Error("Please enter FCM token and device both!|||400");
   }
-  if (isOnline) {
-    isOnline = JSON.parse(isOnline);
-    if (typeof isOnline === "boolean") userExists.isOnline = isOnline;
-  }
+  if (typeof isOnline === "boolean") userExists.isOnline = isOnline;
   if (firstName) userExists.firstName = firstName;
   if (lastName) userExists.lastName = lastName;
   if (firstName || lastName)
@@ -132,10 +128,7 @@ export const updateUser = async (params: any) => {
       new: true,
     })
     .select("-createdAt -updatedAt -__v");
-  return {
-    success: true,
-    data: userExists,
-  };
+  return userExists;
 };
 
 /**
@@ -150,10 +143,7 @@ export const deleteUser = async (params: any) => {
     throw new Error("Please enter valid user id!|||400");
   const userExists = await usersModel.findByIdAndDelete(user);
   if (!userExists) throw new Error("User not found!|||404");
-  return {
-    success: true,
-    data: userExists,
-  };
+  return userExists;
 };
 
 /**
@@ -176,15 +166,12 @@ export const getUser = async (params: any) => {
     .findOne(query)
     .select("-createdAt -updatedAt -__v -fcms");
   if (userExists) userExists = await userExists.populate(userExists.type);
-  return {
-    success: !!userExists,
-    data: userExists,
-  };
+  return userExists;
 };
 
 /**
  * @description Get users
- * @param {String} q users search keyword
+ * @param {String} keyword users search keyword
  * @param {String} keyword search keyword
  * @param {String} type users type
  * @param {String} user user id not match
@@ -214,7 +201,7 @@ export const getUsers = async (params: any) => {
   const users = await usersModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
-    { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },
+    { $project: { password: 0, createdAt: 0, updatedAt: 0, __v: 0 } },
     {
       $facet: {
         totalCount: [{ $count: "totalCount" }],
@@ -234,11 +221,5 @@ export const getUsers = async (params: any) => {
       },
     },
   ]);
-  return {
-    success: true,
-    data: [],
-    totalCount: 0,
-    totalPages: 0,
-    ...users[0],
-  };
+  return { data: [], totalCount: 0, totalPages: 0, ...users[0] };
 };

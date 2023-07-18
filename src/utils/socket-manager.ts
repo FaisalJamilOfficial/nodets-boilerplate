@@ -27,20 +27,19 @@ class SocketManager {
    */
   async emitEvent(params: any) {
     const { to, event, data } = params;
-    const response = await socketIO.to(to).emit(event, data);
-    // // response = await connection
-    // // 	.firestore()
-    // // 	.collection("socket")
-    // // 	.doc(to)
-    // // 	.set(
-    // // 		JSON.parse(
-    // // 			JSON.stringify({
-    // // 				type: event,
-    // // 				data,
-    // // 			})
-    // // 		)
-    // // 	);
-    return response;
+    return await socketIO.to(to).emit(event, data);
+    // return await connection
+    //   .firestore()
+    //   .collection("socket")
+    //   .doc(to)
+    //   .set(
+    //     JSON.parse(
+    //       JSON.stringify({
+    //         type: event,
+    //         data,
+    //       })
+    //     )
+    //   );
   }
 
   /**
@@ -51,8 +50,7 @@ class SocketManager {
    */
   async emitGroupEvent(params: any) {
     const { event, data } = params;
-    const response = await socketIO.emit(event, data);
-    return response;
+    return await socketIO.emit(event, data);
   }
 
   /**

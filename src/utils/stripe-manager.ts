@@ -95,7 +95,7 @@ class StripeManager {
   //   async createCustomerSourceWithCheck(params: any) {
   //     const { source, cardHolderName, user, email, phone } = params;
 
-  //     const { data: paymentAccountExists } =
+  //     const paymentAccountExists =
   //       await paymentAccountsController.getPaymentAccount({ user });
 
   //     let userStripeId;
@@ -145,7 +145,7 @@ class StripeManager {
   //    */
   //   async createAccountWithCheck(params: any) {
   //     const { user, email } = params;
-  //     const { data: paymentAccountExists } =
+  //     const paymentAccountExists =
   //       await paymentAccountsController.getPaymentAccount({ user });
 
   //     if (paymentAccountExists) return paymentAccountExists;
@@ -184,7 +184,7 @@ class StripeManager {
   //   async createAccountLink(params: any) {
   //     const { account, refreshURL, returnURL, email, user } = params;
 
-  //     const { data: paymentAccountExists } =
+  //     const paymentAccountExists =
   //       await paymentAccountsController.getPaymentAccount({ user });
 
   //     let accountObj;
@@ -245,7 +245,7 @@ class StripeManager {
   //    */
   //   async createTransfer(params: any) {
   //     const { user, amount, currency, description } = params;
-  //     const { data: paymentAccountExists } =
+  //     const paymentAccountExists =
   //       await paymentAccountsController.getPaymentAccount({ user });
   //     const transferObj = {
   //       amount,
@@ -364,7 +364,7 @@ class StripeManager {
   //   if (event.type === "account.external_account.created") {
   //     console.log("EVENT: ", JSON.stringify(event));
 
-  //     const { data: paymentAccountExists } =
+  //     const paymentAccountExists =
   //       await paymentAccountsController.getPaymentAccount({
   //         key: "account.id",
   //         value: rawBody.account,
@@ -388,7 +388,6 @@ class StripeManager {
 //   const event = await new StripeManager().constructWebhooksEvent(args);
 
 //   return {
-//     success: true,
 //     message: "Done",
 //     event,
 //   };

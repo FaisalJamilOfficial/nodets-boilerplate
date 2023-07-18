@@ -22,8 +22,7 @@ export const addAdmin = async (params: any) => {
   if (await usersModel.exists({ _id: user })) adminObj.user = user;
   else throw new Error("User not found!|||404");
 
-  const admin = await adminsModel.create(adminObj);
-  return { success: true, data: admin };
+  return await adminsModel.create(adminObj);
 };
 
 /**
@@ -41,10 +40,7 @@ export const updateAdmin = async (params: any) => {
     new: true,
   });
   if (!adminExists) throw new Error("Admin not found!|||404");
-  return {
-    success: true,
-    data: adminExists,
-  };
+  return adminExists;
 };
 
 /**
@@ -59,10 +55,7 @@ export const deleteAdmin = async (params: any) => {
     throw new Error("Please enter valid user id!|||400");
   const adminExists = await adminsModel.findOneAndDelete({ user });
   if (!adminExists) throw new Error("Admin not found!|||404");
-  return {
-    success: true,
-    data: adminExists,
-  };
+  return adminExists;
 };
 
 /**
@@ -79,10 +72,7 @@ export const getAdmin = async (params: any) => {
     .findOne({ user })
     .select("-createdAt -updatedAt -__v");
   if (!adminExists) throw new Error("Admin not found!|||404");
-  return {
-    success: true,
-    data: adminExists,
-  };
+  return adminExists;
 };
 
 /**
@@ -120,13 +110,7 @@ export const getAdmins = async (params: any) => {
       },
     },
   ]);
-  return {
-    success: true,
-    data: [],
-    totalCount: 0,
-    totalPages: 0,
-    ...admins[0],
-  };
+  return { data: [], totalCount: 0, totalPages: 0, ...admins[0] };
 };
 
 /**
@@ -134,8 +118,8 @@ export const getAdmins = async (params: any) => {
  * @returns {Object} success status
  */
 export const cleanDB = async () => {
-  return {
-    success: true,
-    message: "Operation completed successfully!",
-  };
+  const models: any = [];
+  Promise.all(models.map((model: any) => model.remove())).then((res) =>
+    res.map((element) => console.log(element.status))
+  );
 };

@@ -22,8 +22,7 @@ export const addCustomer = async (params: any) => {
   if (await usersModel.exists({ _id: user })) customerObj.user = user;
   else throw new Error("user not found!|||404");
 
-  const customer = await customersModel.create(customerObj);
-  return { success: true, data: customer };
+  return await customersModel.create(customerObj);
 };
 
 /**
@@ -45,10 +44,7 @@ export const updateCustomer = async (params: any) => {
     }
   );
   if (!customerExists) throw new Error("Customer not found!|||404");
-  return {
-    success: true,
-    data: customerExists,
-  };
+  return customerExists;
 };
 
 /**
@@ -63,10 +59,7 @@ export const deleteCustomer = async (params: any) => {
     throw new Error("Please enter valid user id!|||400");
   const customerExists = await customersModel.findOneAndDelete({ user });
   if (!customerExists) throw new Error("Customer not found!|||404");
-  return {
-    success: true,
-    data: customerExists,
-  };
+  return customerExists;
 };
 
 /**
@@ -83,15 +76,12 @@ export const getCustomer = async (params: any) => {
     .findOne({ user })
     .select("-createdAt -updatedAt -__v");
   if (!customerExists) throw new Error("Customer not found!|||404");
-  return {
-    success: true,
-    data: customerExists,
-  };
+  return customerExists;
 };
 
 /**
  * @description Get customers
- * @param {String} q search keyword
+ * @param {String} keyword search keyword
  * @param {Number} limit customers limit
  * @param {Number} page customers page number
  * @returns {Object} customer data
@@ -125,11 +115,5 @@ export const getCustomers = async (params: any) => {
       },
     },
   ]);
-  return {
-    success: true,
-    data: [],
-    totalCount: 0,
-    totalPages: 0,
-    ...customers[0],
-  };
+  return { data: [], totalCount: 0, totalPages: 0, ...customers[0] };
 };
