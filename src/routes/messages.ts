@@ -1,5 +1,5 @@
 // module imports
-import express from "express";
+import express, { Request, Response } from "express";
 
 // file imports
 import * as messagesController from "../controllers/messages.js";
@@ -19,7 +19,7 @@ router
   .all(verifyToken, verifyUser)
   .post(
     upload(ATTACHMENTS_DIRECTORY).array("attachments", 8),
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { _id: userFrom, name: username } = req?.user;
       const { user: userTo, text } = req.body;
       const attachments = req.files || [];
@@ -29,7 +29,7 @@ router
     })
   )
   .get(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { _id: user1 } = req.user;
       const { conversation, limit, page, user: user2 } = req.query;
       const args = {
@@ -44,7 +44,7 @@ router
     })
   )
   .put(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { message, text, status } = req.body;
       const args = { message, text, status };
       const response = await messagesController.updateMessage(args);
@@ -52,7 +52,7 @@ router
     })
   )
   .patch(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { _id } = req?.user;
       const { conversation } = req.body;
       const args = { conversation, userTo: _id };
@@ -65,7 +65,7 @@ router.get(
   "/conversations",
   verifyToken,
   verifyUser,
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { _id: user } = req?.user;
     const { limit, page, keyword } = req.query;
     const args = { user, limit: Number(limit), page: Number(page), keyword };

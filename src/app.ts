@@ -1,6 +1,6 @@
 // module imports
 import http from "http";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
@@ -37,10 +37,7 @@ const serverFunction = async () => {
 
     new SocketManager().initializeSocket({ server, app });
 
-    const connect = mongoose.connect(MONGO_URL ?? "", {
-      // useNewUrlParser: true,
-      // useUnifiedTopology: true,
-    });
+    const connect = mongoose.connect(MONGO_URL ?? "");
 
     connect.then(
       (db) => {
@@ -72,7 +69,7 @@ const serverFunction = async () => {
     });
 
     // catch 404 and forward to error handler
-    app.use(function (req: any, res: any, next: any) {
+    app.use(function (req: Request, res: Response, next: NextFunction) {
       next(new Error("Not Found|||404"));
     });
 

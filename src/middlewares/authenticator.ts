@@ -1,5 +1,6 @@
 // module imports
 import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 
 // file imports
 import { exceptionHandler } from "./exception-handler.js";
@@ -26,9 +27,9 @@ export const getToken = function (params: any) {
 };
 
 export const verifyToken = async (
-  req: any,
-  res: any,
-  next: any,
+  req: Request,
+  _res: Response,
+  next: NextFunction,
   shouldReturnUserOnFailure = false
 ) => {
   try {
@@ -71,7 +72,11 @@ export const verifyToken = async (
   }
 };
 
-export const verifyOTP = async (req: any, res: any, next: any) => {
+export const verifyOTP = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
   try {
     const { otp } = req?.user;
     const { code } = req.body;
@@ -82,7 +87,11 @@ export const verifyOTP = async (req: any, res: any, next: any) => {
   }
 };
 
-export const verifyAdmin = (req: any, res: any, next: any) => {
+export const verifyAdmin = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
   if (
     (req?.user?.type === ADMIN || req?.user?.type === SUPER_ADMIN) &&
     req?.user?.status === ACTIVE
@@ -91,28 +100,44 @@ export const verifyAdmin = (req: any, res: any, next: any) => {
   else return next(new Error("Unauthorized as admin!|||403"));
 };
 
-export const verifySuperAdmin = (req: any, res: any, next: any) => {
+export const verifySuperAdmin = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
   if (req?.user?.type === SUPER_ADMIN && req?.user?.status === ACTIVE) next();
   else return next(new Error("Unauthorized as super-admin!|||403"));
 };
 
-export const verifyCustomer = (req: any, res: any, next: any) => {
+export const verifyCustomer = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
   if (req?.user?.type === CUSTOMER && req?.user?.status === ACTIVE) next();
   else return next(new Error("Unauthorized as customer!|||403"));
 };
 
-export const verifyUser = (req: any, res: any, next: any) => {
+export const verifyUser = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
   if (req?.user && req?.user?.status === ACTIVE) next();
   else return next(new Error("Unauthorized as user!|||403"));
 };
 
-export const verifyUserToken = async (req: any, res: any, next: any) => {
+export const verifyUserToken = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
   if (req?.user?._id) next();
   else return next(new Error("Invalid user token!|||400"));
 };
 
 export const checkUserPhoneExists = exceptionHandler(
-  async (req: any, res: any, next: any) => {
+  async (req: Request, _res: Response, next: NextFunction) => {
     const userExists = await usersModel.exists({ phone: req.body.phone });
     if (userExists) next();
     else next(new Error("User not found!|||404"));

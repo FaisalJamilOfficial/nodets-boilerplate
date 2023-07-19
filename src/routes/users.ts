@@ -1,5 +1,5 @@
 // module imports
-import express from "express";
+import express, { Request, Response } from "express";
 
 // file imports
 import * as authController from "../controllers/auth.js";
@@ -27,7 +27,7 @@ router
   .route("/")
   .all(verifyToken, verifyAdmin)
   .post(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { email, password, phone, type } = req.body;
       const args = { email, password, phone, type };
       const response = await authController.register(args);
@@ -36,7 +36,7 @@ router
   )
   .put(
     upload(IMAGES_DIRECTORY).single("image"),
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const image = req.file || {};
       const { _id: user } = req?.user;
       const { firstName, lastName } = req.body;
@@ -52,7 +52,7 @@ router
     })
   )
   .get(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { _id: user } = req?.user;
       const { page, limit, keyword } = req.query;
       const args = { user, keyword, limit: Number(limit), page: Number(page) };
@@ -61,7 +61,7 @@ router
     })
   )
   .delete(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { user } = req.query;
       const args = { user };
       const response = await usersController.deleteUser(args);
@@ -74,7 +74,7 @@ router.put(
   verifyToken,
   verifyOTP,
   verifyUserToken,
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { _id: user, phone } = req?.user;
     const args = { user, phone };
     const response = await usersController.updateUser(args);
@@ -85,7 +85,7 @@ router.put(
   "/password",
   verifyToken,
   verifyUser,
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { _id: user, email, type } = req?.user;
     const { password, newPassword } = req.body;
     const args = { password, newPassword, email, user, type };
@@ -101,7 +101,7 @@ router
   .post(
     verifyToken,
     verifyUser,
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { _id: user } = req?.user;
       const { phone } = req.body;
       const args = { user, phone };
@@ -110,7 +110,7 @@ router
     })
   )
   .put(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { phone } = req.body;
       const args: any = { phone };
       const user = await usersController.getUser(args);
@@ -123,7 +123,7 @@ router
 router
   .route("/password/email")
   .post(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { email } = req.body;
       const args = { email };
       await authController.emailResetPassword(args);
@@ -131,7 +131,7 @@ router
     })
   )
   .put(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { password, user, token } = req.body;
       const args = { password, user, token };
       await authController.resetPassword(args);
@@ -143,7 +143,7 @@ router
   .route("/notifications")
   .all(verifyToken, verifyUser)
   .get(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { _id: user } = req?.user;
       const { page, limit } = req.query;
       const args = { user, limit: Number(limit), page: Number(page) };
@@ -152,7 +152,7 @@ router
     })
   )
   .patch(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { _id: user } = req?.user;
       const args = {
         user,
@@ -166,7 +166,7 @@ router.get(
   "/me",
   verifyToken,
   verifyUser,
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     res.json({ data: req?.user });
   })
 );
@@ -175,7 +175,7 @@ router.get(
   "/:user",
   verifyToken,
   verifyAdmin,
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { user } = req.params;
     const args = { user };
     const response = await usersController.getUser(args);

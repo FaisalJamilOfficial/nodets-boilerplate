@@ -1,3 +1,6 @@
+// module imports
+import express, { Request, Response, NextFunction } from "express";
+
 // file imports
 import SharpManager from "../utils/sharp-manager.js";
 import directories from "../configs/directories.js";
@@ -7,7 +10,7 @@ import { exceptionHandler } from "./exception-handler.js";
 const { IMAGES_DIRECTORY } = directories;
 
 export const resizeImages = exceptionHandler(
-  async (req: any, res: any, next: any) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const { images } = req.files || {};
     if (images) {
       const path = IMAGES_DIRECTORY;

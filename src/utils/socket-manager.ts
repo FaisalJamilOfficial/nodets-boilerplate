@@ -92,7 +92,7 @@ class SocketManager {
     });
 
     // attach to app instance
-    app.use((req: any, res: any, next: any) => {
+    app.use((req: Request, res: Response, next: NextFunction) => {
       req.io = io;
       next();
     });

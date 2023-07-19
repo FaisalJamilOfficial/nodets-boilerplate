@@ -1,3 +1,6 @@
+// module imports
+import { Request, Response } from "express";
+
 class ErrorHandler extends Error {
   statusCode: any;
   constructor(message: any, statusCode: any) {
@@ -6,7 +9,7 @@ class ErrorHandler extends Error {
   }
 }
 
-const error = (err: any, req: any, res: any, next: any) => {
+const error = (err: any, req: Request, res: Response) => {
   let error = { ...err };
   error.message = err.message.toString().split("|||")[0] ?? err.message;
   error.statusCode = err.message.toString().split("|||")[1] ?? 500;

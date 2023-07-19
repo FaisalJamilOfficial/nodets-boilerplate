@@ -1,5 +1,5 @@
 // module imports
-import express from "express";
+import express, { Request, Response } from "express";
 
 // file imports
 import * as authController from "../controllers/auth.js";
@@ -21,7 +21,7 @@ const router = express.Router();
 
 router.post(
   "/register",
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { type } = req.query;
     const { email, password, name } = req.body;
     const args = { email, password, name, type };
@@ -32,7 +32,7 @@ router.post(
 
 router.post(
   "/login",
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { type } = req.query;
     const { email, password } = req.body;
     const args = { email, password, type };
@@ -46,7 +46,7 @@ router.post(
   verifyToken,
   verifyOTP,
   verifyUserToken,
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { _id: user } = req?.user;
     const args = { user };
     const response: any = await usersController.getUser(args);
@@ -56,7 +56,7 @@ router.post(
 
 router.post(
   "/login/google",
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { googleId } = req.body;
     const args = { googleId };
     const response: any = await usersController.getUser(args);
@@ -66,7 +66,7 @@ router.post(
 
 router.post(
   "/login/facebook",
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { facebookId } = req.body;
     const args = { facebookId };
     const response: any = await usersController.getUser(args);
@@ -76,7 +76,7 @@ router.post(
 
 router.post(
   "/login/twitter",
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { twitterId } = req.body;
     const args = { twitterId };
     const response: any = await usersController.getUser(args);
@@ -86,7 +86,7 @@ router.post(
 
 router.post(
   "/login/admin",
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const args = { email, password, type: ADMIN };
     const response = await authController.login(args);
@@ -96,7 +96,7 @@ router.post(
 
 router.post(
   "/register/admin",
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { secret } = req.headers;
     const { email, password, type } = req.body;
     const args = { email, password, type: type ?? ADMIN, name: type };

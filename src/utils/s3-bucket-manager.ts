@@ -32,10 +32,10 @@ class S3BucketManager {
   //     storage: multerS3({
   //       s3,
   //       bucket: AWS_BUCKET_NAME,
-  //       metadata: (req: any, file: any, cb: any) => {
+  //       metadata: (req: Request, file: any, cb: any) => {
   //         cb(null);
   //       },
-  //       key: (req: any, file: any, cb: any) => {
+  //       key: (req: Request, file: any, cb: any) => {
   //         const fileExtension = "." + mime.extension(file.mimetype);
   //         cb(null, v4() + fileExtension);
   //       },

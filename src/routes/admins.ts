@@ -1,5 +1,5 @@
 // module imports
-import express from "express";
+import express, { Request, Response } from "express";
 
 // file imports
 import * as adminsController from "../controllers/admins.js";
@@ -16,7 +16,7 @@ router.delete(
   "/clean/DB",
   verifyToken,
   verifyAdmin,
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { secret } = req.headers;
     if (secret !== SECRET) throw new Error("Invalid SECRET!|||400");
     await adminsController.cleanDB();
