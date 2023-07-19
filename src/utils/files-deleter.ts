@@ -2,7 +2,7 @@
 import fs from "fs";
 
 // file imports
-import directories from "../configs/directories.js";
+import directories from "../configs/directories";
 
 // destructuring assignments
 const { IMAGES_DIRECTORY, ATTACHMENTS_DIRECTORY } = directories;

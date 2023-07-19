@@ -2,11 +2,11 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as messagesController from "../controllers/messages.js";
-import { verifyToken, verifyUser } from "../middlewares/authenticator.js";
-import { exceptionHandler } from "../middlewares/exception-handler.js";
-import { upload } from "../middlewares/uploader.js";
-import directories from "../configs/directories.js";
+import * as messagesController from "../controllers/messages";
+import { verifyToken, verifyUser } from "../middlewares/authenticator";
+import { exceptionHandler } from "../middlewares/exception-handler";
+import { upload } from "../middlewares/uploader";
+import directories from "../configs/directories";
 
 // destructuring assignments
 const { ATTACHMENTS_DIRECTORY } = directories;

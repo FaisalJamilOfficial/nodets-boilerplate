@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 
 // file imports
-import { NOTIFICATION_TYPES, NOTIFICATION_STATUSES } from "../configs/enums.js";
+import { NOTIFICATION_TYPES, NOTIFICATION_STATUSES } from "../configs/enums";
 
 // destructuring assignments
 const { NEW_MESSAGE, NEW_CONVERSATION } = NOTIFICATION_TYPES;

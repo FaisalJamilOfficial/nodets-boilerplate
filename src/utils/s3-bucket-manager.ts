@@ -28,52 +28,52 @@ class S3BucketManager {
    * @description upload image to s3 bucket
    * @returns {Object} file object <req.file>
    */
-  //   upload = multer({
-  //     storage: multerS3({
-  //       s3,
-  //       bucket: AWS_BUCKET_NAME,
-  //       metadata: (req: Request, file: any, cb: any) => {
-  //         cb(null);
-  //       },
-  //       key: (req: Request, file: any, cb: any) => {
-  //         const fileExtension = "." + mime.extension(file.mimetype);
-  //         cb(null, v4() + fileExtension);
-  //       },
-  //     }),
-  //   });
+  upload = multer({
+    // storage: multerS3({
+    //   s3,
+    //   bucket: AWS_BUCKET_NAME,
+    //   metadata: (req: any, file: any, cb: any) => {
+    //     cb(null);
+    //   },
+    //   key: (req: any, file: any, cb: any) => {
+    //     const fileExtension = "." + mime.extension(file.mimetype);
+    //     cb(null, v4() + fileExtension);
+    //   },
+    // }),
+  });
 
-  //   /**
-  //    * @description delete s3 bucket object
-  //    * @param {String} filePath path to file
-  //    * @returns {Object} data of deleted object
-  //    */
-  //   async delete(params: any) {
-  //     const { path } = params;
-  //     if (!path) return null;
-  //     const keyArray = path.split("/");
-  //     const key = keyArray[keyArray.length - 1];
-  //     const input = { Bucket: AWS_BUCKET_NAME, Key: key };
-  //     const command = new DeleteObjectCommand(input);
-  //     return await s3.send(command);
-  //   }
+  /**
+   * @description delete s3 bucket object
+   * @param {String} filePath path to file
+   * @returns {Object} data of deleted object
+   */
+  async delete(params: any) {
+    const { path } = params;
+    if (!path) return null;
+    const keyArray = path.split("/");
+    const key = keyArray[keyArray.length - 1];
+    const input = { Bucket: AWS_BUCKET_NAME, Key: key };
+    // const command = new DeleteObjectCommand(input);
+    // return await s3.send(command);
+  }
 
-  //   /**
-  //    * @description copy s3 bucket object
-  //    * @param {String} sourceFile path to source file
-  //    * @returns {Object} data of copied object
-  //    */
-  //   async copy(params: any) {
-  //     const { sourceFile } = params;
-  //     const key = v4() + path.extname(sourceFile);
-  //     const input = {
-  //       Bucket: AWS_BUCKET_NAME,
-  //       CopySource: sourceFile,
-  //       Key: key,
-  //     };
-  //     const command = new CopyObjectCommand(input);
-  //     const data = await s3.send(command);
-  //     return { ...data, key };
-  //   }
+  /**
+   * @description copy s3 bucket object
+   * @param {String} sourceFile path to source file
+   * @returns {Object} data of copied object
+   */
+  async copy(params: any) {
+    const { sourceFile } = params;
+    const key = v4() + path.extname(sourceFile);
+    const input = {
+      Bucket: AWS_BUCKET_NAME,
+      CopySource: sourceFile,
+      Key: key,
+    };
+    // const command = new CopyObjectCommand(input);
+    // const data = await s3.send(command);
+    // return { ...data, key };
+  }
 }
 
 export default S3BucketManager;

@@ -15,7 +15,7 @@ class FilesUploader {
    * @param {String} directory directory to save file
    * @returns {Object} file object
    */
-  async uploadFile(params: any) {
+  uploadFile(params: any) {
     const { file, directory } = params;
     const fileExtension = mime.getExtension(file.mimetype);
     file.filename = v4() + "." + fileExtension;
@@ -30,7 +30,7 @@ class FilesUploader {
    * @param {String} directory directory to save file
    * @returns {[Object]} array of file
    */
-  async uploadFiles(params: any) {
+  uploadFiles(params: any) {
     let { files, directory } = params;
     files = files.map((file: any) => {
       const fileExtension = mime.getExtension(file.mimetype);

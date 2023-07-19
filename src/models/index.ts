@@ -1,14 +1,14 @@
 // module imports
 
 // file imports
-import admins from "./admins.js";
-import conversations from "./conversations.js";
-import customers from "./customers.js";
-import messages from "./messages.js";
-import notifications from "./notifications.js";
-import paymentAccounts from "./payment-accounts.js";
-import users from "./users.js";
-import userTokens from "./user-tokens.js";
+import admins from "./admins";
+import conversations from "./conversations";
+import customers from "./customers";
+import messages from "./messages";
+import notifications from "./notifications";
+import paymentAccounts from "./payment-accounts";
+import users from "./users";
+import userTokens from "./user-tokens";
 
 export default {
   adminsModel: admins,

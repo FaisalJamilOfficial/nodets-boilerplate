@@ -1,8 +1,8 @@
 // file imports
-import FirebaseManager from "../utils/firebase-manager.js";
-import SocketManager from "../utils/socket-manager.js";
-import models from "../models/index.js";
-import { NOTIFICATION_STATUSES } from "../configs/enums.js";
+import FirebaseManager from "../utils/firebase-manager";
+import SocketManager from "../utils/socket-manager";
+import models from "../models";
+import { NOTIFICATION_STATUSES } from "../configs/enums";
 
 // destructuring assignments
 const { notificationsModel, usersModel } = models;

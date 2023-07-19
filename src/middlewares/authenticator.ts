@@ -3,9 +3,9 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
 // file imports
-import { exceptionHandler } from "./exception-handler.js";
-import models from "../models/index.js";
-import { USER_STATUSES, USER_TYPES } from "../configs/enums.js";
+import { exceptionHandler } from "./exception-handler";
+import models from "../models";
+import { USER_STATUSES, USER_TYPES } from "../configs/enums";
 
 // destructuring assignments
 const { JWT_SECRET } = process.env;

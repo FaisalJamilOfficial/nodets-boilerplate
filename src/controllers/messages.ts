@@ -2,15 +2,15 @@
 import { isValidObjectId, Types } from "mongoose";
 
 // file imports
-import SocketManager from "../utils/socket-manager.js";
-import FirebaseManager from "../utils/firebase-manager.js";
-import * as notificationsController from "./notifications.js";
-import models from "../models/index.js";
+import SocketManager from "../utils/socket-manager";
+import FirebaseManager from "../utils/firebase-manager";
+import * as notificationsController from "./notifications";
+import models from "../models";
 import {
   CONVERSATION_STATUSES,
   MESSAGE_STATUSES,
   NOTIFICATION_TYPES,
-} from "../configs/enums.js";
+} from "../configs/enums";
 
 // destructuring assignments
 const { usersModel, messagesModel, conversationsModel } = models;

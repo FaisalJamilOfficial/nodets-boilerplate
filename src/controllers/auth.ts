@@ -1,10 +1,10 @@
 // file imports
-import models from "../models/index.js";
-import * as usersController from "./users.js";
-import * as customersController from "./customers.js";
-import * as adminsController from "./admins.js";
-import NodeMailer from "../utils/node-mailer.js";
-import { USER_TYPES, USER_STATUSES } from "../configs/enums.js";
+import models from "../models";
+import * as usersController from "./users";
+import * as customersController from "./customers";
+import * as adminsController from "./admins";
+import NodeMailer from "../utils/node-mailer";
+import { USER_TYPES, USER_STATUSES } from "../configs/enums";
 
 // destructuring assignments
 

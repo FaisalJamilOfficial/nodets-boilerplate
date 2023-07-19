@@ -7,19 +7,17 @@ import logger from "morgan";
 import cors from "cors";
 import chalk from "chalk";
 import mongoose from "mongoose";
-import { fileURLToPath } from "url";
 
 // file imports
-import "./bin/www.js";
-import indexRouter from "./routes/index.js";
-import SocketManager from "./utils/socket-manager.js";
-import errorHandler from "./middlewares/error-handler.js";
+import "./bin/www";
+import indexRouter from "./routes";
+import SocketManager from "./utils/socket-manager";
+import errorHandler from "./middlewares/error-handler";
 
 // destructuring assignments
 const { NODE_ENV, MONGO_URL } = process.env;
 
 // variable initializations
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const serverFunction = async () => {
   console.log(chalk.hex("#00BFFF")("***Server Execution Started!***"));
@@ -56,20 +54,20 @@ const serverFunction = async () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     app.use(cookieParser());
-    app.use("/public/", express.static(path.join(__dirname, "public/")));
+    app.use("/public/", express.static(path.join("public/")));
 
     app.use("/api/v1", indexRouter);
 
-    app.get("/reset-password", (req, res) => {
+    app.get("/reset-password", (_req, res) => {
       res.sendFile(path.join(__dirname, "public/reset-password.html"));
     });
 
     app.get("/", (req, res) => {
-      res.sendFile(path.join(__dirname, "/public/image.png"));
+      res.sendFile(path.join(__dirname, "public/image.png"));
     });
 
     // catch 404 and forward to error handler
-    app.use(function (req: Request, res: Response, next: NextFunction) {
+    app.use(function (_req: Request, _res: Response, next: NextFunction) {
       next(new Error("Not Found|||404"));
     });
 
