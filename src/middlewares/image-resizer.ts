@@ -1,7 +1,7 @@
 // file imports
-import SharpManager from "../utils/sharp-manager.js";
-import directories from "../configs/directories.js";
-import { exceptionHandler } from "./exception-handler.js";
+import SharpManager from "../utils/sharp-manager";
+import directories from "../configs/directories";
+import { exceptionHandler } from "./exception-handler";
 
 // destructuring assignments
 const { IMAGES_DIRECTORY } = directories;

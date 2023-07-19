@@ -2,10 +2,10 @@
 import express from "express";
 
 // file imports
-import admins from "./admins.js";
-import auth from "./auth.js";
-import messages from "./messages.js";
-import users from "./users.js";
+import admins from "./admins";
+import auth from "./auth";
+import messages from "./messages";
+import users from "./users";
 
 // destructuring assignments
 const { POSTMAN_URL } = process.env;

@@ -2,9 +2,9 @@
 import express from "express";
 
 // file imports
-import * as adminsController from "../controllers/admins.js";
-import { verifyToken, verifyAdmin } from "../middlewares/authenticator.js";
-import { exceptionHandler } from "../middlewares/exception-handler.js";
+import * as adminsController from "../controllers/admins";
+import { verifyToken, verifyAdmin } from "../middlewares/authenticator";
+import { exceptionHandler } from "../middlewares/exception-handler";
 
 // destructuring assignments
 const { SECRET } = process.env;

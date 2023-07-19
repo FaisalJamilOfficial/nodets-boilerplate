@@ -2,15 +2,15 @@
 import express from "express";
 
 // file imports
-import * as authController from "../controllers/auth.js";
-import * as usersController from "../controllers/users.js";
-import { USER_TYPES } from "../configs/enums.js";
-import { exceptionHandler } from "../middlewares/exception-handler.js";
+import * as authController from "../controllers/auth";
+import * as usersController from "../controllers/users";
+import { USER_TYPES } from "../configs/enums";
+import { exceptionHandler } from "../middlewares/exception-handler";
 import {
   verifyOTP,
   verifyToken,
   verifyUserToken,
-} from "../middlewares/authenticator.js";
+} from "../middlewares/authenticator";
 
 // destructuring assignments
 const { ADMIN } = USER_TYPES;

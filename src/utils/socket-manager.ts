@@ -3,8 +3,8 @@
 import { Server } from "socket.io";
 
 // file imports
-import * as usersController from "../controllers/users.js";
-// import serviceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json" assert { type: "json" };
+import * as usersController from "../controllers/users";
+import serviceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
 
 // variable initializations
 // const connection = admin.initializeApp({

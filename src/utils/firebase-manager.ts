@@ -2,7 +2,7 @@
 // import admin from "firebase-admin";
 
 // file imports
-import serviceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json" assert { type: "json" };
+import serviceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
 
 // variable initializations
 // const connection = admin.initializeApp({
@@ -24,19 +24,19 @@ class FirebaseManager {
    * @param {Object} data notification data
    */
   async notify(params: any) {
-    // const { title, body, imageUrl } = params;
-    // let { data, fcms, fcm } = params;
-    // data = data ?? {};
-    // fcms = fcms?.length > 0 ? fcms : fcm ? [fcm] : ["null"];
-    // const payload = {
-    //   notification: {
-    //     title,
-    //     body,
-    //     image: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
-    //     sound: "default",
-    //   },
-    //   data,
-    // };
+    const { title, body, imageUrl } = params;
+    let { data, fcms, fcm } = params;
+    data = data ?? {};
+    fcms = fcms?.length > 0 ? fcms : fcm ? [fcm] : ["null"];
+    const payload = {
+      notification: {
+        title,
+        body,
+        image: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
+        sound: "default",
+      },
+      data,
+    };
     // connection
     //   .messaging()
     //   .sendToDevice(fcms, payload)
@@ -58,39 +58,38 @@ class FirebaseManager {
    * @returns {null}
    */
   async multicast(parameters: any) {
-    // const { topicName, title, body, imageUrl } = parameters;
-    // let { fcms, data } = parameters;
-    // if (fcms && fcms.length > 0);
-    // else fcms = ["null"];
-    // data = data ?? {};
-    // const message = {
-    //   tokens: fcms,
-    //   notification: {
-    //     title,
-    //     body,
-    //   },
-    //   android: {
-    //     notification: {
-    //       imageUrl: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
-    //     },
-    //   },
-    //   apns: {
-    //     payload: {
-    //       aps: {
-    //         "mutable-content": 1,
-    //       },
-    //     },
-    //     fcm_options: {
-    //       image: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
-    //     },
-    //   },
-    //   webpush: {
-    //     headers: {
-    //       image: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
-    //     },
-    //   },
-    //   topic: topicName,
-    // };
+    const { topicName, title, body, imageUrl } = parameters;
+    let { fcms, data } = parameters;
+    if (!(fcms && fcms.length > 0)) fcms = ["null"];
+    data = data ?? {};
+    const message = {
+      tokens: fcms,
+      notification: {
+        title,
+        body,
+      },
+      android: {
+        notification: {
+          imageUrl: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
+        },
+      },
+      apns: {
+        payload: {
+          aps: {
+            "mutable-content": 1,
+          },
+        },
+        fcm_options: {
+          image: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
+        },
+      },
+      webpush: {
+        headers: {
+          image: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
+        },
+      },
+      topic: topicName,
+    };
     // connection
     //   .messaging()
     //   .sendMulticast(message)

@@ -1,10 +1,10 @@
 // module imports
 // import twilio from "twilio";
-import otpGenerator from "otp-generator";
+// import otpGenerator from "otp-generator";
 
 // file imports
-import * as usersController from "../controllers/users.js";
-import { getToken } from "../middlewares/authenticator.js";
+import * as usersController from "../controllers/users";
+import { getToken } from "../middlewares/authenticator";
 
 // destructuring assignments
 const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN } = process.env;
@@ -31,11 +31,12 @@ class TwilioManager {
 
     const userExists = await usersController.getUser({ phone });
 
-    const otp = otpGenerator.generate(6, {
-      specialChars: false,
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-    });
+    const otp = "111111";
+    // otpGenerator.generate(6, {
+    //   specialChars: false,
+    //   lowerCaseAlphabets: false,
+    //   upperCaseAlphabets: false,
+    // });
     console.log("OTP -->", otp);
     try {
       // await client.messages.create({

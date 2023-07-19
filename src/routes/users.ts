@@ -2,20 +2,20 @@
 import express from "express";
 
 // file imports
-import * as authController from "../controllers/auth.js";
-import * as notificationsController from "../controllers/notifications.js";
-import * as usersController from "../controllers/users.js";
-import TwilioManager from "../utils/twilio-manager.js";
-import directories from "../configs/directories.js";
-import { upload } from "../middlewares/uploader.js";
-import { exceptionHandler } from "../middlewares/exception-handler.js";
+import * as authController from "../controllers/auth";
+import * as notificationsController from "../controllers/notifications";
+import * as usersController from "../controllers/users";
+import TwilioManager from "../utils/twilio-manager";
+import directories from "../configs/directories";
+import { upload } from "../middlewares/uploader";
+import { exceptionHandler } from "../middlewares/exception-handler";
 import {
   verifyOTP,
   verifyToken,
   verifyUser,
   verifyAdmin,
   verifyUserToken,
-} from "../middlewares/authenticator.js";
+} from "../middlewares/authenticator";
 
 // destructuring assignments
 const { IMAGES_DIRECTORY } = directories;

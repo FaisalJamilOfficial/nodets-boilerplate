@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 
 // file imports
-import { PAYMENT_ACCOUNT_TYPES } from "../configs/enums.js";
+import { PAYMENT_ACCOUNT_TYPES } from "../configs/enums";
 
 // destructuring assignments
 const { BRAINTREE, STRIPE_ACCOUNT, STRIPE_CUSTOMER } = PAYMENT_ACCOUNT_TYPES;

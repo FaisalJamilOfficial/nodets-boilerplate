@@ -2,7 +2,7 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import models from "../models/index.js";
+import models from "../models";
 
 // destructuring assignments
 const { usersModel, adminsModel } = models;

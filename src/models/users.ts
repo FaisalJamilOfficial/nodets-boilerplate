@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 // file imports
-import { USER_STATUSES, USER_TYPES, GEO_JSON_TYPES } from "../configs/enums.js";
+import { USER_STATUSES, USER_TYPES, GEO_JSON_TYPES } from "../configs/enums";
 
 // destructuring assignments
 const { ACTIVE, DELETED } = USER_STATUSES;

@@ -2,9 +2,9 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import models from "../models/index.js";
-import FilesDeleter from "../utils/files-deleter.js";
-import { USER_TYPES } from "../configs/enums.js";
+import models from "../models";
+import FilesDeleter from "../utils/files-deleter";
+import { USER_TYPES } from "../configs/enums";
 
 // destructuring assignments
 const { ADMIN } = USER_TYPES;
