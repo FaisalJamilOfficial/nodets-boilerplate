@@ -21,7 +21,7 @@ class SharpManager {
    * @param {String} path directory to save resized images
    * @returns {[Object]} array of resized images
    */
-  async resizeImages(params: any) {
+  async resizeImages(params: any): Promise<any> {
     const { images, path } = params;
     const array = [];
     if (images) {
@@ -70,7 +70,7 @@ class SharpManager {
    * @param {String} path directory to save resized images
    * @returns {[Object]} array of resized images
    */
-  async resizeImagesWithThumbnails(params: any) {
+  async resizeImagesWithThumbnails(params: any): Promise<any> {
     const { images, path } = params;
 
     const array = [];

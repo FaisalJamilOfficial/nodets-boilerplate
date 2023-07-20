@@ -27,26 +27,14 @@ const { ObjectId } = Types;
  * @param {[object]} attachments message attachments
  * @returns {Object} message data
  */
-export const addMessage = async (params: any) => {
+export const addMessage = async (params: any): Promise<any> => {
   const { userFrom, userTo, text, attachments, conversation } = params;
   const messageObj: any = {};
-
   if (userFrom) messageObj.userFrom = userFrom;
   if (userTo) messageObj.userTo = userTo;
   if (conversation) messageObj.conversation = conversation;
   if (text) messageObj.text = text;
-
-  if (attachments) {
-    messageObj.attachments = [];
-    attachments.forEach((attachment: any) => {
-      if (attachment.path)
-        messageObj.attachments.push({
-          path: attachment.filename,
-          type: attachment.mimetype,
-        });
-    });
-  }
-
+  if (attachments) messageObj.attachments = attachments;
   return await messagesModel.create(messageObj);
 };
 
@@ -59,7 +47,7 @@ export const addMessage = async (params: any) => {
  * @param {[object]} attachments OPTIONAL message attachments
  * @returns {Object} message data
  */
-export const getMessages = async (params: any) => {
+export const getMessages = async (params: any): Promise<any> => {
   const { conversation } = params;
   let { page, limit, user1, user2 } = params;
   if (!limit) limit = 10;
@@ -108,7 +96,7 @@ export const getMessages = async (params: any) => {
  * @param {String} status message status
  * @returns {Object} message data
  */
-export const updateMessage = async (params: any) => {
+export const updateMessage = async (params: any): Promise<any> => {
   const { message, text, status } = params;
   const messageObj: any = {};
   if (!message) throw new Error("Please enter message id!|||400");
@@ -133,7 +121,7 @@ export const updateMessage = async (params: any) => {
  * @param {String} message message id
  * @returns {Object} message data
  */
-export const deleteMessage = async (params: any) => {
+export const deleteMessage = async (params: any): Promise<any> => {
   const { message } = params;
   if (!message) throw new Error("Please enter message id!|||400");
   const messageExists = await messagesModel.findByIdAndDelete(message);
@@ -149,7 +137,7 @@ export const deleteMessage = async (params: any) => {
  * @param {Number} page conversations page number
  * @returns {[Object]} array of conversations
  */
-export const getConversations = async (params: any) => {
+export const getConversations = async (params: any): Promise<any> => {
   const { user } = params;
   let { limit, page, keyword } = params;
   if (!limit) limit = 10;
@@ -254,7 +242,7 @@ export const getConversations = async (params: any) => {
  * @param {[object]} attachments message attachments
  * @returns {Object} message data
  */
-export const send = async (params: any) => {
+export const send = async (params: any): Promise<any> => {
   const { userFrom, userTo, username } = params;
   let conversation;
   const query = {
@@ -283,6 +271,7 @@ export const send = async (params: any) => {
   }
 
   const args = { ...params, conversation };
+
   const message = await addMessage(args);
 
   conversationExists.lastMessage = message._id;
@@ -334,7 +323,7 @@ export const send = async (params: any) => {
  * @param {String} userTo user id
  * @returns {Object} message data
  */
-export const readMessages = async (params: any) => {
+export const readMessages = async (params: any): Promise<void> => {
   const { conversation, userTo } = params;
   const messageObj = { status: READ };
   if (!userTo) throw new Error("Please enter userTo id!|||400");

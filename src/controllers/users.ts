@@ -18,7 +18,7 @@ const { usersModel, customersModel, adminsModel } = models;
  * @param {String} type user type
  * @returns {Object} user data
  */
-export const addUser = async (params: any) => {
+export const addUser = async (params: any): Promise<any> => {
   const { email, password, phone, type } = params;
   const userObj: any = {};
 
@@ -50,7 +50,7 @@ export const addUser = async (params: any) => {
  * @param {String} admin admin id
  * @returns {Object} user data
  */
-export const updateUser = async (params: any) => {
+export const updateUser = async (params: any): Promise<any> => {
   const {
     user,
     email,
@@ -136,7 +136,7 @@ export const updateUser = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} user data
  */
-export const deleteUser = async (params: any) => {
+export const deleteUser = async (params: any): Promise<any> => {
   const { user } = params;
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
@@ -151,7 +151,7 @@ export const deleteUser = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} user data
  */
-export const getUser = async (params: any) => {
+export const getUser = async (params: any): Promise<any> => {
   const { user, email, phone, googleId, facebookId, twitterId } = params;
   const query: any = {};
   if (user) query._id = user;
@@ -179,7 +179,7 @@ export const getUser = async (params: any) => {
  * @param {Number} page users page number
  * @returns {[Object]} array of users
  */
-export const getUsers = async (params: any) => {
+export const getUsers = async (params: any): Promise<any> => {
   const { type, user } = params;
   let { page, limit, keyword } = params;
   if (!limit) limit = 10;

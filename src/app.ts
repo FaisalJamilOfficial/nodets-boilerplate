@@ -38,7 +38,7 @@ const serverFunction = async () => {
     const connect = mongoose.connect(MONGO_URL ?? "");
 
     connect.then(
-      (db) => {
+      (_db) => {
         const port = process.env.PORT || "5002";
         server.listen(port, () => {
           console.log(`***App is running at port: ${chalk.underline(port)}***`);
@@ -62,7 +62,7 @@ const serverFunction = async () => {
       res.sendFile(path.join(__dirname, "public/reset-password.html"));
     });
 
-    app.get("/", (req, res) => {
+    app.get("/", (_req, res) => {
       res.sendFile(path.join(__dirname, "public/image.png"));
     });
 

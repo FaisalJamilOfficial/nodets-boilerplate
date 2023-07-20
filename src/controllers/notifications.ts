@@ -16,7 +16,7 @@ const { READ } = NOTIFICATION_STATUSES;
  * @param {String} messenger messenger id
  * @returns {Object} notification data
  */
-export const addNotification = async (params: any) => {
+export const addNotification = async (params: any): Promise<any> => {
   const { user, type, message, messenger } = params;
   const notificationObj: any = {};
 
@@ -35,7 +35,7 @@ export const addNotification = async (params: any) => {
  * @param {Number} page notifications page number
  * @returns {[Object]} array of notifications
  */
-export const getNotifications = async (params: any) => {
+export const getNotifications = async (params: any): Promise<any> => {
   const { user } = params;
   let { page, limit } = params;
   const query: any = {};
@@ -86,7 +86,7 @@ export const getNotifications = async (params: any) => {
  * @param {Boolean} useSocket socket usage check
  * @returns {null} null
  */
-export const notifyUsers = async (params: any) => {
+export const notifyUsers = async (params: any): Promise<void> => {
   const {
     query,
     user,
@@ -151,7 +151,7 @@ export const notifyUsers = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} notification data
  */
-export const readNotifications = async (params: any) => {
+export const readNotifications = async (params: any): Promise<void> => {
   const { user } = params;
   const notificationObj = { status: READ };
   if (!user) throw new Error("Please enter user id!|||400");

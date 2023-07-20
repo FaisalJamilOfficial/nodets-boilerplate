@@ -15,7 +15,7 @@ class FilesUploader {
    * @param {String} directory directory to save file
    * @returns {Object} file object
    */
-  uploadFile(params: any) {
+  uploadFile(params: any): Promise<any> {
     const { file, directory } = params;
     const fileExtension = mime.getExtension(file.mimetype);
     file.filename = v4() + "." + fileExtension;
@@ -30,7 +30,7 @@ class FilesUploader {
    * @param {String} directory directory to save file
    * @returns {[Object]} array of file
    */
-  uploadFiles(params: any) {
+  uploadFiles(params: any): Promise<any> {
     let { files, directory } = params;
     files = files.map((file: any) => {
       const fileExtension = mime.getExtension(file.mimetype);

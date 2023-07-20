@@ -11,6 +11,7 @@ import {
   verifyToken,
   verifyUserToken,
 } from "../middlewares/authenticator";
+import { IRequest } from "../configs/types";
 
 // destructuring assignments
 const { ADMIN } = USER_TYPES;
@@ -46,7 +47,7 @@ router.post(
   verifyToken,
   verifyOTP,
   verifyUserToken,
-  exceptionHandler(async (req: Request, res: Response) => {
+  exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req?.user;
     const args = { user };
     const response: any = await usersController.getUser(args);

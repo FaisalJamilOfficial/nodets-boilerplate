@@ -24,7 +24,7 @@ class TwilioManager {
    * @param {String} phone user phone number in INTERNATIONAL format
    * @returns {Object} token
    */
-  async sendOTP(params: any) {
+  async sendOTP(params: any): Promise<any> {
     const { user, phone } = params;
 
     if (!phone) throw new Error("Please enter phone number!|||400");

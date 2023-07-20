@@ -12,7 +12,7 @@ const { usersModel, adminsModel } = models;
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const addAdmin = async (params: any) => {
+export const addAdmin = async (params: any): Promise<any> => {
   const { user } = params;
   const adminObj: any = {};
 
@@ -30,7 +30,7 @@ export const addAdmin = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const updateAdmin = async (params: any) => {
+export const updateAdmin = async (params: any): Promise<any> => {
   const { user } = params;
   const adminObj: any = {};
   if (!user) throw new Error("Please enter user id!|||400");
@@ -48,7 +48,7 @@ export const updateAdmin = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const deleteAdmin = async (params: any) => {
+export const deleteAdmin = async (params: any): Promise<any> => {
   const { user } = params;
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
@@ -63,7 +63,7 @@ export const deleteAdmin = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const getAdmin = async (params: any) => {
+export const getAdmin = async (params: any): Promise<any> => {
   const { user } = params;
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
@@ -81,7 +81,7 @@ export const getAdmin = async (params: any) => {
  * @param {Number} page admins page number
  * @returns {Object} admin data
  */
-export const getAdmins = async (params: any) => {
+export const getAdmins = async (params: any): Promise<any> => {
   let { limit, page } = params;
   if (!limit) limit = 10;
   if (!page) page = 0;
@@ -117,7 +117,7 @@ export const getAdmins = async (params: any) => {
  * @description Clean DB
  * @returns {Object} success status
  */
-export const cleanDB = async () => {
+export const cleanDB = async (): Promise<void> => {
   const models: any = [];
   Promise.all(models.map((model: any) => model.remove())).then((res) =>
     res.map((element) => console.log(element.status))

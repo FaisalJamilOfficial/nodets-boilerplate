@@ -1,5 +1,5 @@
 // module imports
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 class ErrorHandler extends Error {
   statusCode: any;
@@ -9,7 +9,7 @@ class ErrorHandler extends Error {
   }
 }
 
-const error = (err: any, req: Request, res: Response) => {
+const error = (err: any, _req: Request, res: Response, _next: NextFunction) => {
   let error = { ...err };
   error.message = err.message.toString().split("|||")[0] ?? err.message;
   error.statusCode = err.message.toString().split("|||")[1] ?? 500;

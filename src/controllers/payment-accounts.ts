@@ -12,7 +12,7 @@ const { paymentAccountsModel, usersModel } = models;
  * @param {String} user user id
  * @returns {Object} paymentAccount data
  */
-export const addPaymentAccount = async (params: any) => {
+export const addPaymentAccount = async (params: any): Promise<any> => {
   const { user, account, type } = params;
   const paymentAccountObj: any = {};
 
@@ -33,7 +33,7 @@ export const addPaymentAccount = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} paymentAccount data
  */
-export const getPaymentAccount = async (params: any) => {
+export const getPaymentAccount = async (params: any): Promise<any> => {
   const { paymentAccount, user, key, value } = params;
   const query: any = {};
   if (paymentAccount) query._id = paymentAccount;
@@ -55,7 +55,7 @@ export const getPaymentAccount = async (params: any) => {
  * @param {Number} page paymentAccounts page number
  * @returns {Object} paymentAccount data
  */
-export const getPaymentAccounts = async (params: any) => {
+export const getPaymentAccounts = async (params: any): Promise<any> => {
   const { user } = params;
   let { limit, page } = params;
   if (!limit) limit = 10;

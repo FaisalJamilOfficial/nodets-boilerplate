@@ -12,7 +12,7 @@ const { usersModel, customersModel } = models;
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const addCustomer = async (params: any) => {
+export const addCustomer = async (params: any): Promise<any> => {
   const { user } = params;
   const customerObj: any = {};
 
@@ -30,7 +30,7 @@ export const addCustomer = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const updateCustomer = async (params: any) => {
+export const updateCustomer = async (params: any): Promise<any> => {
   const { user } = params;
   const customerObj: any = {};
   if (!user) throw new Error("Please enter user id!|||400");
@@ -52,7 +52,7 @@ export const updateCustomer = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const deleteCustomer = async (params: any) => {
+export const deleteCustomer = async (params: any): Promise<any> => {
   const { user } = params;
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
@@ -67,7 +67,7 @@ export const deleteCustomer = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const getCustomer = async (params: any) => {
+export const getCustomer = async (params: any): Promise<any> => {
   const { user } = params;
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
@@ -86,7 +86,7 @@ export const getCustomer = async (params: any) => {
  * @param {Number} page customers page number
  * @returns {Object} customer data
  */
-export const getCustomers = async (params: any) => {
+export const getCustomers = async (params: any): Promise<any> => {
   let { limit, page } = params;
   if (!limit) limit = 10;
   if (!page) page = 0;
