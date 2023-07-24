@@ -4,6 +4,7 @@ import { isValidObjectId } from "mongoose";
 // file imports
 import models from "../models";
 import FilesDeleter from "../utils/files-deleter";
+import { User } from "../interfaces";
 import { USER_TYPES } from "../configs/enums";
 
 // destructuring assignments
@@ -18,17 +19,10 @@ const { usersModel, customersModel, adminsModel } = models;
  * @param {String} type user type
  * @returns {Object} user data
  */
-export const addUser = async (params: any): Promise<any> => {
-  const { email, password, phone, type } = params;
-  const userObj: any = {};
-
-  if (email) userObj.email = email;
-  if (password) userObj.password = password;
-  if (phone) userObj.phone = phone;
-  if (type) userObj.type = type;
+export const addUser = async (userObj: User): Promise<any> => {
+  const { password } = userObj;
   const user: any = await usersModel.create(userObj);
   await user.setPassword(password);
-
   return user;
 };
 
