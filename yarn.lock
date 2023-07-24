@@ -2764,11 +2764,6 @@ negotiator@0.6.3:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.3.tgz#58e323a72fedc0d6f9cd4d31fe49f51479590ccd"
   integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
 
-nodemailer@^6.7.5:
-  version "6.9.3"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.9.3.tgz#e4425b85f05d83c43c5cd81bf84ab968f8ef5cbe"
-  integrity sha512-fy9v3NgTzBngrMFkDsKEj0r02U7jm6XfC3b52eoNV+GCrGj+s8pt5OqhiJdWKuw51zCTdiNR/IUD1z33LIIGpg==
-
 noms@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/noms/-/noms-0.0.0.tgz#da8ebd9f3af9d6760919b27d9cdc8092a7332859"
@@ -2848,11 +2843,6 @@ optionator@^0.9.1:
     prelude-ls "^1.2.1"
     type-check "^0.4.0"
     word-wrap "^1.2.3"
-
-otp-generator@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/otp-generator/-/otp-generator-3.0.0.tgz#823a391df020a73a24dc105eecce8091ba15af68"
-  integrity sha512-InxKqHsAT7lvHmi9GEpw7S0feaEndIuWQaeRKGo71B2uPld6wzGvLdT55671xvYIsFO18c9Wplu1dxfM+ZbwdQ==
 
 p-limit@^3.0.2:
   version "3.1.0"
