@@ -3,6 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import models from "../models";
+import { PaymentAccount } from "../interfaces";
 
 // destructuring assignments
 const { paymentAccountsModel, usersModel } = models;
@@ -12,17 +13,16 @@ const { paymentAccountsModel, usersModel } = models;
  * @param {String} user user id
  * @returns {Object} paymentAccount data
  */
-export const addPaymentAccount = async (params: any) => {
-  const { user, account, type } = params;
-  const paymentAccountObj: any = {};
+export const addPaymentAccount = async (
+  paymentAccountObj: PaymentAccount
+): Promise<any> => {
+  const { user } = paymentAccountObj;
 
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  if (await usersModel.exists({ _id: user })) paymentAccountObj.user = user;
-  else throw new Error("user not found!|||404");
-  if (account) paymentAccountObj.account = account;
-  if (type) paymentAccountObj.type = type;
+  if (!(await usersModel.exists({ _id: user })))
+    throw new Error("user not found!|||404");
 
   return await paymentAccountsModel.create(paymentAccountObj);
 };
@@ -33,7 +33,7 @@ export const addPaymentAccount = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} paymentAccount data
  */
-export const getPaymentAccount = async (params: any) => {
+export const getPaymentAccount = async (params: any): Promise<any> => {
   const { paymentAccount, user, key, value } = params;
   const query: any = {};
   if (paymentAccount) query._id = paymentAccount;
@@ -55,7 +55,7 @@ export const getPaymentAccount = async (params: any) => {
  * @param {Number} page paymentAccounts page number
  * @returns {Object} paymentAccount data
  */
-export const getPaymentAccounts = async (params: any) => {
+export const getPaymentAccounts = async (params: any): Promise<any> => {
   const { user } = params;
   let { limit, page } = params;
   if (!limit) limit = 10;

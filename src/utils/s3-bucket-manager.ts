@@ -47,7 +47,7 @@ class S3BucketManager {
    * @param {String} filePath path to file
    * @returns {Object} data of deleted object
    */
-  async delete(params: any) {
+  async delete(params: any): Promise<any> {
     const { path } = params;
     if (!path) return null;
     const keyArray = path.split("/");
@@ -62,7 +62,7 @@ class S3BucketManager {
    * @param {String} sourceFile path to source file
    * @returns {Object} data of copied object
    */
-  async copy(params: any) {
+  async copy(params: any): Promise<any> {
     const { sourceFile } = params;
     const key = v4() + path.extname(sourceFile);
     const input = {

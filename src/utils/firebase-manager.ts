@@ -23,7 +23,7 @@ class FirebaseManager {
    * @param {String} body notification body
    * @param {Object} data notification data
    */
-  async notify(params: any) {
+  async notify(params: any): Promise<void> {
     const { title, body, imageUrl } = params;
     let { data, fcms, fcm } = params;
     data = data ?? {};
@@ -57,7 +57,7 @@ class FirebaseManager {
    * @param {String} imageUrl notification image url
    * @returns {null}
    */
-  async multicast(parameters: any) {
+  async multicast(parameters: any): Promise<void> {
     const { topicName, title, body, imageUrl } = parameters;
     let { fcms, data } = parameters;
     if (!(fcms && fcms.length > 0)) fcms = ["null"];

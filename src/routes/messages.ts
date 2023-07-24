@@ -1,12 +1,13 @@
 // module imports
-import express from "express";
+import express, { Request, Response } from "express";
 
 // file imports
 import * as messagesController from "../controllers/messages";
+import directories from "../configs/directories";
 import { verifyToken, verifyUser } from "../middlewares/authenticator";
 import { exceptionHandler } from "../middlewares/exception-handler";
 import { upload } from "../middlewares/uploader";
-import directories from "../configs/directories";
+import { IRequest } from "../configs/types";
 
 // destructuring assignments
 const { ATTACHMENTS_DIRECTORY } = directories;
@@ -19,17 +20,24 @@ router
   .all(verifyToken, verifyUser)
   .post(
     upload(ATTACHMENTS_DIRECTORY).array("attachments", 8),
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: userFrom, name: username } = req?.user;
       const { user: userTo, text } = req.body;
       const attachments = req.files || [];
-      const args = { userFrom, username, userTo, text, attachments };
+      const args: any = { userFrom, username, userTo, text, attachments: [] };
+      if (attachments)
+        attachments.forEach((attachment: any) =>
+          args.attachments.push({
+            path: attachment?.filename,
+            type: attachment?.mimetype,
+          })
+        );
       const response = await messagesController.send(args);
       res.json({ data: response });
     })
   )
   .get(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user1 } = req.user;
       const { conversation, limit, page, user: user2 } = req.query;
       const args = {
@@ -44,7 +52,7 @@ router
     })
   )
   .put(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { message, text, status } = req.body;
       const args = { message, text, status };
       const response = await messagesController.updateMessage(args);
@@ -52,7 +60,7 @@ router
     })
   )
   .patch(
-    exceptionHandler(async (req: any, res: any) => {
+    exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id } = req?.user;
       const { conversation } = req.body;
       const args = { conversation, userTo: _id };
@@ -65,7 +73,7 @@ router.get(
   "/conversations",
   verifyToken,
   verifyUser,
-  exceptionHandler(async (req: any, res: any) => {
+  exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req?.user;
     const { limit, page, keyword } = req.query;
     const args = { user, limit: Number(limit), page: Number(page), keyword };

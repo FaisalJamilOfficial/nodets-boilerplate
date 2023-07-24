@@ -1,5 +1,5 @@
 // module imports
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 
 // file imports
 import admins from "./admins";
@@ -18,6 +18,8 @@ router.use("/auth", auth);
 router.use("/messages", messages);
 router.use("/users", users);
 
-router.use("/docs", (_req, res) => res.redirect(POSTMAN_URL ?? ""));
+router.use("/docs", (_req: Request, res: Response) =>
+  res.redirect(POSTMAN_URL ?? "")
+);
 
 export default router;

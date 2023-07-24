@@ -42,7 +42,7 @@ class BraintreeManager {
    * @param {String} customerId OPTIONAL braintree customer id
    * @returns {Object} client token
    */
-  async generateClientToken(params: any) {
+  async generateClientToken(params: any): Promise<any> {
     const { customerId } = params;
     const clientTokenObj = { customerId };
     // return await gateway.clientToken.generate(clientTokenObj);
@@ -58,7 +58,7 @@ class BraintreeManager {
    * @param {String} paymentMethodNonce nonce token
    * @returns {Object} paymentAccount
    */
-  async createCustomer(params: any) {
+  async createCustomer(params: any): Promise<any> {
     const {
       firstName,
       lastName,
@@ -83,7 +83,7 @@ class BraintreeManager {
    * @param {String} customerId braintree customer id
    * @returns {Object} customer data
    */
-  async deleteCustomer(params: any) {
+  async deleteCustomer(params: any): Promise<any> {
     const { customerId } = params;
     // return await gateway.customer.delete(customerId);
   }
@@ -94,7 +94,7 @@ class BraintreeManager {
    * @param {String} paymentMethodNonce nonce token
    * @returns {Object} paymentMethod
    */
-  async createPaymentMethod(params: any) {
+  async createPaymentMethod(params: any): Promise<any> {
     const { customerId, paymentMethodNonce } = params;
     const paymentMethodObj = { customerId, paymentMethodNonce };
     // return await gateway.paymentMethod.create(paymentMethodObj);
@@ -105,7 +105,7 @@ class BraintreeManager {
    * @param {String} token payment method token
    * @returns {Object} payment method data
    */
-  async removePaymentMethod(params: any) {
+  async removePaymentMethod(params: any): Promise<any> {
     const { token } = params;
     // return await gateway.paymentMethod.delete(token);
   }
@@ -119,7 +119,7 @@ class BraintreeManager {
    * @param {String} deviceData OPTIONAL device data
    * @returns {Object} transaction
    */
-  async saleTransaction(params: any) {
+  async saleTransaction(params: any): Promise<any> {
     const {
       amount,
       customerId,
@@ -147,7 +147,7 @@ class BraintreeManager {
    * @param {Number} amount transaction amount in smaller units of currency
    * @returns {Object} transaction
    */
-  async adjustTransaction(params: any) {
+  async adjustTransaction(params: any): Promise<any> {
     const { transactionId, amount } = params;
     // return await gateway.transaction.adjustAuthorization(transactionId, {
     //   amount,
@@ -159,7 +159,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction
    */
-  async submitTransaction(params: any) {
+  async submitTransaction(params: any): Promise<any> {
     const { transactionId } = params;
     // return await gateway.transaction.submitForSettlement(transactionId);
   }
@@ -169,7 +169,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction
    */
-  async voidTransaction(params: any) {
+  async voidTransaction(params: any): Promise<any> {
     const { transactionId } = params;
     // return await gateway.transaction.void(transactionId);
   }
@@ -179,7 +179,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction hold data
    */
-  async holdTransaction(params: any) {
+  async holdTransaction(params: any): Promise<any> {
     const { transactionId } = params;
     // return await gateway.transaction.holdInEscrow(transactionId);
   }
@@ -189,7 +189,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction refund data
    */
-  async refundTransaction(params: any) {
+  async refundTransaction(params: any): Promise<any> {
     const { transactionId } = params;
     // return await gateway.transaction.refund(transactionId);
   }
@@ -199,7 +199,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction refund data
    */
-  async releaseTransaction(params: any) {
+  async releaseTransaction(params: any): Promise<any> {
     const { transactionId } = params;
     // return await gateway.transaction.releaseFromEscrow(transactionId);
   }

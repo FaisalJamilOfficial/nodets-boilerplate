@@ -2,6 +2,7 @@
 import FirebaseManager from "../utils/firebase-manager";
 import SocketManager from "../utils/socket-manager";
 import models from "../models";
+import { Notification } from "../interfaces";
 import { NOTIFICATION_STATUSES } from "../configs/enums";
 
 // destructuring assignments
@@ -16,15 +17,9 @@ const { READ } = NOTIFICATION_STATUSES;
  * @param {String} messenger messenger id
  * @returns {Object} notification data
  */
-export const addNotification = async (params: any) => {
-  const { user, type, message, messenger } = params;
-  const notificationObj: any = {};
-
-  if (user) notificationObj.user = user;
-  if (type) notificationObj.type = type;
-  if (message) notificationObj.message = message;
-  if (messenger) notificationObj.messenger = messenger;
-
+export const addNotification = async (
+  notificationObj: Notification
+): Promise<any> => {
   return await notificationsModel.create(notificationObj);
 };
 
@@ -35,7 +30,7 @@ export const addNotification = async (params: any) => {
  * @param {Number} page notifications page number
  * @returns {[Object]} array of notifications
  */
-export const getNotifications = async (params: any) => {
+export const getNotifications = async (params: any): Promise<any> => {
   const { user } = params;
   let { page, limit } = params;
   const query: any = {};
@@ -86,7 +81,7 @@ export const getNotifications = async (params: any) => {
  * @param {Boolean} useSocket socket usage check
  * @returns {null} null
  */
-export const notifyUsers = async (params: any) => {
+export const notifyUsers = async (params: any): Promise<void> => {
   const {
     query,
     user,
@@ -104,7 +99,6 @@ export const notifyUsers = async (params: any) => {
   } = params;
 
   const fcms: any = [];
-  const data = { type };
 
   if (isGrouped) {
     if (useFirebase) {
@@ -138,12 +132,12 @@ export const notifyUsers = async (params: any) => {
       fcms,
       title,
       body,
-      data: firebaseData ? { ...firebaseData, ...data } : data,
+      data: firebaseData ? { ...firebaseData, type } : { type },
     });
   if (useDatabase)
     if (notificationData)
       // database notification creation
-      await addNotification({ ...notificationData, ...data });
+      await addNotification({ ...notificationData, type });
 };
 
 /**
@@ -151,7 +145,7 @@ export const notifyUsers = async (params: any) => {
  * @param {String} user user id
  * @returns {Object} notification data
  */
-export const readNotifications = async (params: any) => {
+export const readNotifications = async (params: any): Promise<void> => {
   const { user } = params;
   const notificationObj = { status: READ };
   if (!user) throw new Error("Please enter user id!|||400");

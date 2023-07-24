@@ -1,9 +1,11 @@
 // module imports
 import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 
 // file imports
-import { exceptionHandler } from "./exception-handler";
 import models from "../models";
+import { IRequest } from "../configs/types";
+import { exceptionHandler } from "./exception-handler";
 import { USER_STATUSES, USER_TYPES } from "../configs/enums";
 
 // destructuring assignments
@@ -21,13 +23,13 @@ const { CUSTOMER, ADMIN, SUPER_ADMIN } = USER_TYPES;
  * @param {string | boolean } variable any variable
  * @returns {Object} JWT token
  */
-export const getToken = function (params: any) {
+export const getToken = function (params: any): string {
   return jwt.sign(params, process.env.JWT_SECRET ?? "");
 };
 
 export const verifyToken = async (
   req: any,
-  res: any,
+  _res: any,
   next: any,
   shouldReturnUserOnFailure = false
 ) => {
@@ -71,7 +73,11 @@ export const verifyToken = async (
   }
 };
 
-export const verifyOTP = async (req: any, res: any, next: any) => {
+export const verifyOTP = async (
+  req: IRequest,
+  _res: any,
+  next: any
+): Promise<void> => {
   try {
     const { otp } = req?.user;
     const { code } = req.body;
@@ -82,37 +88,37 @@ export const verifyOTP = async (req: any, res: any, next: any) => {
   }
 };
 
-export const verifyAdmin = (req: any, res: any, next: any) => {
+export const verifyAdmin = (req: IRequest, _res: any, next: any): void => {
   if (
     (req?.user?.type === ADMIN || req?.user?.type === SUPER_ADMIN) &&
     req?.user?.status === ACTIVE
   )
     next();
-  else return next(new Error("Unauthorized as admin!|||403"));
+  else next(new Error("Unauthorized as admin!|||403"));
 };
 
-export const verifySuperAdmin = (req: any, res: any, next: any) => {
+export const verifySuperAdmin = (req: IRequest, _res: any, next: any): void => {
   if (req?.user?.type === SUPER_ADMIN && req?.user?.status === ACTIVE) next();
-  else return next(new Error("Unauthorized as super-admin!|||403"));
+  else next(new Error("Unauthorized as super-admin!|||403"));
 };
 
-export const verifyCustomer = (req: any, res: any, next: any) => {
+export const verifyCustomer = (req: IRequest, _res: any, next: any): void => {
   if (req?.user?.type === CUSTOMER && req?.user?.status === ACTIVE) next();
-  else return next(new Error("Unauthorized as customer!|||403"));
+  else next(new Error("Unauthorized as customer!|||403"));
 };
 
-export const verifyUser = (req: any, res: any, next: any) => {
+export const verifyUser = (req: IRequest, _res: any, next: any): void => {
   if (req?.user && req?.user?.status === ACTIVE) next();
-  else return next(new Error("Unauthorized as user!|||403"));
+  else next(new Error("Unauthorized as user!|||403"));
 };
 
-export const verifyUserToken = async (req: any, res: any, next: any) => {
+export const verifyUserToken = (req: IRequest, _res: any, next: any): void => {
   if (req?.user?._id) next();
-  else return next(new Error("Invalid user token!|||400"));
+  else next(new Error("Invalid user token!|||400"));
 };
 
 export const checkUserPhoneExists = exceptionHandler(
-  async (req: any, res: any, next: any) => {
+  async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
     const userExists = await usersModel.exists({ phone: req.body.phone });
     if (userExists) next();
     else next(new Error("User not found!|||404"));

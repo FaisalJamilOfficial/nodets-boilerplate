@@ -1,9 +1,11 @@
 // module imports
 // import admin from "firebase-admin";
 import { Server } from "socket.io";
+import { Response, NextFunction } from "express";
 
 // file imports
 import * as usersController from "../controllers/users";
+import { IRequest } from "../configs/types";
 import serviceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
 
 // variable initializations
@@ -25,7 +27,7 @@ class SocketManager {
    * @param {Object} data event data
    * @returns {Object} socket response
    */
-  async emitEvent(params: any) {
+  async emitEvent(params: any): Promise<any> {
     const { to, event, data } = params;
     return await socketIO.to(to).emit(event, data);
     // return await connection
@@ -48,7 +50,7 @@ class SocketManager {
    * @param {Object} data event data
    * @returns {Object} socket response
    */
-  async emitGroupEvent(params: any) {
+  async emitGroupEvent(params: any): Promise<any> {
     const { event, data } = params;
     return await socketIO.emit(event, data);
   }
@@ -57,7 +59,7 @@ class SocketManager {
    * @description @param {Object} httpServer http server instance
    * @param {Object} app express app instance
    */
-  async initializeSocket(params: any) {
+  async initializeSocket(params: any): Promise<void> {
     const { server, app } = params;
     const io = new Server(server, {
       cors: {
@@ -92,7 +94,7 @@ class SocketManager {
     });
 
     // attach to app instance
-    app.use((req: any, res: any, next: any) => {
+    app.use((req: IRequest, res: Response, next: NextFunction) => {
       req.io = io;
       next();
     });

@@ -26,7 +26,7 @@ const {
  * @param {String} type user type
  * @returns {Object} user data with token
  */
-export const register = async (params: any) => {
+export const register = async (params: any): Promise<any> => {
   const { type } = params;
   const user = await usersController.addUser({ ...params });
 
@@ -52,7 +52,7 @@ export const register = async (params: any) => {
  * @param {String} type user type
  * @returns {Object} user data with token
  */
-export const login = async (params: any) => {
+export const login = async (params: any): Promise<any> => {
   const { email, password, type } = params;
 
   const query: any = {};
@@ -84,7 +84,7 @@ export const login = async (params: any) => {
  * @param {String} email user email address
  * @returns {Object} user password reset result
  */
-export const emailResetPassword = async (params: any) => {
+export const emailResetPassword = async (params: any): Promise<any> => {
   const { email } = params;
   const tokenExpirationTime = new Date();
   tokenExpirationTime.setMinutes(tokenExpirationTime.getMinutes() + 10);
@@ -104,7 +104,7 @@ export const emailResetPassword = async (params: any) => {
  * @param {String} email user email address
  * @returns {Object} user email verification result
  */
-export const emailVerifyEmail = async (params: any) => {
+export const emailVerifyEmail = async (params: any): Promise<any> => {
   const { email } = params;
   const tokenExpirationTime = new Date();
   tokenExpirationTime.setMinutes(tokenExpirationTime.getMinutes() + 10);
@@ -125,7 +125,7 @@ export const emailVerifyEmail = async (params: any) => {
  * @param {String} name user name
  * @returns {Object} user welcome result
  */
-export const emailWelcomeUser = async (params: any) => {
+export const emailWelcomeUser = async (params: any): Promise<any> => {
   const { email, name } = params;
   const args: any = {};
   args.to = email;
@@ -140,7 +140,7 @@ export const emailWelcomeUser = async (params: any) => {
  * @param {Date} tokenExpirationTime email token expiration time
  * @returns {Object} user email token
  */
-export const generateEmailToken = async (params: any) => {
+export const generateEmailToken = async (params: any): Promise<any> => {
   const { email, tokenExpirationTime } = params;
   const userExists: any = await usersModel.findOne({ email });
   if (!userExists)
@@ -166,7 +166,7 @@ export const generateEmailToken = async (params: any) => {
  * @param {String} token reset password token
  * @returns {Object} user password reset result
  */
-export const resetPassword = async (params: any) => {
+export const resetPassword = async (params: any): Promise<void> => {
   const { password, user, token } = params;
 
   const userExists: any = await usersModel.findById(user);
@@ -188,7 +188,7 @@ export const resetPassword = async (params: any) => {
  * @param {String} token user email token
  * @returns {Object} user email verification result
  */
-export const verifyUserEmail = async (params: any) => {
+export const verifyUserEmail = async (params: any): Promise<void> => {
   const { user, token } = params;
 
   const userExists = await usersModel.findById(user);
@@ -212,7 +212,7 @@ export const verifyUserEmail = async (params: any) => {
  * @param {String} type user type
  * @returns {Object} user data with token
  */
-export const addAdmin = async (params: any) => {
+export const addAdmin = async (params: any): Promise<any> => {
   const { email, password, type } = params;
 
   const userObj: any = {};

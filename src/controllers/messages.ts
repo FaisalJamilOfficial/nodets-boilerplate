@@ -2,10 +2,9 @@
 import { isValidObjectId, Types } from "mongoose";
 
 // file imports
-import SocketManager from "../utils/socket-manager";
-import FirebaseManager from "../utils/firebase-manager";
 import * as notificationsController from "./notifications";
 import models from "../models";
+import { Message } from "../interfaces";
 import {
   CONVERSATION_STATUSES,
   MESSAGE_STATUSES,
@@ -27,26 +26,7 @@ const { ObjectId } = Types;
  * @param {[object]} attachments message attachments
  * @returns {Object} message data
  */
-export const addMessage = async (params: any) => {
-  const { userFrom, userTo, text, attachments, conversation } = params;
-  const messageObj: any = {};
-
-  if (userFrom) messageObj.userFrom = userFrom;
-  if (userTo) messageObj.userTo = userTo;
-  if (conversation) messageObj.conversation = conversation;
-  if (text) messageObj.text = text;
-
-  if (attachments) {
-    messageObj.attachments = [];
-    attachments.forEach((attachment: any) => {
-      if (attachment.path)
-        messageObj.attachments.push({
-          path: attachment.filename,
-          type: attachment.mimetype,
-        });
-    });
-  }
-
+export const addMessage = async (messageObj: Message): Promise<any> => {
   return await messagesModel.create(messageObj);
 };
 
@@ -59,7 +39,7 @@ export const addMessage = async (params: any) => {
  * @param {[object]} attachments OPTIONAL message attachments
  * @returns {Object} message data
  */
-export const getMessages = async (params: any) => {
+export const getMessages = async (params: any): Promise<any> => {
   const { conversation } = params;
   let { page, limit, user1, user2 } = params;
   if (!limit) limit = 10;
@@ -108,7 +88,7 @@ export const getMessages = async (params: any) => {
  * @param {String} status message status
  * @returns {Object} message data
  */
-export const updateMessage = async (params: any) => {
+export const updateMessage = async (params: any): Promise<any> => {
   const { message, text, status } = params;
   const messageObj: any = {};
   if (!message) throw new Error("Please enter message id!|||400");
@@ -133,12 +113,45 @@ export const updateMessage = async (params: any) => {
  * @param {String} message message id
  * @returns {Object} message data
  */
-export const deleteMessage = async (params: any) => {
+export const deleteMessage = async (params: any): Promise<any> => {
   const { message } = params;
   if (!message) throw new Error("Please enter message id!|||400");
   const messageExists = await messagesModel.findByIdAndDelete(message);
   if (!messageExists) throw new Error("Please enter valid message id!|||400");
   return messageExists;
+};
+
+/**
+ * @description Add conversation
+ * @param {String} userFrom sender user id
+ * @param {String} userTo receiver user id
+ * @returns {Object} conversation data
+ */
+export const addConversation = async (params: any): Promise<any> => {
+  const { userFrom, userTo } = params;
+  const query = {
+    $or: [
+      { $and: [{ userTo: userFrom }, { userFrom: userTo }] },
+      { $and: [{ userFrom }, { userTo }] },
+    ],
+  };
+
+  let conversationExists: any = await conversationsModel.findOne(query);
+  if (conversationExists) {
+    if (conversationExists.status === PENDING) {
+      if (userFrom.equals(conversationExists.userTo)) {
+        conversationExists.status = ACCEPTED;
+        await conversationExists.save();
+      }
+    } else if (conversationExists.status === REJECTED)
+      throw new Error("Conversation request rejected!|||400");
+  } else {
+    const conversationObj: any = {};
+    conversationObj.userTo = userTo;
+    conversationObj.userFrom = userFrom;
+    conversationExists = await conversationsModel.create(conversationObj);
+  }
+  return conversationExists;
 };
 
 /**
@@ -149,7 +162,7 @@ export const deleteMessage = async (params: any) => {
  * @param {Number} page conversations page number
  * @returns {[Object]} array of conversations
  */
-export const getConversations = async (params: any) => {
+export const getConversations = async (params: any): Promise<any> => {
   const { user } = params;
   let { limit, page, keyword } = params;
   if (!limit) limit = 10;
@@ -254,75 +267,46 @@ export const getConversations = async (params: any) => {
  * @param {[object]} attachments message attachments
  * @returns {Object} message data
  */
-export const send = async (params: any) => {
-  const { userFrom, userTo, username } = params;
-  let conversation;
-  const query = {
-    $or: [
-      { $and: [{ userTo: userFrom }, { userFrom: userTo }] },
-      { $and: [{ userFrom }, { userTo }] },
-    ],
-  };
+export const send = async (params: any): Promise<any> => {
+  const { username } = params;
 
-  let conversationExists: any = await conversationsModel.findOne(query);
-  if (conversationExists) {
-    conversation = conversationExists._id;
-    if (conversationExists.status === PENDING) {
-      if (userFrom.equals(conversationExists.userTo)) {
-        conversationExists.status = ACCEPTED;
-        await conversationExists.save();
-      }
-    } else if (conversationExists.status === REJECTED)
-      throw new Error("Conversation request rejected!|||400");
-  } else {
-    const conversationObj: any = {};
-    conversationObj.userTo = userTo;
-    conversationObj.userFrom = userFrom;
-    conversationExists = await conversationsModel.create(conversationObj);
-    conversation = conversationExists._id;
-  }
+  const conversation = await addConversation(params);
 
-  const args = { ...params, conversation };
-  const message = await addMessage(args);
-
-  conversationExists.lastMessage = message._id;
-  await conversationExists.save();
-
-  conversationExists.lastMessage = message;
-  // socket event emission
-  await new SocketManager().emitEvent({
-    to: message.userTo.toString(),
-    event: "newMessage_" + message.conversation,
-    data: conversationExists,
+  const message = await addMessage({
+    ...params,
+    conversation: conversation._id,
   });
 
-  const notificationObj = {
+  conversation.lastMessage = message._id;
+  await conversation.save();
+
+  conversation.lastMessage = message;
+
+  const user = message.userTo;
+
+  const notificationData = {
     user: message.userTo,
     message: message._id,
     messenger: message.userFrom,
-    type: NEW_MESSAGE,
   };
 
-  // database notification addition
-  await notificationsController.addNotification(notificationObj);
-
-  const userToExists = await usersModel.findById(message.userTo).select("fcms");
-  const fcms: any = [];
-  if (userToExists)
-    userToExists.fcms.forEach((element: any) => fcms.push(element.token));
-
-  const title = "New Message";
-  const body = `New message from ${username}`;
-  const type = NEW_MESSAGE;
-
-  // firebase notification emission
-  await new FirebaseManager().multicast({
-    fcms,
-    title,
-    body,
-    data: {
-      type,
-    },
+  await notificationsController.notifyUsers({
+    user,
+    type: NEW_MESSAGE,
+    useSocket: true,
+    event: "newMessage_" + message.conversation,
+    socketData: message,
+    useFirebase: true,
+    title: "New Message",
+    body: `New message from ${username}`,
+    useDatabase: true,
+    notificationData,
+  });
+  await notificationsController.notifyUsers({
+    useSocket: true,
+    event: "conversationsUpdated",
+    socketData: conversation,
+    user,
   });
 
   return message;
@@ -334,7 +318,7 @@ export const send = async (params: any) => {
  * @param {String} userTo user id
  * @returns {Object} message data
  */
-export const readMessages = async (params: any) => {
+export const readMessages = async (params: any): Promise<void> => {
   const { conversation, userTo } = params;
   const messageObj = { status: READ };
   if (!userTo) throw new Error("Please enter userTo id!|||400");

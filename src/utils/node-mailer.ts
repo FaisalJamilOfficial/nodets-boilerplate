@@ -30,7 +30,7 @@ class NodeMailer {
    * @param {Object} html email html
    * @returns {Object} email response
    */
-  async sendEmail(params: any) {
+  async sendEmail(params: any): Promise<any> {
     const { to, subject, text, html } = params;
     // return await transporter.sendMail({
     //   from: `BACKEND BOILERPLATE <${EMAIL_USER}>`,
@@ -47,7 +47,7 @@ class NodeMailer {
    * @param {String} token user token
    * @returns {Object} email template
    */
-  getResetPasswordEmailTemplate(params: any) {
+  getResetPasswordEmailTemplate(params: any): string {
     const { user, token } = params;
     const link = `${BASE_URL}reset-password/reset?user=${user}&token=${token}`;
     return `
@@ -64,7 +64,7 @@ If you didn't do this, contact us here ${EMAIL_USER}`;
    * @param {String} token user token
    * @returns {Object} email template
    */
-  getEmailVerificationEmailTemplate(params: any) {
+  getEmailVerificationEmailTemplate(params: any): string {
     const { user, token } = params;
     const link = `${process.env.BASE_URL}api/v1/users/emails?user=${user}&token=${token}`;
     return `
@@ -80,7 +80,7 @@ If you didn't do this, contact us here ${EMAIL_USER}`;
    * @param {String} name user name
    * @returns {Object} email template
    */
-  getWelcomeUserEmailTemplate(params: any) {
+  getWelcomeUserEmailTemplate(params: any): string {
     const { name } = params;
     return `Hi ${name},
   Thanks for signing up for the ${APP_TITLE}! You’re joining an amazing community of beauty lovers. From now on you’ll enjoy:
@@ -97,7 +97,7 @@ If you didn't do this, contact us here ${EMAIL_USER}`;
    * @param {String} otp otp code
    * @returns {Object} email template
    */
-  getOTPSendingEmailTemplate(params: any) {
+  getOTPSendingEmailTemplate(params: any): string {
     const { name, otp } = params;
     return `Dear ${name},
 Your One Time Password (OTP) is ${otp}. Please do not share this password with anyone.

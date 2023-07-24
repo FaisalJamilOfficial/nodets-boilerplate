@@ -18,7 +18,7 @@ class FilesDeleter {
    * @param {String} image image file name
    * @returns {null}
    */
-  async deleteImage(params: any) {
+  async deleteImage(params: any): Promise<void> {
     const { image } = params;
     const array = [];
     const PATH = IMAGES_DIRECTORY;
@@ -32,7 +32,7 @@ class FilesDeleter {
    * @param {String} attachment attachment file name
    * @returns {null}
    */
-  async deleteAttachment(params: any) {
+  async deleteAttachment(params: any): Promise<void> {
     const { attachment } = params;
     const array = [];
     const PATH = ATTACHMENTS_DIRECTORY;
@@ -45,7 +45,7 @@ class FilesDeleter {
    * @param {[object]} files array of files
    * @returns {null}
    */
-  async deleteFiles(params: any) {
+  async deleteFiles(params: any): Promise<void> {
     const { files } = params;
     if (files && Array.isArray(files)) {
       for (let i = 0; i < files.length; i++) {
