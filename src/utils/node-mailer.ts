@@ -49,7 +49,7 @@ class NodeMailer {
    */
   getResetPasswordEmailTemplate(params: any): string {
     const { user, token } = params;
-    const link = `${BASE_URL}reset-password/reset?user=${user}&token=${token}`;
+    const link = `${BASE_URL}reset-password/?user=${user}&token=${token}`;
     return `
 Please click on the link below to reset your password, 
 ${link}
