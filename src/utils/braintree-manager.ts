@@ -5,7 +5,7 @@
 import { ENVIRONMENTS } from "../configs/enums";
 
 // destructuring assignments
-const { DEVELOPMENT } = ENVIRONMENTS;
+const { PRODUCTION } = ENVIRONMENTS;
 const {
   NODE_ENV,
   BRAINTREE_MERCHANT_ID,
@@ -14,22 +14,15 @@ const {
 } = process.env;
 
 // // variable initializations
-const productionGateway = {
-  // environment: braintree.Environment.Production,
-  merchantId: BRAINTREE_MERCHANT_ID,
-  publicKey: BRAINTREE_PUBLIC_KEY,
-  privateKey: BRAINTREE_PRIVATE_KEY,
-};
-const sandboxGateway = {
-  // environment: braintree.Environment.Sandbox,
-  merchantId: BRAINTREE_MERCHANT_ID,
-  publicKey: BRAINTREE_PUBLIC_KEY,
-  privateKey: BRAINTREE_PRIVATE_KEY,
-};
-// const gateway = new braintree.BraintreeGateway(
-//   NODE_ENV === DEVELOPMENT ? sandboxGateway : productionGateway
-//   // NODE_ENV === PRODUCTION ? sandboxGateway : productionGateway
-// );
+// const gateway = new braintree.BraintreeGateway({
+//   environment:
+//     NODE_ENV === PRODUCTION
+//       ? braintree.Environment.Production
+//       : braintree.Environment.Sandbox,
+//   merchantId: BRAINTREE_MERCHANT_ID,
+//   publicKey: BRAINTREE_PUBLIC_KEY,
+//   privateKey: BRAINTREE_PRIVATE_KEY,
+// });
 
 class BraintreeManager {
   gateway: any;
