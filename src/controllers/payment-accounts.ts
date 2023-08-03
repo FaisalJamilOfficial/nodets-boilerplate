@@ -77,11 +77,7 @@ export const getPaymentAccounts = async (params: any): Promise<any> => {
     {
       $project: {
         totalCount: "$totalCount.totalCount",
-        totalPages: {
-          $ceil: {
-            $divide: ["$totalCount.totalCount", limit],
-          },
-        },
+        totalPages: { $ceil: { $divide: ["$totalCount.totalCount", limit] } },
         data: 1,
       },
     },

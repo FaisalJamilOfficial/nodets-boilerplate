@@ -118,9 +118,7 @@ export const updateUser = async (params: any): Promise<any> => {
     } else throw new Error("Admin not found!|||404");
 
   userExists = await usersModel
-    .findByIdAndUpdate(userExists._id, userExists, {
-      new: true,
-    })
+    .findByIdAndUpdate(userExists._id, userExists, { new: true })
     .select("-createdAt -updatedAt -__v");
   return userExists;
 };
@@ -206,11 +204,7 @@ export const getUsers = async (params: any): Promise<any> => {
     {
       $project: {
         totalCount: "$totalCount.totalCount",
-        totalPages: {
-          $ceil: {
-            $divide: ["$totalCount.totalCount", limit],
-          },
-        },
+        totalPages: { $ceil: { $divide: ["$totalCount.totalCount", limit] } },
         data: 1,
       },
     },

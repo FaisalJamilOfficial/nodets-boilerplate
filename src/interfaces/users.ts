@@ -1,4 +1,5 @@
 export interface User {
+  _id?: string;
   email: string;
   password: string;
   phone?: string;
@@ -7,7 +8,7 @@ export interface User {
   name?: string;
   image?: string;
   fcms?: { token: string; device: string }[];
-  coordinates: number[];
+  coordinates?: number[];
   type?: string;
   status?: string;
   googleID?: string;

@@ -1,4 +1,5 @@
 export interface Message {
+  _id?: string;
   conversation: string;
   userTo: string;
   userFrom: string;

@@ -109,10 +109,7 @@ export const notifyUsers = async (params: any): Promise<void> => {
     }
     if (useSocket)
       // socket event emission
-      await new SocketManager().emitGroupEvent({
-        event,
-        data: socketData,
-      });
+      await new SocketManager().emitGroupEvent({ event, data: socketData });
   } else {
     if (useFirebase) {
       const userExists = await usersModel.findById(user).select("fcms");

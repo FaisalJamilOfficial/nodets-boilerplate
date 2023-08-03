@@ -28,7 +28,7 @@ const {
  */
 export const register = async (params: any): Promise<any> => {
   const { type } = params;
-  const user = await usersController.addUser({ ...params });
+  const user = await usersController.addUser(params);
 
   const profileObj = { user: user._id };
   const userObj: any = {};
@@ -145,9 +145,7 @@ export const generateEmailToken = async (params: any): Promise<any> => {
   const userExists: any = await usersModel.findOne({ email });
   if (!userExists)
     throw new Error("User with given email doesn't exist!|||404");
-  let userTokenExists = await userTokensModel.findOne({
-    user: userExists._id,
-  });
+  let userTokenExists = await userTokensModel.findOne({ user: userExists._id });
   if (!userTokenExists) {
     const userTokenObj: any = {};
     userTokenObj.user = userExists._id;
@@ -219,8 +217,5 @@ export const addAdmin = async (params: any): Promise<any> => {
   if (email) userObj.email = email;
   if (password) userObj.password = password;
   if (type) userObj.type = type;
-  const userResponse = await usersController.addUser(userObj);
-  const user = userResponse?.data;
-
-  return user.getSignedjwtToken();
+  return (await usersController.addUser(userObj)).getSignedjwtToken();
 };

@@ -69,11 +69,7 @@ export const getMessages = async (params: any): Promise<any> => {
     {
       $project: {
         totalCount: "$totalCount.totalCount",
-        totalPages: {
-          $ceil: {
-            $divide: ["$totalCount.totalCount", limit],
-          },
-        },
+        totalPages: { $ceil: { $divide: ["$totalCount.totalCount", limit] } },
         data: 1,
       },
     },
@@ -99,9 +95,7 @@ export const updateMessage = async (params: any): Promise<any> => {
   const messageExists = await messagesModel.findByIdAndUpdate(
     { _id: message },
     messageObj,
-    {
-      new: true,
-    }
+    { new: true }
   );
   if (!messageExists) throw new Error("Message not found!|||404");
 
@@ -201,9 +195,7 @@ export const getConversations = async (params: any): Promise<any> => {
         ],
       },
     },
-    {
-      $unwind: { path: "$lastMessage" },
-    },
+    { $unwind: { path: "$lastMessage" } },
     { $sort: { "lastMessage.createdAt": -1 } },
     {
       $project: {
@@ -223,14 +215,7 @@ export const getConversations = async (params: any): Promise<any> => {
         localField: "user",
         foreignField: "_id",
         as: "user",
-        pipeline: [
-          {
-            $project: {
-              name: 1,
-              image: 1,
-            },
-          },
-        ],
+        pipeline: [{ $project: { name: 1, image: 1 } }],
       },
     },
     {
@@ -247,11 +232,7 @@ export const getConversations = async (params: any): Promise<any> => {
     {
       $project: {
         totalCount: "$totalCount.totalCount",
-        totalPages: {
-          $ceil: {
-            $divide: ["$totalCount.totalCount", limit],
-          },
-        },
+        totalPages: { $ceil: { $divide: ["$totalCount.totalCount", limit] } },
         data: 1,
       },
     },

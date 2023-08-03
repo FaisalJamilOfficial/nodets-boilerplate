@@ -3,6 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import models from "../models";
+import { Customer } from "../interfaces";
 
 // destructuring assignments
 const { usersModel, customersModel } = models;
@@ -12,16 +13,7 @@ const { usersModel, customersModel } = models;
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const addCustomer = async (params: any): Promise<any> => {
-  const { user } = params;
-  const customerObj: any = {};
-
-  if (!user) throw new Error("Please enter user id!|||400");
-  if (!isValidObjectId(user))
-    throw new Error("Please enter valid user id!|||400");
-  if (await usersModel.exists({ _id: user })) customerObj.user = user;
-  else throw new Error("user not found!|||404");
-
+export const addCustomer = async (customerObj: Customer): Promise<any> => {
   return await customersModel.create(customerObj);
 };
 
@@ -39,9 +31,7 @@ export const updateCustomer = async (params: any): Promise<any> => {
   const customerExists = await customersModel.findOneAndUpdate(
     { user },
     customerObj,
-    {
-      new: true,
-    }
+    { new: true }
   );
   if (!customerExists) throw new Error("Customer not found!|||404");
   return customerExists;
@@ -106,11 +96,7 @@ export const getCustomers = async (params: any): Promise<any> => {
     {
       $project: {
         totalCount: "$totalCount.totalCount",
-        totalPages: {
-          $ceil: {
-            $divide: ["$totalCount.totalCount", limit],
-          },
-        },
+        totalPages: { $ceil: { $divide: ["$totalCount.totalCount", limit] } },
         data: 1,
       },
     },

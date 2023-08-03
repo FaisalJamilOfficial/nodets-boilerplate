@@ -3,6 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import models from "../models";
+import { Admin } from "../interfaces";
 
 // destructuring assignments
 const { usersModel, adminsModel } = models;
@@ -12,16 +13,7 @@ const { usersModel, adminsModel } = models;
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const addAdmin = async (params: any): Promise<any> => {
-  const { user } = params;
-  const adminObj: any = {};
-
-  if (!user) throw new Error("Please enter user id!|||400");
-  if (!isValidObjectId(user))
-    throw new Error("Please enter valid user id!|||400");
-  if (await usersModel.exists({ _id: user })) adminObj.user = user;
-  else throw new Error("User not found!|||404");
-
+export const addAdmin = async (adminObj: Admin): Promise<any> => {
   return await adminsModel.create(adminObj);
 };
 
@@ -101,11 +93,7 @@ export const getAdmins = async (params: any): Promise<any> => {
     {
       $project: {
         totalCount: "$totalCount.totalCount",
-        totalPages: {
-          $ceil: {
-            $divide: ["$totalCount.totalCount", limit],
-          },
-        },
+        totalPages: { $ceil: { $divide: ["$totalCount.totalCount", limit] } },
         data: 1,
       },
     },
