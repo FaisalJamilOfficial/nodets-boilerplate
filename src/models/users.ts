@@ -159,6 +159,10 @@ const userSchema = new Schema(
       type: String,
       trim: true,
     },
+    otp: {
+      type: String,
+      select: false,
+    },
   },
   {
     timestamps: true,

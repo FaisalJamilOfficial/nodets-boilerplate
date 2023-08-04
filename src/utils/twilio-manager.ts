@@ -49,11 +49,12 @@ class TwilioManager {
     }
 
     const token = getToken({
-      _id: user ?? userExists?._id,
+      _id: user,
       phone,
-      otp,
-      shouldValidateOTP: true,
+      shouldValidateOTP: !user,
     });
+    userExists.otp = otp;
+    await userExists.save();
     return token;
   }
 }

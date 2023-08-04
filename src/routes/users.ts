@@ -113,9 +113,7 @@ router
   .put(
     exceptionHandler(async (req: Request, res: Response) => {
       const { phone } = req.body;
-      const args: any = { phone };
-      const user = await usersController.getUser(args);
-      args.user = user;
+      const args = { phone };
       const response = await new TwilioManager().sendOTP(args);
       res.json({ token: response });
     })
