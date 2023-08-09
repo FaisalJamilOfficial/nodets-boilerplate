@@ -28,6 +28,7 @@ router
       if (attachments)
         attachments.forEach((attachment: any) =>
           args.attachments.push({
+            // path: attachment?.key,
             path: attachment?.filename,
             type: attachment?.mimetype,
           })
