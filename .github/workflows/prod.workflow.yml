@@ -18,11 +18,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: yarn install and restart server
+      - name: install node modules and restart server
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
-      - run: yarn install
+      - run: yarn
       - run: yarn build
       - run: pm2 restart app-backend
