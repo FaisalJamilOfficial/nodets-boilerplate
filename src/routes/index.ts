@@ -1,5 +1,5 @@
 // module imports
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 
 // file imports
 import admins from "./admins";

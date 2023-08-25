@@ -174,7 +174,7 @@ router.get(
   "/:user",
   verifyToken,
   verifyAdmin,
-  exceptionHandler(async (req: IRequest, res: Response) => {
+  exceptionHandler(async (req: Request, res: Response) => {
     const { user } = req.params;
     const args = { user };
     const response = await usersController.getUser(args);
