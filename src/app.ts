@@ -2,7 +2,6 @@
 import http from "http";
 import express, { Request, Response, NextFunction } from "express";
 import path from "path";
-import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
 import chalk from "chalk";
@@ -53,7 +52,6 @@ const serverFunction = async () => {
     app.use(logger("dev"));
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
-    app.use(cookieParser());
     app.use("/public/", express.static(path.join("public/")));
 
     app.use("/api/v1", indexRouter);
