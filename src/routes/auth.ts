@@ -9,6 +9,7 @@ import { exceptionHandler } from "../middlewares/exception-handler";
 import {
   verifyOTP,
   verifyToken,
+  verifyUser,
   verifyUserToken,
 } from "../middlewares/authenticator";
 import { IRequest } from "../configs/types";
@@ -41,6 +42,38 @@ router.post(
     res.json({ token: response });
   })
 );
+
+router.post(
+  "/logout",
+  verifyToken,
+  verifyUser,
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const { _id: user } = req.user;
+    const { device } = req.body;
+    const args = { user, device, shallRemoveFCM: true };
+    const response = await usersController.updateUser(args);
+    res.json({ token: response });
+  })
+);
+
+router
+  .route("/password/email")
+  .post(
+    exceptionHandler(async (req: Request, res: Response) => {
+      const { email } = req.body;
+      const args = { email };
+      await authController.emailResetPassword(args);
+      res.json({ message: "Password reset link sent to your email address!" });
+    })
+  )
+  .put(
+    exceptionHandler(async (req: Request, res: Response) => {
+      const { password, user, token } = req.body;
+      const args = { password, user, token };
+      await authController.resetPassword(args);
+      res.json({ message: "Password reset successfully!" });
+    })
+  );
 
 router.post(
   "/login/phone",

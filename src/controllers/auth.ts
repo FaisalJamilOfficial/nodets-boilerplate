@@ -170,7 +170,7 @@ export const resetPassword = async (params: any): Promise<void> => {
   const userExists: any = await usersModel.findById(user);
   if (!userExists) throw new Error("Invalid link!|||400");
 
-  const userTokenExists = await userTokensModel.findOne({
+  const userTokenExists: any = await userTokensModel.findOne({
     user,
     token,
   });
@@ -192,7 +192,7 @@ export const verifyUserEmail = async (params: any): Promise<void> => {
   const userExists = await usersModel.findById(user);
   if (!userExists) throw new Error("Invalid link!|||400");
 
-  const userTokenExists = await userTokensModel.findOne({
+  const userTokenExists: any = await userTokensModel.findOne({
     user,
     token,
   });

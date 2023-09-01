@@ -17,7 +17,7 @@ class FilesUploader {
    */
   uploadFile(params: any): Promise<any> {
     const { file, directory } = params;
-    const fileExtension = mime.getExtension(file.mimetype);
+    const fileExtension = mime.extension(file.mimetype);
     file.filename = v4() + "." + fileExtension;
     file.path = directory + file.filename;
     fs.createWriteStream(file.path).write(file.buffer);
@@ -33,7 +33,7 @@ class FilesUploader {
   uploadFiles(params: any): Promise<any> {
     let { files, directory } = params;
     files = files.map((file: any) => {
-      const fileExtension = mime.getExtension(file.mimetype);
+      const fileExtension = mime.extension(file.mimetype);
       file.filename = v4() + "." + fileExtension;
       file.path = directory + file.filename;
       fs.createWriteStream(file.path).write(file.buffer);

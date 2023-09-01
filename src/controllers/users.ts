@@ -60,6 +60,8 @@ export const updateUser = async (params: any): Promise<any> => {
     isOnline,
     coordinates,
     fcm,
+    shallRemoveFCM,
+    device,
   } = params;
 
   if (!user) throw new Error("Please enter user id!|||400");
@@ -87,6 +89,11 @@ export const updateUser = async (params: any): Promise<any> => {
         userExists.fcms.push({ device: fcm.device, token: fcm.token });
     } else throw new Error("Please enter FCM token and device both!|||400");
   }
+  if (shallRemoveFCM)
+    if (device)
+      userExists.fcms = userExists.fcms.filter(
+        (element: any) => element?.device !== device
+      );
   if (typeof isOnline === "boolean") userExists.isOnline = isOnline;
   if (firstName) userExists.firstName = firstName;
   if (lastName) userExists.lastName = lastName;
@@ -158,6 +165,23 @@ export const getUser = async (params: any): Promise<any> => {
     .findOne(query)
     .select("-createdAt -updatedAt -__v -fcms");
   if (userExists) userExists = await userExists.populate(userExists.type);
+  return userExists;
+};
+
+/**
+ * @description Get user profile
+ * @param {String} user user id
+ * @returns {Object} user data
+ */
+export const getUserProfile = async (params: any): Promise<any> => {
+  const { user, device } = params;
+  const userExists: any = await usersModel
+    .findById(user)
+    .select("-createdAt -updatedAt -__v");
+  userExists.fcms.forEach((element: any) => {
+    if (element?.device === device) userExists._doc.fcm = element?.token;
+  });
+  delete userExists._doc.fcms;
   return userExists;
 };
 

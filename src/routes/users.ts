@@ -120,25 +120,6 @@ router
   );
 
 router
-  .route("/password/email")
-  .post(
-    exceptionHandler(async (req: Request, res: Response) => {
-      const { email } = req.body;
-      const args = { email };
-      await authController.emailResetPassword(args);
-      res.json({ message: "Password reset link sent to your email address!" });
-    })
-  )
-  .put(
-    exceptionHandler(async (req: Request, res: Response) => {
-      const { password, user, token } = req.body;
-      const args = { password, user, token };
-      await authController.resetPassword(args);
-      res.json({ message: "Password reset successfully!" });
-    })
-  );
-
-router
   .route("/notifications")
   .all(verifyToken, verifyUser)
   .get(
@@ -166,7 +147,11 @@ router.get(
   verifyToken,
   verifyUser,
   exceptionHandler(async (req: IRequest, res: Response) => {
-    res.json({ data: req?.user });
+    const { _id: user } = req.user;
+    const { device } = req.body;
+    const args = { user, device };
+    const response = await usersController.getUserProfile(args);
+    res.json({ data: response });
   })
 );
 
