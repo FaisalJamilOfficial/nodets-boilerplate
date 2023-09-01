@@ -5,7 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "clean": "rimraf dist/",
-    "copy-files": "copyfiles -u 1 src/public/**/*.* dist/",
+    "copy-files": "copyfiles -u 1 src/public/*.* dist/",
     "build": "yarn clean && npx tsc && yarn copy-files",
     "start": "node dist/app.js",
     "build:start": "yarn build && yarn start",
