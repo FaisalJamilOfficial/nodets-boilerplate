@@ -214,7 +214,7 @@ export const getUsers = async (params: any): Promise<any> => {
         { name: { $regex: keyword, $options: "i" } },
       ];
   }
-  const users = await usersModel.aggregate([
+  const [result] = await usersModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { password: 0, createdAt: 0, updatedAt: 0, __v: 0 } },
@@ -233,5 +233,5 @@ export const getUsers = async (params: any): Promise<any> => {
       },
     },
   ]);
-  return { data: [], totalCount: 0, totalPages: 0, ...users[0] };
+  return { data: [], totalCount: 0, totalPages: 0, ...result };
 };

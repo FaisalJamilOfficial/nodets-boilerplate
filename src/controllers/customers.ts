@@ -82,7 +82,7 @@ export const getCustomers = async (params: any): Promise<any> => {
   if (!page) page = 0;
   if (page) page = page - 1;
   const query: any = {};
-  const customers = await customersModel.aggregate([
+  const [result] = await customersModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },
@@ -101,5 +101,5 @@ export const getCustomers = async (params: any): Promise<any> => {
       },
     },
   ]);
-  return { data: [], totalCount: 0, totalPages: 0, ...customers[0] };
+  return { data: [], totalCount: 0, totalPages: 0, ...result };
 };
