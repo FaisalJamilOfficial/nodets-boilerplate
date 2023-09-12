@@ -52,7 +52,7 @@ const serverFunction = async () => {
     app.use(logger("dev"));
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
-    app.use("/public/", express.static(path.join("public/")));
+    app.use("/public/", express.static(path.join("dist/public/")));
 
     app.use("/api/v1", indexRouter);
 
