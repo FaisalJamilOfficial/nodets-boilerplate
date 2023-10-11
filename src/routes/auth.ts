@@ -15,29 +15,27 @@ import {
 import { IRequest } from "../configs/types";
 
 // destructuring assignments
-const { ADMIN } = USER_TYPES;
+const { ADMIN, CUSTOMER } = USER_TYPES;
 const { SECRET } = process.env;
 
 // variable initializations
 const router = express.Router();
 
 router.post(
-  "/register",
+  "/register/customer",
   exceptionHandler(async (req: Request, res: Response) => {
-    const { type } = req.query;
     const { email, password, name } = req.body;
-    const args = { email, password, name, type };
+    const args = { email, password, name, type: CUSTOMER };
     const response = await authController.register(args);
     res.json({ token: response });
   })
 );
 
 router.post(
-  "/login",
+  "/login/customer",
   exceptionHandler(async (req: Request, res: Response) => {
-    const { type } = req.query;
     const { email, password } = req.body;
-    const args = { email, password, type };
+    const args = { email, password, type: CUSTOMER };
     const response = await authController.login(args);
     res.json({ token: response });
   })
@@ -51,7 +49,7 @@ router.post(
     const { _id: user } = req.user;
     const { device } = req.body;
     const args = { user, device, shallRemoveFCM: true };
-    const response = await usersController.updateUser(args);
+    const response = await usersController.updateUser(user, args);
     res.json({ token: response });
   })
 );

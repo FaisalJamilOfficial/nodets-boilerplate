@@ -71,10 +71,8 @@ class PlaidManager {
    * @param {string} publicToken public token
    * @returns {object} link token
    */
-  async exchangePublicToken(params: any): Promise<any> {
-    const { publicToken } = params;
-    const linkTokenObj = { public_token: publicToken };
-    // return await client.itemPublicTokenExchange(linkTokenObj);
+  async exchangePublicToken(publicToken: string): Promise<any> {
+    // return await client.itemPublicTokenExchange({ public_token: publicToken });
   }
 
   /**

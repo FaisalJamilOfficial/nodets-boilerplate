@@ -35,10 +35,8 @@ class BraintreeManager {
    * @param {String} customerId OPTIONAL braintree customer id
    * @returns {Object} client token
    */
-  async generateClientToken(params: any): Promise<any> {
-    const { customerId } = params;
-    const clientTokenObj = { customerId };
-    // return await gateway.clientToken.generate(clientTokenObj);
+  async generateClientToken(customerId: string): Promise<any> {
+    // return await gateway.clientToken.generate({ customerId });
   }
 
   /**
@@ -76,8 +74,7 @@ class BraintreeManager {
    * @param {String} customerId braintree customer id
    * @returns {Object} customer data
    */
-  async deleteCustomer(params: any): Promise<any> {
-    const { customerId } = params;
+  async deleteCustomer(customerId: string): Promise<any> {
     // return await gateway.customer.delete(customerId);
   }
 
@@ -98,8 +95,7 @@ class BraintreeManager {
    * @param {String} token payment method token
    * @returns {Object} payment method data
    */
-  async removePaymentMethod(params: any): Promise<any> {
-    const { token } = params;
+  async removePaymentMethod(token: string): Promise<any> {
     // return await gateway.paymentMethod.delete(token);
   }
 
@@ -152,8 +148,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction
    */
-  async submitTransaction(params: any): Promise<any> {
-    const { transactionId } = params;
+  async submitTransaction(transactionId: string): Promise<any> {
     // return await gateway.transaction.submitForSettlement(transactionId);
   }
 
@@ -162,8 +157,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction
    */
-  async voidTransaction(params: any): Promise<any> {
-    const { transactionId } = params;
+  async voidTransaction(transactionId: string): Promise<any> {
     // return await gateway.transaction.void(transactionId);
   }
 
@@ -172,8 +166,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction hold data
    */
-  async holdTransaction(params: any): Promise<any> {
-    const { transactionId } = params;
+  async holdTransaction(transactionId: string): Promise<any> {
     // return await gateway.transaction.holdInEscrow(transactionId);
   }
 
@@ -182,8 +175,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction refund data
    */
-  async refundTransaction(params: any): Promise<any> {
-    const { transactionId } = params;
+  async refundTransaction(transactionId: string): Promise<any> {
     // return await gateway.transaction.refund(transactionId);
   }
 
@@ -192,8 +184,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction refund data
    */
-  async releaseTransaction(params: any): Promise<any> {
-    const { transactionId } = params;
+  async releaseTransaction(transactionId: string): Promise<any> {
     // return await gateway.transaction.releaseFromEscrow(transactionId);
   }
 }

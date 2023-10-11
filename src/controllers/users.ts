@@ -5,6 +5,12 @@ import { isValidObjectId } from "mongoose";
 import models from "../models";
 import FilesDeleter from "../utils/files-deleter";
 import { User } from "../interfaces";
+import {
+  GetUsersDTO,
+  getUserDTO,
+  getUserProfileDTO,
+  updateUserDTO,
+} from "../dto/users";
 import { USER_TYPES } from "../configs/enums";
 
 // destructuring assignments
@@ -44,9 +50,11 @@ export const addUser = async (userObj: User): Promise<any> => {
  * @param {String} admin admin id
  * @returns {Object} user data
  */
-export const updateUser = async (params: any): Promise<any> => {
+export const updateUser = async (
+  user: string,
+  userObj: updateUserDTO
+): Promise<any> => {
   const {
-    user,
     email,
     phone,
     password,
@@ -62,7 +70,7 @@ export const updateUser = async (params: any): Promise<any> => {
     fcm,
     shallRemoveFCM,
     device,
-  } = params;
+  } = userObj;
 
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
@@ -135,8 +143,7 @@ export const updateUser = async (params: any): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} user data
  */
-export const deleteUser = async (params: any): Promise<any> => {
-  const { user } = params;
+export const deleteUser = async (user: string): Promise<any> => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -150,7 +157,7 @@ export const deleteUser = async (params: any): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} user data
  */
-export const getUser = async (params: any): Promise<any> => {
+export const getUser = async (params: getUserDTO): Promise<any> => {
   const { user, email, phone, googleId, facebookId, twitterId } = params;
   const query: any = {};
   if (user) query._id = user;
@@ -173,7 +180,9 @@ export const getUser = async (params: any): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} user data
  */
-export const getUserProfile = async (params: any): Promise<any> => {
+export const getUserProfile = async (
+  params: getUserProfileDTO
+): Promise<any> => {
   const { user, device } = params;
   const userExists: any = await usersModel
     .findById(user)
@@ -195,7 +204,7 @@ export const getUserProfile = async (params: any): Promise<any> => {
  * @param {Number} page users page number
  * @returns {[Object]} array of users
  */
-export const getUsers = async (params: any): Promise<any> => {
+export const getUsers = async (params: GetUsersDTO): Promise<any> => {
   const { type, user } = params;
   let { page, limit, keyword } = params;
   if (!limit) limit = 10;

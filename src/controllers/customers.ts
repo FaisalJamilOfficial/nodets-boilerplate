@@ -3,17 +3,18 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import models from "../models";
-import { Customer } from "../interfaces";
+import { Admin } from "../interfaces";
+import { GetCustomersDTO } from "../dto/customers";
 
 // destructuring assignments
-const { usersModel, customersModel } = models;
+const { customersModel } = models;
 
 /**
  * @description Add customer
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const addCustomer = async (customerObj: Customer): Promise<any> => {
+export const addCustomer = async (customerObj: Admin): Promise<any> => {
   return await customersModel.create(customerObj);
 };
 
@@ -22,9 +23,10 @@ export const addCustomer = async (customerObj: Customer): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const updateCustomer = async (params: any): Promise<any> => {
-  const { user } = params;
-  const customerObj: any = {};
+export const updateCustomer = async (
+  user: string,
+  customerObj: Partial<Admin>
+): Promise<any> => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -42,8 +44,7 @@ export const updateCustomer = async (params: any): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const deleteCustomer = async (params: any): Promise<any> => {
-  const { user } = params;
+export const deleteCustomer = async (user: string): Promise<any> => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -57,8 +58,7 @@ export const deleteCustomer = async (params: any): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const getCustomer = async (params: any): Promise<any> => {
-  const { user } = params;
+export const getCustomer = async (user: string): Promise<any> => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -76,7 +76,7 @@ export const getCustomer = async (params: any): Promise<any> => {
  * @param {Number} page customers page number
  * @returns {Object} customer data
  */
-export const getCustomers = async (params: any): Promise<any> => {
+export const getCustomers = async (params: GetCustomersDTO): Promise<any> => {
   let { limit, page } = params;
   if (!limit) limit = 10;
   if (!page) page = 0;

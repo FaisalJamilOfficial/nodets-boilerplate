@@ -3,6 +3,7 @@ import FirebaseManager from "../utils/firebase-manager";
 import SocketManager from "../utils/socket-manager";
 import models from "../models";
 import { Notification } from "../interfaces";
+import { GetNotificationsDTO, NotifyUsersDTO } from "../dto/notifications";
 import { NOTIFICATION_STATUSES } from "../configs/enums";
 
 // destructuring assignments
@@ -30,7 +31,9 @@ export const addNotification = async (
  * @param {Number} page notifications page number
  * @returns {[Object]} array of notifications
  */
-export const getNotifications = async (params: any): Promise<any> => {
+export const getNotifications = async (
+  params: GetNotificationsDTO
+): Promise<any> => {
   const { user } = params;
   let { page, limit } = params;
   const query: any = {};
@@ -81,7 +84,7 @@ export const getNotifications = async (params: any): Promise<any> => {
  * @param {Boolean} useSocket socket usage check
  * @returns {null} null
  */
-export const notifyUsers = async (params: any): Promise<void> => {
+export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
   const {
     query,
     user,
@@ -134,7 +137,7 @@ export const notifyUsers = async (params: any): Promise<void> => {
   if (useDatabase)
     if (notificationData)
       // database notification creation
-      await addNotification({ ...notificationData, type });
+      await addNotification(notificationData);
 };
 
 /**
@@ -142,8 +145,7 @@ export const notifyUsers = async (params: any): Promise<void> => {
  * @param {String} user user id
  * @returns {Object} notification data
  */
-export const readNotifications = async (params: any): Promise<void> => {
-  const { user } = params;
+export const readNotifications = async (user: string): Promise<void> => {
   const notificationObj = { status: READ };
   if (!user) throw new Error("Please enter user id!|||400");
   if (!(await usersModel.exists({ _id: user })))

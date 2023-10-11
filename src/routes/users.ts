@@ -42,13 +42,12 @@ router
       const { _id: user } = req?.user;
       const { firstName, lastName } = req.body;
       const args = {
-        user,
         firstName,
         lastName,
         //   image: image?.key,
         image: image?.filename,
       };
-      const response = await usersController.updateUser(args);
+      const response = await usersController.updateUser(user, args);
       res.json({ data: response });
     })
   )
@@ -56,16 +55,21 @@ router
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user } = req?.user;
       const { page, limit, keyword } = req.query;
-      const args = { user, keyword, limit: Number(limit), page: Number(page) };
+      const args = {
+        user,
+        keyword: (keyword || "").toString(),
+        limit: Number(limit),
+        page: Number(page),
+      };
       const response = await usersController.getUsers(args);
       res.json(response);
     })
   )
   .delete(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { user } = req.query;
-      const args = { user };
-      const response = await usersController.deleteUser(args);
+      let { user } = req.query;
+      user = (user || "").toString();
+      const response = await usersController.deleteUser(user);
       res.json({ data: response });
     })
   );
@@ -77,8 +81,8 @@ router.put(
   verifyUserToken,
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user, phone } = req?.user;
-    const args = { user, phone };
-    const response = await usersController.updateUser(args);
+    const args = { phone };
+    const response = await usersController.updateUser(user, args);
     res.json({ data: response });
   })
 );
@@ -89,10 +93,10 @@ router.put(
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user, email, type } = req?.user;
     const { password, newPassword } = req.body;
-    const args = { password, newPassword, email, user, type };
+    const args = { password, email, type };
     await authController.login(args);
-    args.password = args.newPassword;
-    const response = await usersController.updateUser(args);
+    args.password = newPassword;
+    const response = await usersController.updateUser(user, args);
     res.json({ data: response });
   })
 );
@@ -134,10 +138,7 @@ router
   .patch(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user } = req?.user;
-      const args = {
-        user,
-      };
-      await notificationsController.readNotifications(args);
+      await notificationsController.readNotifications(user);
       res.json({ message: "notifications read successfully!" });
     })
   );
@@ -160,9 +161,7 @@ router.get(
   verifyToken,
   verifyAdmin,
   exceptionHandler(async (req: Request, res: Response) => {
-    const { user } = req.params;
-    const args = { user };
-    const response = await usersController.getUser(args);
+    const response = await usersController.getUser(req.params);
     res.json({ data: response });
   })
 );

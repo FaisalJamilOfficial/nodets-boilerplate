@@ -4,7 +4,12 @@ import { isValidObjectId, Types } from "mongoose";
 // file imports
 import * as notificationsController from "./notifications";
 import models from "../models";
-import { Message } from "../interfaces";
+import { Message, Conversation } from "../interfaces";
+import {
+  GetMessagesDTO,
+  GetConversationsDTO,
+  SendMessageDTO,
+} from "../dto/messages";
 import {
   CONVERSATION_STATUSES,
   MESSAGE_STATUSES,
@@ -39,7 +44,7 @@ export const addMessage = async (messageObj: Message): Promise<any> => {
  * @param {[object]} attachments OPTIONAL message attachments
  * @returns {Object} message data
  */
-export const getMessages = async (params: any): Promise<any> => {
+export const getMessages = async (params: GetMessagesDTO): Promise<any> => {
   const { conversation } = params;
   let { page, limit, user1, user2 } = params;
   if (!limit) limit = 10;
@@ -48,11 +53,11 @@ export const getMessages = async (params: any): Promise<any> => {
   const query: any = {};
   if (conversation) query.conversation = new ObjectId(conversation);
   else if (user1 && user2) {
-    user1 = new ObjectId(user1);
-    user2 = new ObjectId(user2);
+    const userOne = new ObjectId(user1);
+    const userTwo = new ObjectId(user2);
     query.$or = [
-      { $and: [{ userTo: user1 }, { userFrom: user2 }] },
-      { $and: [{ userFrom: user1 }, { userTo: user2 }] },
+      { $and: [{ userTo: userOne }, { userFrom: userTwo }] },
+      { $and: [{ userFrom: userOne }, { userTo: userTwo }] },
     ];
   } else throw new Error("Please enter conversation id!|||400");
   const [result] = await messagesModel.aggregate([
@@ -84,16 +89,15 @@ export const getMessages = async (params: any): Promise<any> => {
  * @param {String} status message status
  * @returns {Object} message data
  */
-export const updateMessage = async (params: any): Promise<any> => {
-  const { message, text, status } = params;
-  const messageObj: any = {};
+export const updateMessage = async (
+  message: string,
+  messageObj: Partial<Message>
+): Promise<any> => {
   if (!message) throw new Error("Please enter message id!|||400");
   if (!isValidObjectId(message))
     throw new Error("Please enter valid message id!|||400");
-  if (text) messageObj.text = text;
-  if (status) messageObj.status = status;
   const messageExists = await messagesModel.findByIdAndUpdate(
-    { _id: message },
+    message,
     messageObj,
     { new: true }
   );
@@ -107,8 +111,7 @@ export const updateMessage = async (params: any): Promise<any> => {
  * @param {String} message message id
  * @returns {Object} message data
  */
-export const deleteMessage = async (params: any): Promise<any> => {
-  const { message } = params;
+export const deleteMessage = async (message: string): Promise<any> => {
   if (!message) throw new Error("Please enter message id!|||400");
   const messageExists = await messagesModel.findByIdAndDelete(message);
   if (!messageExists) throw new Error("Please enter valid message id!|||400");
@@ -121,8 +124,10 @@ export const deleteMessage = async (params: any): Promise<any> => {
  * @param {String} userTo receiver user id
  * @returns {Object} conversation data
  */
-export const addConversation = async (params: any): Promise<any> => {
-  const { userFrom, userTo } = params;
+export const addConversation = async (
+  conversationObj: Conversation
+): Promise<any> => {
+  const { userFrom, userTo } = conversationObj;
   const query = {
     $or: [
       { $and: [{ userTo: userFrom }, { userFrom: userTo }] },
@@ -133,7 +138,7 @@ export const addConversation = async (params: any): Promise<any> => {
   let conversationExists: any = await conversationsModel.findOne(query);
   if (conversationExists) {
     if (conversationExists.status === PENDING) {
-      if (userFrom.equals(conversationExists.userTo)) {
+      if (userFrom === conversationExists.userTo.toString()) {
         conversationExists.status = ACCEPTED;
         await conversationExists.save();
       }
@@ -156,7 +161,9 @@ export const addConversation = async (params: any): Promise<any> => {
  * @param {Number} page conversations page number
  * @returns {[Object]} array of conversations
  */
-export const getConversations = async (params: any): Promise<any> => {
+export const getConversations = async (
+  params: GetConversationsDTO
+): Promise<any> => {
   const { user } = params;
   let { limit, page, keyword } = params;
   if (!limit) limit = 10;
@@ -248,7 +255,7 @@ export const getConversations = async (params: any): Promise<any> => {
  * @param {[object]} attachments message attachments
  * @returns {Object} message data
  */
-export const send = async (params: any): Promise<any> => {
+export const send = async (params: SendMessageDTO): Promise<any> => {
   const { username } = params;
 
   const conversation = await addConversation(params);
@@ -269,6 +276,7 @@ export const send = async (params: any): Promise<any> => {
     user: message.userTo,
     message: message._id,
     messenger: message.userFrom,
+    type: NEW_MESSAGE,
   };
 
   await notificationsController.notifyUsers({
@@ -299,7 +307,7 @@ export const send = async (params: any): Promise<any> => {
  * @param {String} userTo user id
  * @returns {Object} message data
  */
-export const readMessages = async (params: any): Promise<void> => {
+export const readMessages = async (params: Partial<Message>): Promise<void> => {
   const { conversation, userTo } = params;
   const messageObj = { status: READ };
   if (!userTo) throw new Error("Please enter userTo id!|||400");

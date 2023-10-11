@@ -4,9 +4,10 @@ import { isValidObjectId } from "mongoose";
 // file imports
 import models from "../models";
 import { Admin } from "../interfaces";
+import { GetAdminsDTO } from "../dto/admins";
 
 // destructuring assignments
-const { usersModel, adminsModel } = models;
+const { adminsModel } = models;
 
 /**
  * @description @description Add admin
@@ -22,9 +23,10 @@ export const addAdmin = async (adminObj: Admin): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const updateAdmin = async (params: any): Promise<any> => {
-  const { user } = params;
-  const adminObj: any = {};
+export const updateAdmin = async (
+  user: string,
+  adminObj: Partial<Admin>
+): Promise<any> => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -40,8 +42,7 @@ export const updateAdmin = async (params: any): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const deleteAdmin = async (params: any): Promise<any> => {
-  const { user } = params;
+export const deleteAdmin = async (user: string): Promise<any> => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -55,8 +56,7 @@ export const deleteAdmin = async (params: any): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const getAdmin = async (params: any): Promise<any> => {
-  const { user } = params;
+export const getAdmin = async (user: string): Promise<any> => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -73,7 +73,7 @@ export const getAdmin = async (params: any): Promise<any> => {
  * @param {Number} page admins page number
  * @returns {Object} admin data
  */
-export const getAdmins = async (params: any): Promise<any> => {
+export const getAdmins = async (params: GetAdminsDTO): Promise<any> => {
   let { limit, page } = params;
   if (!limit) limit = 10;
   if (!page) page = 0;

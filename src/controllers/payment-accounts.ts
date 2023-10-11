@@ -4,6 +4,10 @@ import { isValidObjectId } from "mongoose";
 // file imports
 import models from "../models";
 import { PaymentAccount } from "../interfaces";
+import {
+  GetPaymentAccountDTO,
+  GetPaymentAccountsDTO,
+} from "../dto/payment-accounts";
 
 // destructuring assignments
 const { paymentAccountsModel, usersModel } = models;
@@ -33,7 +37,9 @@ export const addPaymentAccount = async (
  * @param {String} user user id
  * @returns {Object} paymentAccount data
  */
-export const getPaymentAccount = async (params: any): Promise<any> => {
+export const getPaymentAccount = async (
+  params: GetPaymentAccountDTO
+): Promise<any> => {
   const { paymentAccount, user, key, value } = params;
   const query: any = {};
   if (paymentAccount) query._id = paymentAccount;
@@ -55,7 +61,9 @@ export const getPaymentAccount = async (params: any): Promise<any> => {
  * @param {Number} page paymentAccounts page number
  * @returns {Object} paymentAccount data
  */
-export const getPaymentAccounts = async (params: any): Promise<any> => {
+export const getPaymentAccounts = async (
+  params: GetPaymentAccountsDTO
+): Promise<any> => {
   const { user } = params;
   let { limit, page } = params;
   if (!limit) limit = 10;

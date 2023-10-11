@@ -45,8 +45,7 @@ class StripeManager {
    * @param {String} customerId stripe customer id
    * @returns {Object} stripe customer deletion response
    */
-  async deleteCustomer(params: any): Promise<any> {
-    const { customerId } = params;
+  async deleteCustomer(customerId: string): Promise<any> {
     // return await stripe.customers.del(customerId);
   }
 
@@ -55,11 +54,8 @@ class StripeManager {
    * @param {String} charge stripe charge id
    * @returns {Object} stripe charge refund response
    */
-  async createRefund(params: any): Promise<any> {
-    const { charge } = params;
-    const refundObj: any = {};
-    if (charge) refundObj.charge = charge;
-    // return await stripe.refunds.create(refundObj);
+  async createRefund(charge: string): Promise<any> {
+    // return await stripe.refunds.create({ charge });
   }
 
   /**
@@ -96,7 +92,7 @@ class StripeManager {
     const { source, cardHolderName, user, email, phone } = params;
 
     const paymentAccountExists =
-      await paymentAccountsController.getPaymentAccount({ user });
+      await paymentAccountsController.getPaymentAccount(user);
 
     let userStripeId;
 
@@ -147,7 +143,7 @@ class StripeManager {
   async createAccountWithCheck(params: any): Promise<any> {
     const { user, email } = params;
     const paymentAccountExists =
-      await paymentAccountsController.getPaymentAccount({ user });
+      await paymentAccountsController.getPaymentAccount(user);
 
     if (paymentAccountExists) return paymentAccountExists;
     else {
@@ -186,7 +182,7 @@ class StripeManager {
     const { account, refreshURL, returnURL, email, user } = params;
 
     const paymentAccountExists =
-      await paymentAccountsController.getPaymentAccount({ user });
+      await paymentAccountsController.getPaymentAccount(user);
 
     let accountObj;
     if (paymentAccountExists) accountObj = paymentAccountExists.account;
@@ -247,7 +243,7 @@ class StripeManager {
   async createTransfer(params: any): Promise<any> {
     const { user, amount, currency, description } = params;
     const paymentAccountExists =
-      await paymentAccountsController.getPaymentAccount({ user });
+      await paymentAccountsController.getPaymentAccount(user);
     const transferObj = {
       amount,
       currency: currency ?? CURRENCY,
@@ -308,8 +304,7 @@ class StripeManager {
    * @param {String} paymentIntent payment intent id
    * @returns {Object} cancel payment intent object
    */
-  async cancelPaymentIntent(params: any): Promise<any> {
-    const { paymentIntent } = params;
+  async cancelPaymentIntent(paymentIntent: string): Promise<any> {
     // return await stripe.paymentIntents.cancel(paymentIntent);
   }
 
@@ -318,8 +313,7 @@ class StripeManager {
    * @param {String} paymentIntent payment intent id
    * @returns {Object} refund payment intent object
    */
-  async refundPaymentIntent(params: any): Promise<any> {
-    const { paymentIntent } = params;
+  async refundPaymentIntent(paymentIntent: string): Promise<any> {
     // return await stripe.refunds.create({ payment_intent: paymentIntent });
   }
 

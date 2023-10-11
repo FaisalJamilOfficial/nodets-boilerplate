@@ -11,6 +11,9 @@ export interface User {
   coordinates?: number[];
   type?: string;
   status?: string;
+  isOnline?: boolean;
+  customer?: string;
+  admin?: string;
   googleID?: string;
   facebookID?: string;
   twitterID?: string;

@@ -4,7 +4,15 @@ import * as usersController from "./users";
 import * as customersController from "./customers";
 import * as adminsController from "./admins";
 import NodeMailer from "../utils/node-mailer";
+import { User } from "../interfaces";
 import { USER_TYPES, USER_STATUSES } from "../configs/enums";
+import {
+  LoginDTO,
+  SendEmailDTO,
+  GenerateEmailTokenDTO,
+  ResetPasswordDTO,
+  VerifyUserEmailDTO,
+} from "../dto/auth";
 
 // destructuring assignments
 
@@ -26,7 +34,7 @@ const {
  * @param {String} type user type
  * @returns {Object} user data with token
  */
-export const register = async (params: any): Promise<any> => {
+export const register = async (params: User): Promise<any> => {
   const { type } = params;
   const user = await usersController.addUser(params);
 
@@ -40,7 +48,7 @@ export const register = async (params: any): Promise<any> => {
   else if (type === ADMIN)
     userObj.admin = (await adminsController.addAdmin(profileObj))._id;
 
-  await usersController.updateUser(userObj);
+  await usersController.updateUser(user._id, userObj);
 
   return user.getSignedjwtToken();
 };
@@ -52,7 +60,7 @@ export const register = async (params: any): Promise<any> => {
  * @param {String} type user type
  * @returns {Object} user data with token
  */
-export const login = async (params: any): Promise<any> => {
+export const login = async (params: LoginDTO): Promise<any> => {
   const { email, password, type } = params;
 
   const query: any = {};
@@ -84,7 +92,9 @@ export const login = async (params: any): Promise<any> => {
  * @param {String} email user email address
  * @returns {Object} user password reset result
  */
-export const emailResetPassword = async (params: any): Promise<any> => {
+export const emailResetPassword = async (
+  params: SendEmailDTO
+): Promise<any> => {
   const { email } = params;
   const tokenExpirationTime = new Date();
   tokenExpirationTime.setMinutes(tokenExpirationTime.getMinutes() + 10);
@@ -104,7 +114,7 @@ export const emailResetPassword = async (params: any): Promise<any> => {
  * @param {String} email user email address
  * @returns {Object} user email verification result
  */
-export const emailVerifyEmail = async (params: any): Promise<any> => {
+export const emailVerifyEmail = async (params: SendEmailDTO): Promise<any> => {
   const { email } = params;
   const tokenExpirationTime = new Date();
   tokenExpirationTime.setMinutes(tokenExpirationTime.getMinutes() + 10);
@@ -125,7 +135,7 @@ export const emailVerifyEmail = async (params: any): Promise<any> => {
  * @param {String} name user name
  * @returns {Object} user welcome result
  */
-export const emailWelcomeUser = async (params: any): Promise<any> => {
+export const emailWelcomeUser = async (params: SendEmailDTO): Promise<any> => {
   const { email, name } = params;
   const args: any = {};
   args.to = email;
@@ -140,7 +150,9 @@ export const emailWelcomeUser = async (params: any): Promise<any> => {
  * @param {Date} tokenExpirationTime email token expiration time
  * @returns {Object} user email token
  */
-export const generateEmailToken = async (params: any): Promise<any> => {
+export const generateEmailToken = async (
+  params: GenerateEmailTokenDTO
+): Promise<any> => {
   const { email, tokenExpirationTime } = params;
   const userExists: any = await usersModel.findOne({ email });
   if (!userExists)
@@ -164,7 +176,9 @@ export const generateEmailToken = async (params: any): Promise<any> => {
  * @param {String} token reset password token
  * @returns {Object} user password reset result
  */
-export const resetPassword = async (params: any): Promise<void> => {
+export const resetPassword = async (
+  params: ResetPasswordDTO
+): Promise<void> => {
   const { password, user, token } = params;
 
   const userExists: any = await usersModel.findById(user);
@@ -186,7 +200,9 @@ export const resetPassword = async (params: any): Promise<void> => {
  * @param {String} token user email token
  * @returns {Object} user email verification result
  */
-export const verifyUserEmail = async (params: any): Promise<void> => {
+export const verifyUserEmail = async (
+  params: VerifyUserEmailDTO
+): Promise<void> => {
   const { user, token } = params;
 
   const userExists = await usersModel.findById(user);
@@ -210,7 +226,7 @@ export const verifyUserEmail = async (params: any): Promise<void> => {
  * @param {String} type user type
  * @returns {Object} user data with token
  */
-export const addAdmin = async (params: any): Promise<any> => {
+export const addAdmin = async (params: User): Promise<any> => {
   const { email, password, type } = params;
 
   const userObj: any = {};

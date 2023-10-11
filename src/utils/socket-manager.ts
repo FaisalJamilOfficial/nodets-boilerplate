@@ -75,8 +75,8 @@ class SocketManager {
         socket.join(data);
         console.log(`${data} joined`);
         try {
-          const args = { user: data, isOnline: true };
-          await usersController.updateUser(args);
+          const args = { isOnline: true };
+          await usersController.updateUser(data, args);
         } catch (error) {
           console.log(error);
         }
@@ -86,7 +86,7 @@ class SocketManager {
         console.log(`${data} left`);
         try {
           const args = { user: data, isOnline: false };
-          await usersController.updateUser(args);
+          await usersController.updateUser(data, args);
         } catch (error) {
           console.log(error);
         }
