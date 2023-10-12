@@ -9,7 +9,7 @@ export interface User {
   image?: string;
   fcms?: { token: string; device: string }[];
   coordinates?: number[];
-  type?: string;
+  type: string;
   status?: string;
   isOnline?: boolean;
   customer?: string;
