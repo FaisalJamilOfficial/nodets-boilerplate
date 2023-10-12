@@ -172,7 +172,7 @@ const userSchema = new Schema(
 userSchema.methods.getSignedjwtToken = function () {
   return jwt.sign(
     { _id: this._id, type: this.type },
-    process.env.JWT_SECRET ?? ""
+    process.env.JWT_SECRET || ""
   );
 };
 
