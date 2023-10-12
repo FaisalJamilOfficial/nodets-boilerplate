@@ -3,7 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import models from "../models";
-import { Admin } from "../interfaces";
+import { Customer } from "../interfaces";
 import { GetCustomersDTO } from "../dto/customers";
 
 // destructuring assignments
@@ -14,7 +14,7 @@ const { customersModel } = models;
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const addCustomer = async (customerObj: Admin): Promise<any> => {
+export const addCustomer = async (customerObj: Customer): Promise<any> => {
   return await customersModel.create(customerObj);
 };
 
@@ -25,7 +25,7 @@ export const addCustomer = async (customerObj: Admin): Promise<any> => {
  */
 export const updateCustomer = async (
   user: string,
-  customerObj: Partial<Admin>
+  customerObj: Partial<Customer>
 ): Promise<any> => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
