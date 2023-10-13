@@ -19,7 +19,7 @@ import {
 import { IRequest } from "../configs/types";
 
 // destructuring assignments
-const { IMAGES_DIRECTORY } = directories;
+const { PUBLIC_DIRECTORY } = directories;
 
 // variable initializations
 const router = express.Router();
@@ -36,7 +36,7 @@ router
     })
   )
   .put(
-    upload(IMAGES_DIRECTORY).single("image"),
+    upload(PUBLIC_DIRECTORY).single("image"),
     exceptionHandler(async (req: IRequest, res: Response) => {
       const image = req.file || {};
       const { _id: user } = req?.user;

@@ -5,7 +5,7 @@ import fs from "fs";
 import directories from "../configs/directories";
 
 // destructuring assignments
-const { IMAGES_DIRECTORY, ATTACHMENTS_DIRECTORY } = directories;
+const { PUBLIC_DIRECTORY } = directories;
 
 class FilesDeleter {
   fs: typeof fs;
@@ -21,7 +21,7 @@ class FilesDeleter {
   async deleteImage(params: any): Promise<void> {
     const { image } = params;
     const array = [];
-    const PATH = IMAGES_DIRECTORY;
+    const PATH = PUBLIC_DIRECTORY;
     array.push({ path: PATH + image });
     array.push({ path: PATH + "thumbnails/" + image });
     this.deleteFiles({ files: array });
@@ -35,7 +35,7 @@ class FilesDeleter {
   async deleteAttachment(params: any): Promise<void> {
     const { attachment } = params;
     const array = [];
-    const PATH = ATTACHMENTS_DIRECTORY;
+    const PATH = PUBLIC_DIRECTORY;
     array.push({ path: PATH + attachment });
     this.deleteFiles({ files: array });
   }

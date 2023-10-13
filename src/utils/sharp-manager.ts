@@ -7,7 +7,7 @@ import FilesUploader from "./files_uploader";
 import directories from "../configs/directories";
 
 // destructuring assignments
-const { ATTACHMENTS_DIRECTORY } = directories;
+const { PUBLIC_DIRECTORY } = directories;
 
 class SharpManager {
   sharp: any;
@@ -51,7 +51,7 @@ class SharpManager {
         } else {
           const file = await new FilesUploader().uploadFile({
             file: images[i],
-            directory: ATTACHMENTS_DIRECTORY,
+            directory: PUBLIC_DIRECTORY,
           });
           id = file.filename;
         }
@@ -112,7 +112,7 @@ class SharpManager {
         } else {
           const file = await new FilesUploader().uploadFile({
             file: images[i],
-            directory: ATTACHMENTS_DIRECTORY,
+            directory: PUBLIC_DIRECTORY,
           });
           id = file.filename;
         }

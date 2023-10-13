@@ -10,7 +10,7 @@ import { upload } from "../middlewares/uploader";
 import { IRequest } from "../configs/types";
 
 // destructuring assignments
-const { ATTACHMENTS_DIRECTORY } = directories;
+const { PUBLIC_DIRECTORY } = directories;
 
 // variable initializations
 const router = express.Router();
@@ -19,7 +19,7 @@ router
   .route("/")
   .all(verifyToken, verifyUser)
   .post(
-    upload(ATTACHMENTS_DIRECTORY).array("attachments", 8),
+    upload(PUBLIC_DIRECTORY).array("attachments", 8),
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: userFrom, name: username } = req?.user;
       const { user: userTo, text } = req.body;

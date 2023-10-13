@@ -8,14 +8,14 @@ import { exceptionHandler } from "./exception-handler";
 import { IRequest } from "../configs/types";
 
 // destructuring assignments
-const { IMAGES_DIRECTORY } = directories;
+const { PUBLIC_DIRECTORY } = directories;
 
 export const resizeImages = exceptionHandler(
   async (req: IRequest, _res: Response, next: NextFunction) => {
     const images = req.files || [];
     const image = req.file || {};
     if (images || image) {
-      const path = IMAGES_DIRECTORY;
+      const path = PUBLIC_DIRECTORY;
 
       // imagesData contains 1.image_name 2.image_path
       const imagesData = { images: images ?? [image], path };
