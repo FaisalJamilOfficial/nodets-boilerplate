@@ -48,7 +48,7 @@ class TwilioManager {
       console.log("Twilio Error", error);
     }
     const tokenObj: any = {
-      _id: user,
+      _id: user ?? userExists?._id,
       phone,
       shouldValidateOTP: !user,
     };
