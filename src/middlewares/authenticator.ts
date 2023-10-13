@@ -75,13 +75,16 @@ export const verifyToken = async (
 
 export const verifyOTP = exceptionHandler(
   async (req: IRequest, _res: any, next: any): Promise<void> => {
+    const { otp } = req.user;
     const { code } = req.body;
     const query: any = {};
     if (req?.user?._id) query._id = req.user._id;
     else if (req?.user?.phone) query.phone = req.user.phone;
     else query._id = null;
     const userExists: any = await usersModel.findOne(query).select("+otp");
-    if (code === userExists?.otp) next();
+
+    if (userExists && code === userExists?.otp) next();
+    else if (code === otp) next();
     else return next(new Error("Invalid Code!|||400"));
   }
 );
