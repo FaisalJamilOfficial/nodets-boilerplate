@@ -43,10 +43,11 @@ router
       const {  limit, page, user } = req.query;
       let { conversation } = req.query;
       conversation = (conversation || "").toString();
+      user2 = (user || "").toString(),
       const args = {
         conversation,
         user1,
-        user2: (user || "").toString(),
+        user2,
         limit: Number(limit),
         page: Number(page),
       };
