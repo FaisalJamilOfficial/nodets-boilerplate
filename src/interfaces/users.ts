@@ -8,7 +8,7 @@ export interface User {
   name?: string;
   image?: string;
   fcms?: { token: string; device: string }[];
-  coordinates?: number[];
+  location?: { type: string; coordinates: number[] };
   type: string;
   status?: string;
   isOnline?: boolean;
