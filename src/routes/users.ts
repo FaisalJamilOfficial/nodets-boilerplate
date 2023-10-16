@@ -54,10 +54,12 @@ router
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user } = req?.user;
-      const { page, limit, keyword } = req.query;
+      const { page, limit } = req.query;
+      let { keyword } = req.query;
+      keyword = (keyword || "").toString(); 
       const args = {
         user,
-        keyword: (keyword || "").toString(),
+        keyword,
         limit: Number(limit),
         page: Number(page),
       };

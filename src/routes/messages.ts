@@ -40,9 +40,11 @@ router
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user1 } = req.user;
-      const { conversation, limit, page, user } = req.query;
+      const {  limit, page, user } = req.query;
+      let { conversation } = req.query;
+      conversation = (conversation || "").toString();
       const args = {
-        conversation: (conversation || "").toString(),
+        conversation,
         user1,
         user2: (user || "").toString(),
         limit: Number(limit),
@@ -54,11 +56,12 @@ router
   )
   .put(
     exceptionHandler(async (req: Request, res: Response) => {
-      const { message } = req.query;
+      let { message } = req.query;
       const { text, status } = req.body;
       const args = { text, status };
+      message = (message || "").toString();
       const response = await messagesController.updateMessage(
-        (message || "").toString(),
+        message,
         args
       );
       res.json({ data: response });
@@ -80,12 +83,14 @@ router.get(
   verifyUser,
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req?.user;
-    const { limit, page, keyword } = req.query;
+    const { limit, page } = req.query;
+    let { keyword } = req.query;
+    keyword = (keyword || "").toString(); 
     const args = {
       user,
       limit: Number(limit),
       page: Number(page),
-      keyword: (keyword || "").toString(),
+      keyword,
     };
     const response = await messagesController.getConversations(args);
     res.json(response);
