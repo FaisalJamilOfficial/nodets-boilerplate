@@ -5,11 +5,11 @@ name: NodeJS CI/CD Production Server Action Runner
 
 on:
   push:
-    branches: [main]
+    branches: [development]
 
 jobs:
   install:
-    runs-on: production-server
+    runs-on: self-hosted
 
     strategy:
       matrix:

@@ -3,7 +3,9 @@ import { isValidObjectId, Types } from "mongoose";
 
 // file imports
 import * as notificationsController from "./notifications";
-import models from "../models";
+import conversationsModel from "../models/conversations";
+import messagesModel from "../models/messages";
+import usersModel from "../models/users";
 import { Conversation } from "../interfaces/conversation";
 import { Message } from "../interfaces/messages";
 import {
@@ -18,7 +20,6 @@ import {
 } from "../configs/enums";
 
 // destructuring assignments
-const { usersModel, messagesModel, conversationsModel } = models;
 const { PENDING, ACCEPTED, REJECTED } = CONVERSATION_STATUSES;
 const { NEW_MESSAGE } = NOTIFICATION_TYPES;
 const { READ } = MESSAGE_STATUSES;

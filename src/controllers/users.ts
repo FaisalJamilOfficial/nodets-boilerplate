@@ -2,7 +2,9 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import models from "../models";
+import adminsModel from "../models/admins";
+import customersModel from "../models/customers";
+import usersModel from "../models/users";
 import FilesDeleter from "../utils/files-deleter";
 import { User } from "../interfaces/users";
 import {
@@ -15,7 +17,6 @@ import { USER_TYPES } from "../configs/enums";
 
 // destructuring assignments
 const { ADMIN } = USER_TYPES;
-const { usersModel, customersModel, adminsModel } = models;
 
 /**
  * @description Add user

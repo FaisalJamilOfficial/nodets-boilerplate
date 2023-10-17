@@ -3,14 +3,13 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
 // file imports
-import models from "../models";
+import usersModel from "../models/users";
 import { IRequest } from "../configs/types";
 import { exceptionHandler } from "./exception-handler";
 import { USER_STATUSES, USER_TYPES } from "../configs/enums";
 
 // destructuring assignments
 const { JWT_SECRET } = process.env;
-const { usersModel } = models;
 const { ACTIVE, DELETED } = USER_STATUSES;
 const { CUSTOMER, ADMIN, SUPER_ADMIN } = USER_TYPES;
 

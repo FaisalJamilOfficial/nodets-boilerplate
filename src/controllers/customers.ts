@@ -2,12 +2,11 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import models from "../models";
+import customersModel from "../models/customers";
 import { Customer } from "../interfaces/customers";
 import { GetCustomersDTO } from "../dto/customers";
 
 // destructuring assignments
-const { customersModel } = models;
 
 /**
  * @description Add customer

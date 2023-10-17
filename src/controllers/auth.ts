@@ -1,5 +1,6 @@
 // file imports
-import models from "../models";
+import usersModel from "../models/users";
+import userTokensModel from "../models/user-tokens";
 import * as usersController from "./users";
 import * as customersController from "./customers";
 import * as adminsController from "./admins";
@@ -15,8 +16,6 @@ import {
 } from "../dto/auth";
 
 // destructuring assignments
-
-const { usersModel, userTokensModel } = models;
 const { CUSTOMER, ADMIN } = USER_TYPES;
 const { ACTIVE } = USER_STATUSES;
 const {

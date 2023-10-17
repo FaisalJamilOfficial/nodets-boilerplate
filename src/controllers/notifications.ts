@@ -1,13 +1,13 @@
 // file imports
 import FirebaseManager from "../utils/firebase-manager";
 import SocketManager from "../utils/socket-manager";
-import models from "../models";
+import notificationsModel from "../models/notifications";
+import usersModel from "../models/users";
 import { Notification } from "../interfaces/notifications";
 import { GetNotificationsDTO, NotifyUsersDTO } from "../dto/notifications";
 import { NOTIFICATION_STATUSES } from "../configs/enums";
 
 // destructuring assignments
-const { notificationsModel, usersModel } = models;
 const { READ } = NOTIFICATION_STATUSES;
 
 /**

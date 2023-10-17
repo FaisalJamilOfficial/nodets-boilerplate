@@ -2,12 +2,11 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import models from "../models";
+import adminsModel from "../models/admins";
 import { Admin } from "../interfaces/admins";
 import { GetAdminsDTO } from "../dto/admins";
 
 // destructuring assignments
-const { adminsModel } = models;
 
 /**
  * @description @description Add admin

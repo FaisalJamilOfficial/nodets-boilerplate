@@ -2,7 +2,8 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import models from "../models";
+import paymentAccountsModel from "../models/payment-accounts";
+import usersModel from "../models/users";
 import { PaymentAccount } from "../interfaces/payment-accounts";
 import {
   GetPaymentAccountDTO,
@@ -10,7 +11,6 @@ import {
 } from "../dto/payment-accounts";
 
 // destructuring assignments
-const { paymentAccountsModel, usersModel } = models;
 
 /**
  * @description Add paymentAccount
