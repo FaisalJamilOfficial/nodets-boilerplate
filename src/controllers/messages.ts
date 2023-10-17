@@ -31,7 +31,7 @@ const { ObjectId } = Types;
  * @param {[object]} attachments message attachments
  * @returns {Object} message data
  */
-export const addMessage = async (messageObj: Message): Promise<any> => {
+export const addMessage = async (messageObj: Message) => {
   return await messagesModel.create(messageObj);
 };
 
@@ -44,7 +44,7 @@ export const addMessage = async (messageObj: Message): Promise<any> => {
  * @param {[object]} attachments OPTIONAL message attachments
  * @returns {Object} message data
  */
-export const getMessages = async (params: GetMessagesDTO): Promise<any> => {
+export const getMessages = async (params: GetMessagesDTO) => {
   const { conversation } = params;
   let { page, limit, user1, user2 } = params;
   if (!limit) limit = 10;
@@ -92,7 +92,7 @@ export const getMessages = async (params: GetMessagesDTO): Promise<any> => {
 export const updateMessage = async (
   message: string,
   messageObj: Partial<Message>
-): Promise<any> => {
+) => {
   if (!message) throw new Error("Please enter message id!|||400");
   if (!isValidObjectId(message))
     throw new Error("Please enter valid message id!|||400");
@@ -111,7 +111,7 @@ export const updateMessage = async (
  * @param {String} message message id
  * @returns {Object} message data
  */
-export const deleteMessage = async (message: string): Promise<any> => {
+export const deleteMessage = async (message: string) => {
   if (!message) throw new Error("Please enter message id!|||400");
   const messageExists = await messagesModel.findByIdAndDelete(message);
   if (!messageExists) throw new Error("Please enter valid message id!|||400");
@@ -124,9 +124,7 @@ export const deleteMessage = async (message: string): Promise<any> => {
  * @param {String} userTo receiver user id
  * @returns {Object} conversation data
  */
-export const addConversation = async (
-  conversationObj: Conversation
-): Promise<any> => {
+export const addConversation = async (conversationObj: Conversation) => {
   const { userFrom, userTo } = conversationObj;
   const query = {
     $or: [
@@ -161,9 +159,7 @@ export const addConversation = async (
  * @param {Number} page conversations page number
  * @returns {[Object]} array of conversations
  */
-export const getConversations = async (
-  params: GetConversationsDTO
-): Promise<any> => {
+export const getConversations = async (params: GetConversationsDTO) => {
   const { user } = params;
   let { limit, page, keyword } = params;
   if (!limit) limit = 10;
@@ -255,7 +251,7 @@ export const getConversations = async (
  * @param {[object]} attachments message attachments
  * @returns {Object} message data
  */
-export const send = async (params: SendMessageDTO): Promise<any> => {
+export const send = async (params: SendMessageDTO) => {
   const { username } = params;
 
   const conversation = await addConversation(params);
@@ -270,12 +266,12 @@ export const send = async (params: SendMessageDTO): Promise<any> => {
 
   conversation.lastMessage = message;
 
-  const user = message.userTo;
+  const user = message.userTo.toString();
 
   const notificationData = {
-    user: message.userTo,
-    message: message._id,
-    messenger: message.userFrom,
+    user: message.userTo.toString(),
+    message: message._id.toString(),
+    messenger: message.userFrom.toString(),
     type: NEW_MESSAGE,
   };
 

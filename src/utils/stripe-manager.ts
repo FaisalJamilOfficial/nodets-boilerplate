@@ -29,7 +29,7 @@ class StripeManager {
    * @param {String} name user name
    * @returns {Object} stripe token
    */
-  async createToken(params: any): Promise<any> {
+  async createToken(params: any) {
     const { number, expMonth, expYear, cvc, name } = params;
     const card: any = {};
     if (number) card.number = number;
@@ -45,7 +45,7 @@ class StripeManager {
    * @param {String} customerId stripe customer id
    * @returns {Object} stripe customer deletion response
    */
-  async deleteCustomer(customerId: string): Promise<any> {
+  async deleteCustomer(customerId: string) {
     // return await stripe.customers.del(customerId);
   }
 
@@ -54,7 +54,7 @@ class StripeManager {
    * @param {String} charge stripe charge id
    * @returns {Object} stripe charge refund response
    */
-  async createRefund(charge: string): Promise<any> {
+  async createRefund(charge: string) {
     // return await stripe.refunds.create({ charge });
   }
 
@@ -67,7 +67,7 @@ class StripeManager {
    * @param {String} description charge description
    * @returns {Object} stripe charge response
    */
-  async createCharge(params: any): Promise<any> {
+  async createCharge(params: any) {
     const { customer, amount, currency, source, description } = params;
     const chargeObj = {
       currency: currency ?? CURRENCY,
@@ -88,7 +88,7 @@ class StripeManager {
    * @param {String} email OPTIONAL user email address
    * @returns {Object} paymentAccount
    */
-  async createCustomerSourceWithCheck(params: any): Promise<any> {
+  async createCustomerSourceWithCheck(params: any) {
     const { source, cardHolderName, user, email, phone } = params;
 
     const paymentAccountExists =
@@ -128,7 +128,7 @@ class StripeManager {
    * @param {String} phone OPTIONAL user phone number
    * @returns {Object} stripe customer data
    */
-  async createCustomer(params: any): Promise<any> {
+  async createCustomer(params: any) {
     const { id, email, phone } = params;
     const customerObj = { id, email, phone };
     // return await stripe.customers.create(customerObj);
@@ -140,7 +140,7 @@ class StripeManager {
    * @param {String} email user email address
    * @returns {Object} paymentAccount
    */
-  async createAccountWithCheck(params: any): Promise<any> {
+  async createAccountWithCheck(params: any) {
     const { user, email } = params;
     const paymentAccountExists =
       await paymentAccountsController.getPaymentAccount(user);
@@ -178,7 +178,7 @@ class StripeManager {
    * @param {String} returnUrl redirect url for completion or incompletion linked flow
    * @returns {Object} stripe account link
    */
-  async createAccountLink(params: any): Promise<any> {
+  async createAccountLink(params: any) {
     const { account, refreshURL, returnURL, email, user } = params;
 
     const paymentAccountExists =
@@ -220,7 +220,7 @@ class StripeManager {
    * @param {String} statementDescriptor OPTIONAL statement description e.g "Top-up"
    * @returns {Object} stripe topUp response
    */
-  async createTopUp(params: any): Promise<any> {
+  async createTopUp(params: any) {
     const { amount, currency, description, statementDescriptor } = params;
     const topUpObj = {
       amount,
@@ -240,7 +240,7 @@ class StripeManager {
    * @param {String} description OPTIONAL transfer description
    * @returns {Object} stripe transfer response
    */
-  async createTransfer(params: any): Promise<any> {
+  async createTransfer(params: any) {
     const { user, amount, currency, description } = params;
     const paymentAccountExists =
       await paymentAccountsController.getPaymentAccount(user);
@@ -264,7 +264,7 @@ class StripeManager {
    * @param {[String]} payment_method_types payment method types
    * @returns {Object} stripe payment intent object
    */
-  async createPaymentIntent(params: any): Promise<any> {
+  async createPaymentIntent(params: any) {
     const { amount, currency, paymentMethodTypes, customer, paymentMethod } =
       params;
     const paymentIntentObj: any = {
@@ -291,7 +291,7 @@ class StripeManager {
    * @param {String} amount payment amount
    * @returns {Object} capture payment intent object
    */
-  async capturePaymentIntent(params: any): Promise<any> {
+  async capturePaymentIntent(params: any) {
     const { paymentIntent, amount } = params;
     const paymentIntentObj = {
       amount_to_capture: amount * 100,
@@ -304,7 +304,7 @@ class StripeManager {
    * @param {String} paymentIntent payment intent id
    * @returns {Object} cancel payment intent object
    */
-  async cancelPaymentIntent(paymentIntent: string): Promise<any> {
+  async cancelPaymentIntent(paymentIntent: string) {
     // return await stripe.paymentIntents.cancel(paymentIntent);
   }
 
@@ -313,7 +313,7 @@ class StripeManager {
    * @param {String} paymentIntent payment intent id
    * @returns {Object} refund payment intent object
    */
-  async refundPaymentIntent(paymentIntent: string): Promise<any> {
+  async refundPaymentIntent(paymentIntent: string) {
     // return await stripe.refunds.create({ payment_intent: paymentIntent });
   }
 
@@ -322,7 +322,7 @@ class StripeManager {
    * @param {String} customer customer id
    * @returns {[object]} stripe customer sources
    */
-  async getCustomerSources(params: any): Promise<any> {
+  async getCustomerSources(params: any) {
     const { customer, limit, startingAfter, endingBefore } = params;
     // return await stripe.paymentMethods.list({
     //   customer,
@@ -340,7 +340,7 @@ class StripeManager {
    * @param {String} endpointSecret stripe CLI webhook secret
    * @returns {Object} stripe webhook event
    */
-  async constructWebhooksEvent(params: any): Promise<any> {
+  async constructWebhooksEvent(params: any) {
     const { rawBody, signature } = params;
 
     const rawBodyString = JSON.stringify(rawBody, null, 2);

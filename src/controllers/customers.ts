@@ -14,7 +14,7 @@ const { customersModel } = models;
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const addCustomer = async (customerObj: Customer): Promise<any> => {
+export const addCustomer = async (customerObj: Customer) => {
   return await customersModel.create(customerObj);
 };
 
@@ -26,7 +26,7 @@ export const addCustomer = async (customerObj: Customer): Promise<any> => {
 export const updateCustomer = async (
   user: string,
   customerObj: Partial<Customer>
-): Promise<any> => {
+) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -44,7 +44,7 @@ export const updateCustomer = async (
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const deleteCustomer = async (user: string): Promise<any> => {
+export const deleteCustomer = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -58,7 +58,7 @@ export const deleteCustomer = async (user: string): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} customer data
  */
-export const getCustomer = async (user: string): Promise<any> => {
+export const getCustomer = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -76,7 +76,7 @@ export const getCustomer = async (user: string): Promise<any> => {
  * @param {Number} page customers page number
  * @returns {Object} customer data
  */
-export const getCustomers = async (params: GetCustomersDTO): Promise<any> => {
+export const getCustomers = async (params: GetCustomersDTO) => {
   let { limit, page } = params;
   if (!limit) limit = 10;
   if (!page) page = 0;

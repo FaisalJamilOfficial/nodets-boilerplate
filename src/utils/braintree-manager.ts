@@ -35,7 +35,7 @@ class BraintreeManager {
    * @param {String} customerId OPTIONAL braintree customer id
    * @returns {Object} client token
    */
-  async generateClientToken(customerId: string): Promise<any> {
+  async generateClientToken(customerId: string) {
     // return await gateway.clientToken.generate({ customerId });
   }
 
@@ -49,7 +49,7 @@ class BraintreeManager {
    * @param {String} paymentMethodNonce nonce token
    * @returns {Object} paymentAccount
    */
-  async createCustomer(params: any): Promise<any> {
+  async createCustomer(params: any) {
     const {
       firstName,
       lastName,
@@ -74,7 +74,7 @@ class BraintreeManager {
    * @param {String} customerId braintree customer id
    * @returns {Object} customer data
    */
-  async deleteCustomer(customerId: string): Promise<any> {
+  async deleteCustomer(customerId: string) {
     // return await gateway.customer.delete(customerId);
   }
 
@@ -84,7 +84,7 @@ class BraintreeManager {
    * @param {String} paymentMethodNonce nonce token
    * @returns {Object} paymentMethod
    */
-  async createPaymentMethod(params: any): Promise<any> {
+  async createPaymentMethod(params: any) {
     const { customerId, paymentMethodNonce } = params;
     const paymentMethodObj = { customerId, paymentMethodNonce };
     // return await gateway.paymentMethod.create(paymentMethodObj);
@@ -95,7 +95,7 @@ class BraintreeManager {
    * @param {String} token payment method token
    * @returns {Object} payment method data
    */
-  async removePaymentMethod(token: string): Promise<any> {
+  async removePaymentMethod(token: string) {
     // return await gateway.paymentMethod.delete(token);
   }
 
@@ -108,7 +108,7 @@ class BraintreeManager {
    * @param {String} deviceData OPTIONAL device data
    * @returns {Object} transaction
    */
-  async saleTransaction(params: any): Promise<any> {
+  async saleTransaction(params: any) {
     const {
       amount,
       customerId,
@@ -136,7 +136,7 @@ class BraintreeManager {
    * @param {Number} amount transaction amount in smaller units of currency
    * @returns {Object} transaction
    */
-  async adjustTransaction(params: any): Promise<any> {
+  async adjustTransaction(params: any) {
     const { transactionId, amount } = params;
     // return await gateway.transaction.adjustAuthorization(transactionId, {
     //   amount,
@@ -148,7 +148,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction
    */
-  async submitTransaction(transactionId: string): Promise<any> {
+  async submitTransaction(transactionId: string) {
     // return await gateway.transaction.submitForSettlement(transactionId);
   }
 
@@ -157,7 +157,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction
    */
-  async voidTransaction(transactionId: string): Promise<any> {
+  async voidTransaction(transactionId: string) {
     // return await gateway.transaction.void(transactionId);
   }
 
@@ -166,7 +166,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction hold data
    */
-  async holdTransaction(transactionId: string): Promise<any> {
+  async holdTransaction(transactionId: string) {
     // return await gateway.transaction.holdInEscrow(transactionId);
   }
 
@@ -175,7 +175,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction refund data
    */
-  async refundTransaction(transactionId: string): Promise<any> {
+  async refundTransaction(transactionId: string) {
     // return await gateway.transaction.refund(transactionId);
   }
 
@@ -184,7 +184,7 @@ class BraintreeManager {
    * @param {String} transactionId braintree transaction id
    * @returns {Object} transaction refund data
    */
-  async releaseTransaction(transactionId: string): Promise<any> {
+  async releaseTransaction(transactionId: string) {
     // return await gateway.transaction.releaseFromEscrow(transactionId);
   }
 }

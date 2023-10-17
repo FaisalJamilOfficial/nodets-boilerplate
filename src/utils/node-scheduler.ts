@@ -14,7 +14,7 @@ class NodeScheduler {
    * @param {Function} func function
    * @returns {Object} scheduler response
    */
-  async schedule(params: any): Promise<any> {
+  async schedule(params: any) {
     const { date, rule, func } = params;
     let response;
     // if (date)

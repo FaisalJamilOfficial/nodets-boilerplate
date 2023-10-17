@@ -154,7 +154,7 @@ class SumsubManager {
     externalUserId = this.externalUserId,
     levelName = this.levelName,
     ttlInSecs = 600
-  ): Promise<any> {
+  ) {
     console.log("Creating an access token for initializng SDK...");
 
     const method = "post";
@@ -179,7 +179,7 @@ class SumsubManager {
    * @returns {Object} document
    */
   // https://developers.sumsub.com/api-reference/#adding-an-id-document
-  async addDocument(applicantId: string): Promise<any> {
+  async addDocument(applicantId: string) {
     console.log("Adding document to the applicant...");
 
     const method = "post";

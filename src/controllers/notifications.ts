@@ -18,9 +18,7 @@ const { READ } = NOTIFICATION_STATUSES;
  * @param {String} messenger messenger id
  * @returns {Object} notification data
  */
-export const addNotification = async (
-  notificationObj: Notification
-): Promise<any> => {
+export const addNotification = async (notificationObj: Notification) => {
   return await notificationsModel.create(notificationObj);
 };
 
@@ -31,9 +29,7 @@ export const addNotification = async (
  * @param {Number} page notifications page number
  * @returns {[Object]} array of notifications
  */
-export const getNotifications = async (
-  params: GetNotificationsDTO
-): Promise<any> => {
+export const getNotifications = async (params: GetNotificationsDTO) => {
   const { user } = params;
   let { page, limit } = params;
   const query: any = {};

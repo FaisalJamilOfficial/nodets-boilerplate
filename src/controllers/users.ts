@@ -25,7 +25,7 @@ const { usersModel, customersModel, adminsModel } = models;
  * @param {String} type user type
  * @returns {Object} user data
  */
-export const addUser = async (userObj: User): Promise<any> => {
+export const addUser = async (userObj: User) => {
   const { password } = userObj;
   const user: any = await usersModel.create(userObj);
   await user.setPassword(password);
@@ -50,10 +50,7 @@ export const addUser = async (userObj: User): Promise<any> => {
  * @param {String} admin admin id
  * @returns {Object} user data
  */
-export const updateUser = async (
-  user: string,
-  userObj: updateUserDTO
-): Promise<any> => {
+export const updateUser = async (user: string, userObj: updateUserDTO) => {
   const {
     email,
     phone,
@@ -144,7 +141,7 @@ export const updateUser = async (
  * @param {String} user user id
  * @returns {Object} user data
  */
-export const deleteUser = async (user: string): Promise<any> => {
+export const deleteUser = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -158,7 +155,7 @@ export const deleteUser = async (user: string): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} user data
  */
-export const getUser = async (params: getUserDTO): Promise<any> => {
+export const getUser = async (params: getUserDTO) => {
   const { user, email, phone, googleId, facebookId, twitterId } = params;
   const query: any = {};
   if (user) query._id = user;
@@ -181,9 +178,7 @@ export const getUser = async (params: getUserDTO): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} user data
  */
-export const getUserProfile = async (
-  params: getUserProfileDTO
-): Promise<any> => {
+export const getUserProfile = async (params: getUserProfileDTO) => {
   const { user, device } = params;
   const userExists: any = await usersModel
     .findById(user)
@@ -205,7 +200,7 @@ export const getUserProfile = async (
  * @param {Number} page users page number
  * @returns {[Object]} array of users
  */
-export const getUsers = async (params: GetUsersDTO): Promise<any> => {
+export const getUsers = async (params: GetUsersDTO) => {
   const { type, user } = params;
   let { page, limit, keyword } = params;
   if (!limit) limit = 10;

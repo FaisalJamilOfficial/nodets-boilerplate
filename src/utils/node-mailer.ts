@@ -30,7 +30,7 @@ class NodeMailer {
    * @param {Object} html email html
    * @returns {Object} email response
    */
-  async sendEmail(params: any): Promise<any> {
+  async sendEmail(params: any) {
     const { to, subject, text, html } = params;
     // return await transporter.sendMail({
     //   from: `BACKEND BOILERPLATE <${EMAIL_USER}>`,

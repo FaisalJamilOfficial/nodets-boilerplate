@@ -14,7 +14,7 @@ const { adminsModel } = models;
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const addAdmin = async (adminObj: Admin): Promise<any> => {
+export const addAdmin = async (adminObj: Admin) => {
   return await adminsModel.create(adminObj);
 };
 
@@ -23,10 +23,7 @@ export const addAdmin = async (adminObj: Admin): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const updateAdmin = async (
-  user: string,
-  adminObj: Partial<Admin>
-): Promise<any> => {
+export const updateAdmin = async (user: string, adminObj: Partial<Admin>) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -42,7 +39,7 @@ export const updateAdmin = async (
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const deleteAdmin = async (user: string): Promise<any> => {
+export const deleteAdmin = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -56,7 +53,7 @@ export const deleteAdmin = async (user: string): Promise<any> => {
  * @param {String} user user id
  * @returns {Object} admin data
  */
-export const getAdmin = async (user: string): Promise<any> => {
+export const getAdmin = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
@@ -73,7 +70,7 @@ export const getAdmin = async (user: string): Promise<any> => {
  * @param {Number} page admins page number
  * @returns {Object} admin data
  */
-export const getAdmins = async (params: GetAdminsDTO): Promise<any> => {
+export const getAdmins = async (params: GetAdminsDTO) => {
   let { limit, page } = params;
   if (!limit) limit = 10;
   if (!page) page = 0;

@@ -17,9 +17,7 @@ const { paymentAccountsModel, usersModel } = models;
  * @param {String} user user id
  * @returns {Object} paymentAccount data
  */
-export const addPaymentAccount = async (
-  paymentAccountObj: PaymentAccount
-): Promise<any> => {
+export const addPaymentAccount = async (paymentAccountObj: PaymentAccount) => {
   const { user } = paymentAccountObj;
 
   if (!user) throw new Error("Please enter user id!|||400");
@@ -37,9 +35,7 @@ export const addPaymentAccount = async (
  * @param {String} user user id
  * @returns {Object} paymentAccount data
  */
-export const getPaymentAccount = async (
-  params: GetPaymentAccountDTO
-): Promise<any> => {
+export const getPaymentAccount = async (params: GetPaymentAccountDTO) => {
   const { paymentAccount, user, key, value } = params;
   const query: any = {};
   if (paymentAccount) query._id = paymentAccount;
@@ -61,9 +57,7 @@ export const getPaymentAccount = async (
  * @param {Number} page paymentAccounts page number
  * @returns {Object} paymentAccount data
  */
-export const getPaymentAccounts = async (
-  params: GetPaymentAccountsDTO
-): Promise<any> => {
+export const getPaymentAccounts = async (params: GetPaymentAccountsDTO) => {
   const { user } = params;
   let { limit, page } = params;
   if (!limit) limit = 10;

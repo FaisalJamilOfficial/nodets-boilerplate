@@ -34,7 +34,7 @@ const {
  * @param {String} type user type
  * @returns {Object} user data with token
  */
-export const register = async (params: User): Promise<any> => {
+export const register = async (params: User) => {
   const { type } = params;
   const user = await usersController.addUser(params);
 
@@ -60,7 +60,7 @@ export const register = async (params: User): Promise<any> => {
  * @param {String} type user type
  * @returns {Object} user data with token
  */
-export const login = async (params: LoginDTO): Promise<any> => {
+export const login = async (params: LoginDTO) => {
   const { email, password, type } = params;
 
   const query: any = {};
@@ -92,9 +92,7 @@ export const login = async (params: LoginDTO): Promise<any> => {
  * @param {String} email user email address
  * @returns {Object} user password reset result
  */
-export const emailResetPassword = async (
-  params: SendEmailDTO
-): Promise<any> => {
+export const emailResetPassword = async (params: SendEmailDTO) => {
   const { email } = params;
   const tokenExpirationTime = new Date();
   tokenExpirationTime.setMinutes(tokenExpirationTime.getMinutes() + 10);
@@ -114,7 +112,7 @@ export const emailResetPassword = async (
  * @param {String} email user email address
  * @returns {Object} user email verification result
  */
-export const emailVerifyEmail = async (params: SendEmailDTO): Promise<any> => {
+export const emailVerifyEmail = async (params: SendEmailDTO) => {
   const { email } = params;
   const tokenExpirationTime = new Date();
   tokenExpirationTime.setMinutes(tokenExpirationTime.getMinutes() + 10);
@@ -135,7 +133,7 @@ export const emailVerifyEmail = async (params: SendEmailDTO): Promise<any> => {
  * @param {String} name user name
  * @returns {Object} user welcome result
  */
-export const emailWelcomeUser = async (params: SendEmailDTO): Promise<any> => {
+export const emailWelcomeUser = async (params: SendEmailDTO) => {
   const { email, name } = params;
   const args: any = {};
   args.to = email;
@@ -150,9 +148,7 @@ export const emailWelcomeUser = async (params: SendEmailDTO): Promise<any> => {
  * @param {Date} tokenExpirationTime email token expiration time
  * @returns {Object} user email token
  */
-export const generateEmailToken = async (
-  params: GenerateEmailTokenDTO
-): Promise<any> => {
+export const generateEmailToken = async (params: GenerateEmailTokenDTO) => {
   const { email, tokenExpirationTime } = params;
   const userExists: any = await usersModel.findOne({ email });
   if (!userExists)
@@ -226,7 +222,7 @@ export const verifyUserEmail = async (
  * @param {String} type user type
  * @returns {Object} user data with token
  */
-export const addAdmin = async (params: User): Promise<any> => {
+export const addAdmin = async (params: User) => {
   const { email, password, type } = params;
 
   const userObj: any = {};

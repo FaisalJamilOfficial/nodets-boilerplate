@@ -41,7 +41,7 @@ class PlaidManager {
    * @param {[string]} countryCodes country codes
    * @returns {object} link token
    */
-  async generateLinkToken(params: any): Promise<any> {
+  async generateLinkToken(params: any) {
     const {
       clientUserId,
       clientName,
@@ -71,7 +71,7 @@ class PlaidManager {
    * @param {string} publicToken public token
    * @returns {object} link token
    */
-  async exchangePublicToken(publicToken: string): Promise<any> {
+  async exchangePublicToken(publicToken: string) {
     // return await client.itemPublicTokenExchange({ public_token: publicToken });
   }
 
@@ -80,7 +80,7 @@ class PlaidManager {
    * @param {string} token public token
    * @returns {object} link token
    */
-  async createProcessorToken(params: any): Promise<any> {
+  async createProcessorToken(params: any) {
     const { accessToken, accountID, processor } = params;
     const request = {
       access_token: accessToken,

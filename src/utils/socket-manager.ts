@@ -27,7 +27,7 @@ class SocketManager {
    * @param {Object} data event data
    * @returns {Object} socket response
    */
-  async emitEvent(params: any): Promise<any> {
+  async emitEvent(params: any) {
     const { data } = params;
     let { to, event } = params;
     to = to.toString();
@@ -53,7 +53,7 @@ class SocketManager {
    * @param {Object} data event data
    * @returns {Object} socket response
    */
-  async emitGroupEvent(params: any): Promise<any> {
+  async emitGroupEvent(params: any) {
     const { event, data } = params;
     return await socketIO.emit(event.toString(), data);
   }

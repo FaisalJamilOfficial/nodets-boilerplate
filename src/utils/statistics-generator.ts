@@ -12,7 +12,7 @@ class StatisticsGenerator {
    * @param {Number} week week number
    * @returns {Object} statistics
    */
-  async generateWeeklyStatistics(params: any): Promise<any> {
+  async generateWeeklyStatistics(params: any) {
     const { model } = params;
     let { query, week, month, year } = params;
 
@@ -110,7 +110,7 @@ class StatisticsGenerator {
    * @param {Boolean} isCustom custom query check
    * @returns {Object} statistics
    */
-  async generateMonthlyStatistics(params: any): Promise<any> {
+  async generateMonthlyStatistics(params: any) {
     const { model, isCustom } = params;
     let { query, month, year } = params;
 
@@ -189,7 +189,7 @@ class StatisticsGenerator {
    * @param {Number} year year number
    * @returns {Object} statistics
    */
-  async generateYearlyStatistics(params: any): Promise<any> {
+  async generateYearlyStatistics(params: any) {
     const { model } = params;
     let { query, year } = params;
 

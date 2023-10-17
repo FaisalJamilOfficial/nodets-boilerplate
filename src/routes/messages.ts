@@ -40,10 +40,10 @@ router
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user1 } = req.user;
-      const {  limit, page, user } = req.query;
+      const { limit, page, user } = req.query;
       let { conversation } = req.query;
       conversation = (conversation || "").toString();
-      user2 = (user || "").toString(),
+      const user2 = (user || "").toString();
       const args = {
         conversation,
         user1,
@@ -61,10 +61,7 @@ router
       const { text, status } = req.body;
       const args = { text, status };
       message = (message || "").toString();
-      const response = await messagesController.updateMessage(
-        message,
-        args
-      );
+      const response = await messagesController.updateMessage(message, args);
       res.json({ data: response });
     })
   )
@@ -86,7 +83,7 @@ router.get(
     const { _id: user } = req?.user;
     const { limit, page } = req.query;
     let { keyword } = req.query;
-    keyword = (keyword || "").toString(); 
+    keyword = (keyword || "").toString();
     const args = {
       user,
       limit: Number(limit),
