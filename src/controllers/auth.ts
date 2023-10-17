@@ -4,7 +4,7 @@ import * as usersController from "./users";
 import * as customersController from "./customers";
 import * as adminsController from "./admins";
 import NodeMailer from "../utils/node-mailer";
-import { User } from "../interfaces";
+import { User } from "../interfaces/users";
 import { USER_TYPES, USER_STATUSES } from "../configs/enums";
 import {
   LoginDTO,

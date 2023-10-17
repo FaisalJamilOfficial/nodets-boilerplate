@@ -3,7 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import models from "../models";
-import { Admin } from "../interfaces";
+import { Admin } from "../interfaces/admins";
 import { GetAdminsDTO } from "../dto/admins";
 
 // destructuring assignments

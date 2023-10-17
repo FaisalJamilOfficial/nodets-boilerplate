@@ -1,5 +1,5 @@
 // file imports
-import { Notification } from "../interfaces";
+import { Notification } from "../interfaces/notifications";
 
 export type GetNotificationsDTO = {
   limit: number;

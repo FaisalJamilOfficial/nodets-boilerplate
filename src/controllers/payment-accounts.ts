@@ -3,7 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import models from "../models";
-import { PaymentAccount } from "../interfaces";
+import { PaymentAccount } from "../interfaces/payment-accounts";
 import {
   GetPaymentAccountDTO,
   GetPaymentAccountsDTO,

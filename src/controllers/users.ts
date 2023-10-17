@@ -4,7 +4,7 @@ import { isValidObjectId } from "mongoose";
 // file imports
 import models from "../models";
 import FilesDeleter from "../utils/files-deleter";
-import { User } from "../interfaces";
+import { User } from "../interfaces/users";
 import {
   GetUsersDTO,
   getUserDTO,

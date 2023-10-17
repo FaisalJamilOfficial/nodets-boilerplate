@@ -3,7 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import models from "../models";
-import { Customer } from "../interfaces";
+import { Customer } from "../interfaces/customers";
 import { GetCustomersDTO } from "../dto/customers";
 
 // destructuring assignments

@@ -2,7 +2,7 @@
 import FirebaseManager from "../utils/firebase-manager";
 import SocketManager from "../utils/socket-manager";
 import models from "../models";
-import { Notification } from "../interfaces";
+import { Notification } from "../interfaces/notifications";
 import { GetNotificationsDTO, NotifyUsersDTO } from "../dto/notifications";
 import { NOTIFICATION_STATUSES } from "../configs/enums";
 

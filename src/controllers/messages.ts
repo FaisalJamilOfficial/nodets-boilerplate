@@ -4,7 +4,8 @@ import { isValidObjectId, Types } from "mongoose";
 // file imports
 import * as notificationsController from "./notifications";
 import models from "../models";
-import { Message, Conversation } from "../interfaces";
+import { Conversation } from "../interfaces/conversation";
+import { Message } from "../interfaces/messages";
 import {
   GetMessagesDTO,
   GetConversationsDTO,
