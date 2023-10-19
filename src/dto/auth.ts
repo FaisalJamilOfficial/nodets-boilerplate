@@ -1,7 +1,10 @@
+// file imports
+import { USER_TYPES } from "../configs/enums";
+
 export type LoginDTO = {
   email: string;
   password: string;
-  type: string;
+  type: USER_TYPES;
 };
 
 export type SendEmailDTO = {

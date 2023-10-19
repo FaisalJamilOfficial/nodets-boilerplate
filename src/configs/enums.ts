@@ -1,53 +1,53 @@
-export const ENVIRONMENTS = {
-  PRODUCTION: "production",
-  DEVELOPMENT: "development",
-};
+export enum ENVIRONMENTS {
+  PRODUCTION = "production",
+  DEVELOPMENT = "development",
+}
 
-export const USER_TYPES = {
-  CUSTOMER: "customer",
-  ADMIN: "admin",
-  SUPER_ADMIN: "super_admin",
-  MULTI: "multi",
-};
+export enum USER_TYPES {
+  CUSTOMER = "customer",
+  ADMIN = "admin",
+  SUPER_ADMIN = "super_admin",
+  MULTI = "multi",
+}
 
-export const GEO_JSON_TYPES = {
-  POINT: "Point",
-  LINESTRING: "LineString",
-  POLYGON: "Polygon",
-  MULTIPOINT: "MultiPoint",
-  MULTILINESTRING: "MultiLineString",
-  MULTIPOLYGON: "MultiPolygon",
-};
+export enum GEO_JSON_TYPES {
+  POINT = "Point",
+  LINESTRING = "LineString",
+  POLYGON = "Polygon",
+  MULTIPOINT = "MultiPoint",
+  MULTILINESTRING = "MultiLineString",
+  MULTIPOLYGON = "MultiPolygon",
+}
 
-export const PAYMENT_ACCOUNT_TYPES = {
-  BRAINTREE: "braintree",
-  STRIPE_CUSTOMER: "stripe_customer",
-  STRIPE_ACCOUNT: "stripe_account",
-};
+export enum PAYMENT_ACCOUNT_TYPES {
+  BRAINTREE = "braintree",
+  STRIPE_CUSTOMER = "stripe_customer",
+  STRIPE_ACCOUNT = "stripe_account",
+}
 
-export const NOTIFICATION_TYPES = {
-  NEW_MESSAGE: "new_message",
-  NEW_CONVERSATION: "new_conversation",
-};
+export enum NOTIFICATION_TYPES {
+  NEW_MESSAGE = "new_message",
+  NEW_CONVERSATION = "new_conversation",
+}
 
-export const USER_STATUSES = {
-  ACTIVE: "active",
-  DELETED: "deleted",
-};
+export enum USER_STATUSES {
+  ACTIVE = "active",
+  DELETED = "deleted",
+}
 
-export const CONVERSATION_STATUSES = {
-  PENDING: "pending",
-  ACCEPTED: "accepted",
-  REJECTED: "rejected",
-};
+export enum CONVERSATION_STATUSES {
+  PENDING = "pending",
+  ACCEPTED = "accepted",
+  REJECTED = "rejected",
+}
 
-export const MESSAGE_STATUSES = {
-  UNREAD: "unread",
-  READ: "read",
-  DELETED: "deleted",
-};
+export enum MESSAGE_STATUSES {
+  UNREAD = "unread",
+  READ = "read",
+  DELETED = "deleted",
+}
 
-export const NOTIFICATION_STATUSES = {
-  UNREAD: "unread",
-  READ: "read",
-};
+export enum NOTIFICATION_STATUSES {
+  UNREAD = "unread",
+  READ = "read",
+}

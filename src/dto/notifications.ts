@@ -1,4 +1,5 @@
 // file imports
+import { NOTIFICATION_TYPES } from "../configs/enums";
 import { Notification } from "../interfaces/notifications";
 
 export type GetNotificationsDTO = {
@@ -15,7 +16,7 @@ export type NotifyUsersDTO = {
   notificationData?: Notification;
   title?: string;
   body?: string;
-  type?: string;
+  type?: NOTIFICATION_TYPES;
   isGrouped?: boolean;
   useFirebase?: boolean;
   useDatabase?: boolean;

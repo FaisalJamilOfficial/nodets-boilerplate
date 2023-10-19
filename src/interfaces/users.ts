@@ -1,3 +1,6 @@
+// file imports
+import { USER_STATUSES, USER_TYPES } from "../configs/enums";
+
 export interface User {
   _id?: string;
   email: string;
@@ -9,8 +12,8 @@ export interface User {
   image?: string;
   fcms?: { token: string; device: string }[];
   location?: { type?: string; coordinates?: number[] };
-  type: string;
-  status?: string;
+  type: USER_TYPES;
+  status?: USER_STATUSES;
   isOnline?: boolean;
   customer?: string;
   admin?: string;

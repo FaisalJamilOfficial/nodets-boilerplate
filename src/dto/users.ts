@@ -1,3 +1,6 @@
+// file imports
+import { USER_TYPES, USER_STATUSES } from "../configs/enums";
+
 export type GetUsersDTO = {
   limit: number;
   page: number;
@@ -16,8 +19,8 @@ export type updateUserDTO = {
   image?: string;
   fcm?: { token: string; device: string };
   coordinates?: number[];
-  type?: string;
-  status?: string;
+  type?: USER_TYPES;
+  status?: USER_STATUSES;
   isOnline?: boolean;
   customer?: string;
   admin?: string;
