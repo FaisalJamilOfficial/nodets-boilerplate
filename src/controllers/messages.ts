@@ -281,7 +281,7 @@ export const send = async (params: SendMessageDTO) => {
     user,
     type: NEW_MESSAGE,
     useSocket: true,
-    event: "newMessage_" + message.conversation,
+    event: "new_message_" + message.conversation,
     socketData: message,
     useFirebase: true,
     title: "New Message",
@@ -291,7 +291,7 @@ export const send = async (params: SendMessageDTO) => {
   });
   await notificationsController.notifyUsers({
     useSocket: true,
-    event: "conversationsUpdated",
+    event: "conversations_updated",
     socketData: conversation,
     user,
   });
