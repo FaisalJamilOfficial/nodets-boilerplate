@@ -66,7 +66,7 @@ class SocketManager {
     const { server, app } = params;
     const io = new Server(server, {
       cors: {
-        origin: "*",
+        origin: ["http://localhost:3000", "https://admin.app.com"],
       },
     });
     socketIO = io;
