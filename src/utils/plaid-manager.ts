@@ -2,7 +2,7 @@
 // import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 
 // file imports
-import { ENVIRONMENTS } from "../configs/enums.js";
+import { ENVIRONMENTS } from "../configs/enums";
 
 // destructuring assignments
 const { NODE_ENV, PLAID_CLIENT_ID, PLAID_SECRET } = process.env;
