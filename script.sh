@@ -33,7 +33,7 @@ if ! command -v pm2 &> /dev/null; then
     echo "PM2 is not installed. Installing it now..."
     npm install -g pm2
     echo "PM2 has been installed."
-    pm2 start ./dist/app.js --name sofitt-backend;
+    pm2 start ./dist/app.js --name app-backend;
     echo "PM2 process with name app-backend has been started."
     npm install -g pm2-logrotate
     echo "pm2-logrotate has been installed."
