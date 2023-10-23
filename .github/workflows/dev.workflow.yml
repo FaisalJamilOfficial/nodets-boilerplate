@@ -1,28 +1,72 @@
 # This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: NodeJS CI/CD Production Server Action Runner
+name: NodeJS CI/CD Development Server Action Runner
 
 on:
   push:
     branches: [development]
 
 jobs:
-  install:
-    runs-on: self-hosted
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+  build-node-app:
+    name: Build Node App
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          # cache: "npm"
+      - run: npm i -g yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      # - run: npm ci --legacy-peers-deps
+      # - run: npm run build
+      - name: Upload build folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist
+
+  load-node-app:
+    name: Load Node App
+    runs-on: development-server
+    needs: build-node-app
+    # strategy:
+    #   matrix:
+    #     node-version: [18.x]
+    # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            package.json
+            yarn.lock
+            .env
+            .env.development
+            script.sh
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/download-artifact@v3
+        name: Download artifacts
+        with:
+          name: dist
+          path: dist
+
+      - uses: geekyeggo/delete-artifact@v2
+        with:
+          name: dist
+          failOnError: false
+
       - name: install node modules and restart server
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - run: yarn
-      - run: yarn build
+          node-version: "18"
+          # node-version: ${{ matrix.node-version }}
+          # cache: "yarn"
+
+      - run: bash script.sh
+      - run: yarn install --frozen-lockfile
+      # - run: yarn build
       - run: pm2 restart app-backend
