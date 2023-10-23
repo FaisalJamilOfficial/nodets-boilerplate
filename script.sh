@@ -19,10 +19,10 @@ fi
 # Check if Yarn is installed
 if ! command -v yarn &> /dev/null; then
     echo "Yarn is not installed. Installing it now..."
-    # npm install -g yarn
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -;
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list; 
-    sudo apt update && sudo apt install yarn
+    npm install -g yarn
+    # curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -;
+    # echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list; 
+    # sudo apt update && sudo apt install yarn
     echo "Yarn has been installed."
 else
     echo "Yarn is already installed."
@@ -37,8 +37,6 @@ if ! command -v pm2 &> /dev/null; then
     echo "PM2 process with name app-backend has been started."
     npm install -g pm2-logrotate
     echo "pm2-logrotate has been installed."
-    pm2 startup;
-    echo "PM2 startup setup."
     sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu;
     echo "Now PM2 will automatically restart at boot."
     pm2 save;
