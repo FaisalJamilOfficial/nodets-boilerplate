@@ -3,8 +3,8 @@ import express, { Request, Response } from "express";
 
 // file imports
 import * as authController from "../controllers/auth";
-import * as notificationsController from "../controllers/notifications";
-import * as usersController from "../controllers/users";
+import * as notificationsController from "../controllers/notification";
+import * as usersController from "../controllers/user";
 import TwilioManager from "../utils/twilio-manager";
 import directories from "../configs/directories";
 import { upload } from "../middlewares/uploader";
@@ -56,7 +56,7 @@ router
       const { _id: user } = req?.user;
       const { page, limit } = req.query;
       let { keyword } = req.query;
-      keyword = (keyword || "").toString(); 
+      keyword = (keyword || "").toString();
       const args = {
         user,
         keyword,
@@ -126,7 +126,7 @@ router
   );
 
 router
-  .route("/notifications")
+  .route("/notification")
   .all(verifyToken, verifyUser)
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {

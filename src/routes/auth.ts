@@ -3,8 +3,8 @@ import express, { Request, Response } from "express";
 
 // file imports
 import * as authController from "../controllers/auth";
-import * as usersController from "../controllers/users";
-import { USER_TYPES } from "../configs/enums";
+import * as usersController from "../controllers/user";
+import { USER_TYPES } from "../configs/enum";
 import { exceptionHandler } from "../middlewares/exception-handler";
 import {
   verifyOTP,

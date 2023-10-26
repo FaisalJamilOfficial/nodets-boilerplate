@@ -1,5 +1,5 @@
 // file imports
-import { USER_STATUSES, USER_TYPES } from "../configs/enums";
+import { USER_STATUSES, USER_TYPES } from "../configs/enum";
 
 export interface User {
   _id?: string;

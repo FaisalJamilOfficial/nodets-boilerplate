@@ -3,10 +3,10 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
 // file imports
-import usersModel from "../models/users";
+import UserModel from "../models/user";
 import { IRequest } from "../configs/types";
 import { exceptionHandler } from "./exception-handler";
-import { USER_STATUSES, USER_TYPES } from "../configs/enums";
+import { USER_STATUSES, USER_TYPES } from "../configs/enum";
 
 // destructuring assignments
 const { JWT_SECRET } = process.env;
@@ -48,9 +48,9 @@ export const verifyToken = async (
         req.user = verificationObject;
         return next();
       }
-      const user = await usersModel
-        .findOne({ _id: verificationObject._id })
-        .select("-createdAt -updatedAt -__v -fcms");
+      const user = await UserModel.findOne({
+        _id: verificationObject._id,
+      }).select("-createdAt -updatedAt -__v -fcms");
       if (user) {
         if (user.status === DELETED)
           next(new Error("User account deleted!|||403"));
@@ -80,7 +80,7 @@ export const verifyOTP = exceptionHandler(
     if (req?.user?._id) query._id = req.user._id;
     else if (req?.user?.phone) query.phone = req.user.phone;
     else query._id = null;
-    const userExists: any = await usersModel.findOne(query).select("+otp");
+    const userExists: any = await UserModel.findOne(query).select("+otp");
 
     if (userExists && code === userExists?.otp) next();
     else if (code === otp) next();
@@ -119,7 +119,7 @@ export const verifyUserToken = (req: IRequest, _res: any, next: any): void => {
 
 export const checkUserPhoneExists = exceptionHandler(
   async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
-    const userExists = await usersModel.exists({ phone: req.body.phone });
+    const userExists = await UserModel.exists({ phone: req.body.phone });
     if (userExists) next();
     else next(new Error("User not found!|||404"));
   }

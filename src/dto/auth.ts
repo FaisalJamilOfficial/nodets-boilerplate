@@ -1,5 +1,5 @@
 // file imports
-import { USER_TYPES } from "../configs/enums";
+import { USER_TYPES } from "../configs/enum";
 
 export type LoginDTO = {
   email: string;

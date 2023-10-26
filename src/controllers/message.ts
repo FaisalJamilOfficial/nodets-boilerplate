@@ -2,22 +2,22 @@
 import { isValidObjectId, Types } from "mongoose";
 
 // file imports
-import * as notificationsController from "./notifications";
-import conversationsModel from "../models/conversations";
-import messagesModel from "../models/messages";
-import usersModel from "../models/users";
+import * as notificationsController from "./notification";
+import ConversationModel from "../models/conversation";
+import MessageModel from "../models/message";
+import UserModel from "../models/user";
 import { Conversation } from "../interfaces/conversation";
-import { Message } from "../interfaces/messages";
+import { Message } from "../interfaces/message";
 import {
   GetMessagesDTO,
   GetConversationsDTO,
   SendMessageDTO,
-} from "../dto/messages";
+} from "../dto/message";
 import {
   CONVERSATION_STATUSES,
   MESSAGE_STATUSES,
   NOTIFICATION_TYPES,
-} from "../configs/enums";
+} from "../configs/enum";
 
 // destructuring assignments
 const { PENDING, ACCEPTED, REJECTED } = CONVERSATION_STATUSES;
@@ -34,7 +34,7 @@ const { ObjectId } = Types;
  * @returns {Object} message data
  */
 export const addMessage = async (messageObj: Message) => {
-  return await messagesModel.create(messageObj);
+  return await MessageModel.create(messageObj);
 };
 
 /**
@@ -62,7 +62,7 @@ export const getMessages = async (params: GetMessagesDTO) => {
       { $and: [{ userFrom: userOne }, { userTo: userTwo }] },
     ];
   } else throw new Error("Please enter conversation id!|||400");
-  const [result] = await messagesModel.aggregate([
+  const [result] = await MessageModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },
@@ -98,7 +98,7 @@ export const updateMessage = async (
   if (!message) throw new Error("Please enter message id!|||400");
   if (!isValidObjectId(message))
     throw new Error("Please enter valid message id!|||400");
-  const messageExists = await messagesModel.findByIdAndUpdate(
+  const messageExists = await MessageModel.findByIdAndUpdate(
     message,
     messageObj,
     { new: true }
@@ -115,7 +115,7 @@ export const updateMessage = async (
  */
 export const deleteMessage = async (message: string) => {
   if (!message) throw new Error("Please enter message id!|||400");
-  const messageExists = await messagesModel.findByIdAndDelete(message);
+  const messageExists = await MessageModel.findByIdAndDelete(message);
   if (!messageExists) throw new Error("Please enter valid message id!|||400");
   return messageExists;
 };
@@ -135,7 +135,7 @@ export const addConversation = async (conversationObj: Conversation) => {
     ],
   };
 
-  let conversationExists: any = await conversationsModel.findOne(query);
+  let conversationExists: any = await ConversationModel.findOne(query);
   if (conversationExists) {
     if (conversationExists.status === PENDING) {
       if (userFrom === conversationExists.userTo.toString()) {
@@ -148,7 +148,7 @@ export const addConversation = async (conversationObj: Conversation) => {
     const conversationObj: any = {};
     conversationObj.userTo = userTo;
     conversationObj.userFrom = userFrom;
-    conversationExists = await conversationsModel.create(conversationObj);
+    conversationExists = await ConversationModel.create(conversationObj);
   }
   return conversationExists;
 };
@@ -180,7 +180,7 @@ export const getConversations = async (params: GetConversationsDTO) => {
       ];
   }
 
-  const [result] = await conversationsModel.aggregate([
+  const [result] = await ConversationModel.aggregate([
     { $match: query },
     {
       $lookup: {
@@ -309,10 +309,10 @@ export const readMessages = async (params: Partial<Message>): Promise<void> => {
   const { conversation, userTo } = params;
   const messageObj = { status: READ };
   if (!userTo) throw new Error("Please enter userTo id!|||400");
-  if (!(await usersModel.exists({ _id: userTo })))
+  if (!(await UserModel.exists({ _id: userTo })))
     throw new Error("Please enter valid userTo id!|||400");
   if (!conversation) throw new Error("Please enter conversation id!|||400");
-  if (!(await conversationsModel.exists({ _id: conversation })))
+  if (!(await ConversationModel.exists({ _id: conversation })))
     throw new Error("Please enter valid conversation id!|||400");
-  await messagesModel.updateMany({ conversation, userTo }, messageObj);
+  await MessageModel.updateMany({ conversation, userTo }, messageObj);
 };

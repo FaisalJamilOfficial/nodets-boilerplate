@@ -2,7 +2,7 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as messagesController from "../controllers/messages";
+import * as messagesController from "../controllers/message";
 import directories from "../configs/directories";
 import { verifyToken, verifyUser } from "../middlewares/authenticator";
 import { exceptionHandler } from "../middlewares/exception-handler";
@@ -76,7 +76,7 @@ router
   );
 
 router.get(
-  "/conversations",
+  "/conversation",
   verifyToken,
   verifyUser,
   exceptionHandler(async (req: IRequest, res: Response) => {

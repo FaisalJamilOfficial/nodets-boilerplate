@@ -2,9 +2,9 @@
 // import _stripe from "stripe";
 
 // file imports
-import * as paymentAccountsController from "../controllers/payment-accounts";
-import * as usersController from "../controllers/users";
-import { PAYMENT_ACCOUNT_TYPES } from "../configs/enums";
+import * as paymentAccountsController from "../controllers/payment-account";
+import * as usersController from "../controllers/user";
+import { PAYMENT_ACCOUNT_TYPES } from "../configs/enum";
 
 // destructuring assignments
 const { STRIPE_SECRET_KEY, STRIPE_ENDPOINT_SECRET } = process.env;

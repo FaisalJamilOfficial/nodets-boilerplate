@@ -1,5 +1,5 @@
 // file imports
-import { NOTIFICATION_TYPES } from "../configs/enums";
+import { NOTIFICATION_TYPES } from "../configs/enum";
 export interface Notification {
   _id?: string;
   type: NOTIFICATION_TYPES;

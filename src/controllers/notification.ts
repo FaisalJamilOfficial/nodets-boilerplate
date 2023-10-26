@@ -1,11 +1,11 @@
 // file imports
 import FirebaseManager from "../utils/firebase-manager";
 import SocketManager from "../utils/socket-manager";
-import notificationsModel from "../models/notifications";
-import usersModel from "../models/users";
-import { Notification } from "../interfaces/notifications";
-import { GetNotificationsDTO, NotifyUsersDTO } from "../dto/notifications";
-import { NOTIFICATION_STATUSES } from "../configs/enums";
+import NotificationModel from "../models/notification";
+import UserModel from "../models/user";
+import { Notification } from "../interfaces/notification";
+import { GetNotificationsDTO, NotifyUsersDTO } from "../dto/notification";
+import { NOTIFICATION_STATUSES } from "../configs/enum";
 
 // destructuring assignments
 const { READ } = NOTIFICATION_STATUSES;
@@ -19,7 +19,7 @@ const { READ } = NOTIFICATION_STATUSES;
  * @returns {Object} notification data
  */
 export const addNotification = async (notificationObj: Notification) => {
-  return await notificationsModel.create(notificationObj);
+  return await NotificationModel.create(notificationObj);
 };
 
 /**
@@ -37,7 +37,7 @@ export const getNotifications = async (params: GetNotificationsDTO) => {
   if (!limit) limit = 10;
   if (!page) page = 0;
   if (page) page = page - 1;
-  const [result] = await notificationsModel.aggregate([
+  const [result] = await NotificationModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },
@@ -101,7 +101,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
 
   if (isGrouped) {
     if (useFirebase) {
-      const usersExist = await usersModel.find(query ?? {}).select("fcms");
+      const usersExist = await UserModel.find(query ?? {}).select("fcms");
       usersExist.forEach(async (element: any) => {
         element.fcms.forEach((e: any) => fcms.push(e.token));
       });
@@ -111,7 +111,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
       await new SocketManager().emitGroupEvent({ event, data: socketData });
   } else {
     if (useFirebase) {
-      const userExists = await usersModel.findById(user).select("fcms");
+      const userExists = await UserModel.findById(user).select("fcms");
       userExists?.fcms.forEach((e: any) => fcms.push(e.token));
     }
     if (useSocket)
@@ -144,7 +144,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
 export const readNotifications = async (user: string): Promise<void> => {
   const notificationObj = { status: READ };
   if (!user) throw new Error("Please enter user id!|||400");
-  if (!(await usersModel.exists({ _id: user })))
+  if (!(await UserModel.exists({ _id: user })))
     throw new Error("Please enter valid user id!|||400");
-  await notificationsModel.updateMany({ user }, notificationObj);
+  await NotificationModel.updateMany({ user }, notificationObj);
 };

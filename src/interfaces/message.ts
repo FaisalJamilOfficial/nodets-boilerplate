@@ -1,5 +1,5 @@
 // file imports
-import { MESSAGE_STATUSES } from "../configs/enums";
+import { MESSAGE_STATUSES } from "../configs/enum";
 export interface Message {
   _id?: string;
   conversation: string;

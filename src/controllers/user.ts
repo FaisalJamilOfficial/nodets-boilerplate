@@ -2,18 +2,18 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import adminsModel from "../models/admins";
-import customersModel from "../models/customers";
-import usersModel from "../models/users";
+import AdminModel from "../models/admin";
+import CustomerModel from "../models/customer";
+import UserModel from "../models/user";
 import FilesDeleter from "../utils/files-deleter";
-import { User } from "../interfaces/users";
+import { User } from "../interfaces/user";
 import {
   GetUsersDTO,
   getUserDTO,
   getUserProfileDTO,
   updateUserDTO,
-} from "../dto/users";
-import { USER_TYPES } from "../configs/enums";
+} from "../dto/user";
+import { USER_TYPES } from "../configs/enum";
 
 // destructuring assignments
 const { ADMIN } = USER_TYPES;
@@ -28,7 +28,7 @@ const { ADMIN } = USER_TYPES;
  */
 export const addUser = async (userObj: User) => {
   const { password } = userObj;
-  const user: any = await usersModel.create(userObj);
+  const user: any = await UserModel.create(userObj);
   await user.setPassword(password);
   return user;
 };
@@ -74,7 +74,7 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
 
-  let userExists: any = await usersModel.findById(user);
+  let userExists: any = await UserModel.findById(user);
   if (!userExists) throw new Error("User not found!|||404");
 
   if (email) userExists.email = email;
@@ -121,19 +121,19 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
   }
 
   if (customer)
-    if (await customersModel.exists({ _id: customer })) {
+    if (await CustomerModel.exists({ _id: customer })) {
       userExists.customer = customer;
       userExists.isCustomer = true;
     } else throw new Error("Customer not found!|||404");
   if (admin)
-    if (await adminsModel.exists({ _id: admin })) {
+    if (await AdminModel.exists({ _id: admin })) {
       userExists.admin = admin;
       userExists.isAdmin = true;
     } else throw new Error("Admin not found!|||404");
 
-  userExists = await usersModel
-    .findByIdAndUpdate(userExists._id, userExists, { new: true })
-    .select("-createdAt -updatedAt -__v");
+  userExists = await UserModel.findByIdAndUpdate(userExists._id, userExists, {
+    new: true,
+  }).select("-createdAt -updatedAt -__v");
   return userExists;
 };
 
@@ -146,7 +146,7 @@ export const deleteUser = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  const userExists = await usersModel.findByIdAndDelete(user);
+  const userExists = await UserModel.findByIdAndDelete(user);
   if (!userExists) throw new Error("User not found!|||404");
   return userExists;
 };
@@ -167,9 +167,9 @@ export const getUser = async (params: getUserDTO) => {
   if (phone) query.phone = phone;
   if (Object.keys(query).length === 0) query._id = null;
 
-  let userExists = await usersModel
-    .findOne(query)
-    .select("-createdAt -updatedAt -__v -fcms");
+  let userExists = await UserModel.findOne(query).select(
+    "-createdAt -updatedAt -__v -fcms"
+  );
   if (userExists) userExists = await userExists.populate(userExists.type);
   return userExists;
 };
@@ -181,9 +181,9 @@ export const getUser = async (params: getUserDTO) => {
  */
 export const getUserProfile = async (params: getUserProfileDTO) => {
   const { user, device } = params;
-  const userExists: any = await usersModel
-    .findById(user)
-    .select("-createdAt -updatedAt -__v");
+  const userExists: any = await UserModel.findById(user).select(
+    "-createdAt -updatedAt -__v"
+  );
   userExists.fcms.forEach((element: any) => {
     if (element?.device === device) userExists._doc.fcm = element?.token;
   });
@@ -220,7 +220,7 @@ export const getUsers = async (params: GetUsersDTO) => {
         { name: { $regex: keyword, $options: "i" } },
       ];
   }
-  const [result] = await usersModel.aggregate([
+  const [result] = await UserModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { password: 0, createdAt: 0, updatedAt: 0, __v: 0 } },

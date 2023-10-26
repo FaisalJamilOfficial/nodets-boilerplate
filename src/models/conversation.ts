@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 
 // file imports
-import { CONVERSATION_STATUSES } from "../configs/enums";
+import { CONVERSATION_STATUSES } from "../configs/enum";
 
 // destructuring assignments
 const { PENDING, ACCEPTED, REJECTED } = CONVERSATION_STATUSES;

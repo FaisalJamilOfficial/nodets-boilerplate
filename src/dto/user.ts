@@ -1,5 +1,5 @@
 // file imports
-import { USER_TYPES, USER_STATUSES } from "../configs/enums";
+import { USER_TYPES, USER_STATUSES } from "../configs/enum";
 
 export type GetUsersDTO = {
   limit: number;

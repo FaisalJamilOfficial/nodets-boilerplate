@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import { Response, NextFunction } from "express";
 
 // file imports
-import * as usersController from "../controllers/users";
+import * as usersController from "../controllers/user";
 import { IRequest } from "../configs/types";
 import serviceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
 

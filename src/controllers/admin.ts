@@ -2,9 +2,9 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import adminsModel from "../models/admins";
-import { Admin } from "../interfaces/admins";
-import { GetAdminsDTO } from "../dto/admins";
+import AdminModel from "../models/admin";
+import { Admin } from "../interfaces/admin";
+import { GetAdminsDTO } from "../dto/admin";
 
 // destructuring assignments
 
@@ -14,7 +14,7 @@ import { GetAdminsDTO } from "../dto/admins";
  * @returns {Object} admin data
  */
 export const addAdmin = async (adminObj: Admin) => {
-  return await adminsModel.create(adminObj);
+  return await AdminModel.create(adminObj);
 };
 
 /**
@@ -26,7 +26,7 @@ export const updateAdmin = async (user: string, adminObj: Partial<Admin>) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  const adminExists = await adminsModel.findOneAndUpdate({ user }, adminObj, {
+  const adminExists = await AdminModel.findOneAndUpdate({ user }, adminObj, {
     new: true,
   });
   if (!adminExists) throw new Error("Admin not found!|||404");
@@ -42,7 +42,7 @@ export const deleteAdmin = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  const adminExists = await adminsModel.findOneAndDelete({ user });
+  const adminExists = await AdminModel.findOneAndDelete({ user });
   if (!adminExists) throw new Error("Admin not found!|||404");
   return adminExists;
 };
@@ -56,9 +56,9 @@ export const getAdmin = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  const adminExists = await adminsModel
-    .findOne({ user })
-    .select("-createdAt -updatedAt -__v");
+  const adminExists = await AdminModel.findOne({ user }).select(
+    "-createdAt -updatedAt -__v"
+  );
   if (!adminExists) throw new Error("Admin not found!|||404");
   return adminExists;
 };
@@ -75,7 +75,7 @@ export const getAdmins = async (params: GetAdminsDTO) => {
   if (!page) page = 0;
   if (page) page = page - 1;
   const query: any = {};
-  const [result] = await adminsModel.aggregate([
+  const [result] = await AdminModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },

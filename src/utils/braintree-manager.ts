@@ -2,7 +2,7 @@
 // import braintree from "braintree";
 
 // file imports
-import { ENVIRONMENTS } from "../configs/enums";
+import { ENVIRONMENTS } from "../configs/enum";
 
 // destructuring assignments
 const { PRODUCTION } = ENVIRONMENTS;

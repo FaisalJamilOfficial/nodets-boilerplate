@@ -1,6 +1,6 @@
 // file imports
-import { NOTIFICATION_TYPES } from "../configs/enums";
-import { Notification } from "../interfaces/notifications";
+import { NOTIFICATION_TYPES } from "../configs/enum";
+import { Notification } from "../interfaces/notification";
 
 export type GetNotificationsDTO = {
   limit: number;

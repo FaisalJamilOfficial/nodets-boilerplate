@@ -2,13 +2,13 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import paymentAccountsModel from "../models/payment-accounts";
-import usersModel from "../models/users";
-import { PaymentAccount } from "../interfaces/payment-accounts";
+import PaymentAccountModel from "../models/payment-account";
+import UserModel from "../models/user";
+import { PaymentAccount } from "../interfaces/payment-account";
 import {
   GetPaymentAccountDTO,
   GetPaymentAccountsDTO,
-} from "../dto/payment-accounts";
+} from "../dto/payment-account";
 
 // destructuring assignments
 
@@ -23,10 +23,10 @@ export const addPaymentAccount = async (paymentAccountObj: PaymentAccount) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  if (!(await usersModel.exists({ _id: user })))
+  if (!(await UserModel.exists({ _id: user })))
     throw new Error("user not found!|||404");
 
-  return await paymentAccountsModel.create(paymentAccountObj);
+  return await PaymentAccountModel.create(paymentAccountObj);
 };
 
 /**
@@ -42,9 +42,9 @@ export const getPaymentAccount = async (params: GetPaymentAccountDTO) => {
   if (user) query.user = user;
   if (key) query[key] = value;
   else query._id = null;
-  const paymentAccountExists = await paymentAccountsModel
-    .findOne(query)
-    .select("-createdAt -updatedAt -__v");
+  const paymentAccountExists = await PaymentAccountModel.findOne(query).select(
+    "-createdAt -updatedAt -__v"
+  );
   // if (paymentAccountExists);
   // else throw new Error("PaymentAccount not found!|||404");
   return paymentAccountExists;
@@ -65,7 +65,7 @@ export const getPaymentAccounts = async (params: GetPaymentAccountsDTO) => {
   if (page) page = page - 1;
   const query: any = {};
   if (user) query.user = user;
-  const [result] = await paymentAccountsModel.aggregate([
+  const [result] = await PaymentAccountModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },

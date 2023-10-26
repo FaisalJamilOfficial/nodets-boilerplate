@@ -2,9 +2,9 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import customersModel from "../models/customers";
-import { Customer } from "../interfaces/customers";
-import { GetCustomersDTO } from "../dto/customers";
+import CustomerModel from "../models/customer";
+import { Customer } from "../interfaces/customer";
+import { GetCustomersDTO } from "../dto/customer";
 
 // destructuring assignments
 
@@ -14,7 +14,7 @@ import { GetCustomersDTO } from "../dto/customers";
  * @returns {Object} customer data
  */
 export const addCustomer = async (customerObj: Customer) => {
-  return await customersModel.create(customerObj);
+  return await CustomerModel.create(customerObj);
 };
 
 /**
@@ -29,7 +29,7 @@ export const updateCustomer = async (
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  const customerExists = await customersModel.findOneAndUpdate(
+  const customerExists = await CustomerModel.findOneAndUpdate(
     { user },
     customerObj,
     { new: true }
@@ -47,7 +47,7 @@ export const deleteCustomer = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  const customerExists = await customersModel.findOneAndDelete({ user });
+  const customerExists = await CustomerModel.findOneAndDelete({ user });
   if (!customerExists) throw new Error("Customer not found!|||404");
   return customerExists;
 };
@@ -61,9 +61,9 @@ export const getCustomer = async (user: string) => {
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  const customerExists = await customersModel
-    .findOne({ user })
-    .select("-createdAt -updatedAt -__v");
+  const customerExists = await CustomerModel.findOne({ user }).select(
+    "-createdAt -updatedAt -__v"
+  );
   if (!customerExists) throw new Error("Customer not found!|||404");
   return customerExists;
 };
@@ -81,7 +81,7 @@ export const getCustomers = async (params: GetCustomersDTO) => {
   if (!page) page = 0;
   if (page) page = page - 1;
   const query: any = {};
-  const [result] = await customersModel.aggregate([
+  const [result] = await CustomerModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },

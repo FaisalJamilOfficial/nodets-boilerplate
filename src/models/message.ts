@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 
 // file imports
-import { MESSAGE_STATUSES } from "../configs/enums";
+import { MESSAGE_STATUSES } from "../configs/enum";
 
 // destructuring assignments
 const { UNREAD, READ, DELETED } = MESSAGE_STATUSES;

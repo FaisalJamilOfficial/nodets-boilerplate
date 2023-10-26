@@ -2,7 +2,7 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as adminsController from "../controllers/admins";
+import * as adminsController from "../controllers/admin";
 import { verifyToken, verifyAdmin } from "../middlewares/authenticator";
 import { exceptionHandler } from "../middlewares/exception-handler";
 
