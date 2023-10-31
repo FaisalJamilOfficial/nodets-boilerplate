@@ -5,8 +5,7 @@ import mongoose from "mongoose";
 import { NOTIFICATION_TYPES, NOTIFICATION_STATUSES } from "../configs/enum";
 
 // destructuring assignments
-const { NEW_MESSAGE, NEW_CONVERSATION } = NOTIFICATION_TYPES;
-const { UNREAD, READ } = NOTIFICATION_STATUSES;
+const { UNREAD } = NOTIFICATION_STATUSES;
 
 // variable initializations
 const Schema = mongoose.Schema;
@@ -16,7 +15,7 @@ const notificationSchema = new Schema(
   {
     type: {
       type: String,
-      enum: [NEW_MESSAGE, NEW_CONVERSATION],
+      enum: Object.values(NOTIFICATION_TYPES),
       required: true,
       index: true,
     },
@@ -42,7 +41,7 @@ const notificationSchema = new Schema(
     },
     status: {
       type: String,
-      enum: [READ, UNREAD],
+      enum: Object.values(NOTIFICATION_STATUSES),
       default: UNREAD,
     },
   },

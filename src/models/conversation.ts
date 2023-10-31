@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { CONVERSATION_STATUSES } from "../configs/enum";
 
 // destructuring assignments
-const { PENDING, ACCEPTED, REJECTED } = CONVERSATION_STATUSES;
+const { PENDING } = CONVERSATION_STATUSES;
 
 // variable initializations
 const Schema = mongoose.Schema;
@@ -32,7 +32,7 @@ const conversationSchema = new Schema(
     },
     status: {
       type: String,
-      enum: [PENDING, ACCEPTED, REJECTED],
+      enum: Object.values(CONVERSATION_STATUSES),
       default: PENDING,
       required: true,
       index: true,

@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { MESSAGE_STATUSES } from "../configs/enum";
 
 // destructuring assignments
-const { UNREAD, READ, DELETED } = MESSAGE_STATUSES;
+const { UNREAD } = MESSAGE_STATUSES;
 
 // variable initializations
 const Schema = mongoose.Schema;
@@ -43,7 +43,7 @@ const messageSchema = new Schema(
     attachments: [attachmentSchema],
     status: {
       type: String,
-      enum: [UNREAD, READ, DELETED],
+      enum: Object.values(MESSAGE_STATUSES),
       default: UNREAD,
       required: true,
       index: true,

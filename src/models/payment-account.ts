@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import { PAYMENT_ACCOUNT_TYPES } from "../configs/enum";
 
 // destructuring assignments
-const { BRAINTREE, STRIPE_ACCOUNT, STRIPE_CUSTOMER } = PAYMENT_ACCOUNT_TYPES;
 
 // variable initializations
 const Schema = mongoose.Schema;
@@ -25,7 +24,7 @@ const paymentAccountSchema = new Schema(
     },
     type: {
       type: String,
-      enum: [BRAINTREE, STRIPE_ACCOUNT, STRIPE_CUSTOMER],
+      enum: Object.values(PAYMENT_ACCOUNT_TYPES),
       required: true,
       index: true,
     },

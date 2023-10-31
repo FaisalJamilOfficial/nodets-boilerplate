@@ -7,16 +7,9 @@ import jwt from "jsonwebtoken";
 import { USER_STATUSES, USER_TYPES, GEO_JSON_TYPES } from "../configs/enum";
 
 // destructuring assignments
-const { ACTIVE, DELETED } = USER_STATUSES;
-const { CUSTOMER, ADMIN, SUPER_ADMIN, MULTI } = USER_TYPES;
-const {
-  POINT,
-  LINESTRING,
-  POLYGON,
-  MULTIPOINT,
-  MULTILINESTRING,
-  MULTIPOLYGON,
-} = GEO_JSON_TYPES;
+const { ACTIVE } = USER_STATUSES;
+const { SUPER_ADMIN } = USER_TYPES;
+const { POINT } = GEO_JSON_TYPES;
 
 // variable initializations
 const Schema = mongoose.Schema;
@@ -74,14 +67,8 @@ const userSchema = new Schema(
     location: {
       type: {
         type: String,
-        enum: [
-          POINT,
-          LINESTRING,
-          POLYGON,
-          MULTIPOINT,
-          MULTILINESTRING,
-          MULTIPOLYGON,
-        ],
+
+        enum: Object.values(GEO_JSON_TYPES),
         default: POINT,
         required: true,
       },
@@ -93,14 +80,14 @@ const userSchema = new Schema(
     },
     type: {
       type: String,
-      enum: [CUSTOMER, ADMIN, SUPER_ADMIN, MULTI],
+      enum: Object.values(USER_TYPES),
       // required: [true, "Please enter user type!"],
       required: true,
       index: true,
     },
     status: {
       type: String,
-      enum: [ACTIVE, DELETED],
+      enum: Object.values(USER_STATUSES),
       default: ACTIVE,
       index: true,
     },
