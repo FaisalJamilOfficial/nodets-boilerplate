@@ -48,7 +48,7 @@ router
         image: image?.filename,
       };
       const response = await usersController.updateUser(user, args);
-      res.json({ data: response });
+      res.json(response);
     })
   )
   .get(
@@ -72,7 +72,7 @@ router
       let { user } = req.query;
       user = (user || "").toString();
       const response = await usersController.deleteUser(user);
-      res.json({ data: response });
+      res.json(response);
     })
   );
 
@@ -85,7 +85,7 @@ router.put(
     const { _id: user, phone } = req?.user;
     const args = { phone };
     const response = await usersController.updateUser(user, args);
-    res.json({ data: response });
+    res.json(response);
   })
 );
 router.put(
@@ -99,7 +99,7 @@ router.put(
     await authController.login(args);
     args.password = newPassword;
     const response = await usersController.updateUser(user, args);
-    res.json({ data: response });
+    res.json(response);
   })
 );
 
@@ -154,7 +154,7 @@ router.get(
     const { device } = req.body;
     const args = { user, device };
     const response = await usersController.getUserProfile(args);
-    res.json({ data: response });
+    res.json(response);
   })
 );
 
@@ -164,7 +164,7 @@ router.get(
   verifyAdmin,
   exceptionHandler(async (req: Request, res: Response) => {
     const response = await usersController.getUser(req.params);
-    res.json({ data: response });
+    res.json(response);
   })
 );
 

@@ -34,7 +34,7 @@ router
           })
         );
       const response = await messagesController.send(args);
-      res.json({ data: response });
+      res.json(response);
     })
   )
   .get(
@@ -62,7 +62,7 @@ router
       const args = { text, status };
       message = (message || "").toString();
       const response = await messagesController.updateMessage(message, args);
-      res.json({ data: response });
+      res.json(response);
     })
   )
   .patch(
