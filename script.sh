@@ -63,3 +63,13 @@ if ! command -v nginx &> /dev/null; then
 else
     echo "Nginx is already installed."
 fi
+
+# Check if Certbot is installed and install it with the specified commands if not
+if ! command -v certbot &> /dev/null; then
+    echo "Certbot is not installed. Installing it now..."
+    sudo apt install certbot python3-certbot-nginx -y;
+    sudo systemctl reload nginx;
+    echo "Certbot has been installed."
+else
+    echo "Certbot is already installed."
+fi

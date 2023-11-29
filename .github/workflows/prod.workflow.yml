@@ -44,7 +44,7 @@ jobs:
             package.json
             yarn.lock
             .env
-            .env.development
+            .env.production
             script.sh
           sparse-checkout-cone-mode: false
 

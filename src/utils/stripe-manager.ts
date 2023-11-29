@@ -2,8 +2,8 @@
 // import _stripe from "stripe";
 
 // file imports
-import * as paymentAccountsController from "../controllers/payment-account";
-import * as usersController from "../controllers/user";
+import * as paymentAccountController from "../controllers/payment-account";
+import * as userController from "../controllers/user";
 import { PAYMENT_ACCOUNT_TYPES } from "../configs/enum";
 
 // destructuring assignments
@@ -92,7 +92,7 @@ class StripeManager {
     const { source, cardHolderName, user, email, phone } = params;
 
     const paymentAccountExists =
-      await paymentAccountsController.getPaymentAccount(user);
+      await paymentAccountController.getPaymentAccount(user);
 
     let userStripeId;
 
@@ -115,7 +115,7 @@ class StripeManager {
     //   type: STRIPE_CUSTOMER,
     //   account: card,
     // };
-    // const paymentAccount = await paymentAccountsController.addPaymentAccount(
+    // const paymentAccount = await paymentAccountController.addPaymentAccount(
     //   paymentAccountObj
     // );
     // return paymentAccount;
@@ -143,7 +143,7 @@ class StripeManager {
   async createAccountWithCheck(params: any) {
     const { user, email } = params;
     const paymentAccountExists =
-      await paymentAccountsController.getPaymentAccount(user);
+      await paymentAccountController.getPaymentAccount(user);
 
     if (paymentAccountExists) return paymentAccountExists;
     else {
@@ -164,7 +164,7 @@ class StripeManager {
       //   type: STRIPE_ACCOUNT,
       //   account,
       // };
-      // const paymentAccount = await paymentAccountsController.addPaymentAccount(
+      // const paymentAccount = await paymentAccountController.addPaymentAccount(
       //   paymentAccountObj
       // );
       // return paymentAccount;
@@ -182,7 +182,7 @@ class StripeManager {
     const { account, refreshURL, returnURL, email, user } = params;
 
     const paymentAccountExists =
-      await paymentAccountsController.getPaymentAccount(user);
+      await paymentAccountController.getPaymentAccount(user);
 
     let accountObj;
     if (paymentAccountExists) accountObj = paymentAccountExists.account;
@@ -201,7 +201,7 @@ class StripeManager {
         account: accountObj,
         type: STRIPE_CUSTOMER,
       };
-      await paymentAccountsController.addPaymentAccount(paymentAccountObj);
+      await paymentAccountController.addPaymentAccount(paymentAccountObj);
     }
     const accountLinkObj = {
       account: account ?? accountObj.id,
@@ -243,7 +243,7 @@ class StripeManager {
   async createTransfer(params: any) {
     const { user, amount, currency, description } = params;
     const paymentAccountExists =
-      await paymentAccountsController.getPaymentAccount(user);
+      await paymentAccountController.getPaymentAccount(user);
     const transferObj = {
       amount,
       currency: currency ?? CURRENCY,
@@ -360,11 +360,11 @@ class StripeManager {
     //   console.log("EVENT: ", JSON.stringify(event));
 
     //   const paymentAccountExists =
-    //     await paymentAccountsController.getPaymentAccount({
+    //     await paymentAccountController.getPaymentAccount({
     //       key: "account.id",
     //       value: rawBody.account,
     //     });
-    //   await usersController.updateUser({
+    //   await userController.updateUser({
     //     user: paymentAccountExists?.user,
     //     isStripeConnected: true,
     //   });

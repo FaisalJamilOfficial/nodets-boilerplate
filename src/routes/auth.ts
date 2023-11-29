@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 
 // file imports
 import * as authController from "../controllers/auth";
-import * as usersController from "../controllers/user";
+import * as userController from "../controllers/user";
 import { USER_TYPES } from "../configs/enum";
 import { exceptionHandler } from "../middlewares/exception-handler";
 import {
@@ -49,8 +49,8 @@ router.post(
     const { _id: user } = req.user;
     const { device } = req.body;
     const args = { user, device, shallRemoveFCM: true };
-    const response = await usersController.updateUser(user, args);
-    res.json({ token: response });
+    await userController.updateUser(user, args);
+    res.json({ message: "Operation completed successfully!" });
   })
 );
 
@@ -61,7 +61,7 @@ router
       const { email } = req.body;
       const args = { email };
       await authController.emailResetPassword(args);
-      res.json({ message: "Password reset link sent to your email address!" });
+      res.json({ message: "Operation completed successfully!" });
     })
   )
   .put(
@@ -69,7 +69,7 @@ router
       const { password, user, token } = req.body;
       const args = { password, user, token };
       await authController.resetPassword(args);
-      res.json({ message: "Password reset successfully!" });
+      res.json({ message: "Operation completed successfully!" });
     })
   );
 
@@ -81,7 +81,7 @@ router.post(
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req?.user;
     const args = { user };
-    const response: any = await usersController.getUser(args);
+    const response: any = await userController.getUser(args);
     res.json({ token: response.getSignedjwtToken() });
   })
 );
@@ -91,7 +91,7 @@ router.post(
   exceptionHandler(async (req: Request, res: Response) => {
     const { googleId } = req.body;
     const args = { googleId };
-    const response: any = await usersController.getUser(args);
+    const response: any = await userController.getUser(args);
     res.json({ token: response.getSignedjwtToken() });
   })
 );
@@ -101,7 +101,7 @@ router.post(
   exceptionHandler(async (req: Request, res: Response) => {
     const { facebookId } = req.body;
     const args = { facebookId };
-    const response: any = await usersController.getUser(args);
+    const response: any = await userController.getUser(args);
     res.json({ token: response.getSignedjwtToken() });
   })
 );
@@ -111,7 +111,7 @@ router.post(
   exceptionHandler(async (req: Request, res: Response) => {
     const { twitterId } = req.body;
     const args = { twitterId };
-    const response: any = await usersController.getUser(args);
+    const response: any = await userController.getUser(args);
     res.json({ token: response.getSignedjwtToken() });
   })
 );

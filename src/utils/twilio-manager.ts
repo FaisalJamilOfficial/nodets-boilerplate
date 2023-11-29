@@ -3,7 +3,7 @@
 // import otpGenerator from "otp-generator";
 
 // file imports
-import * as usersController from "../controllers/user";
+import * as userController from "../controllers/user";
 import { getToken } from "../middlewares/authenticator";
 
 // destructuring assignments
@@ -29,7 +29,7 @@ class TwilioManager {
 
     if (!phone) throw new Error("Please enter phone number!|||400");
 
-    const userExists = await usersController.getUser({ phone });
+    const userExists = await userController.getUser({ phone });
 
     const otp = "111111";
     // otpGenerator.generate(6, {

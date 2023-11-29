@@ -2,7 +2,7 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as messagesController from "../controllers/message";
+import * as messageController from "../controllers/message";
 import directories from "../configs/directories";
 import { verifyToken, verifyUser } from "../middlewares/authenticator";
 import { exceptionHandler } from "../middlewares/exception-handler";
@@ -33,7 +33,7 @@ router
             type: attachment?.mimetype,
           })
         );
-      const response = await messagesController.send(args);
+      const response = await messageController.send(args);
       res.json(response);
     })
   )
@@ -51,7 +51,7 @@ router
         limit: Number(limit),
         page: Number(page),
       };
-      const response = await messagesController.getMessages(args);
+      const response = await messageController.getMessages(args);
       res.json(response);
     })
   )
@@ -61,7 +61,7 @@ router
       const { text, status } = req.body;
       const args = { text, status };
       message = (message || "").toString();
-      const response = await messagesController.updateMessage(message, args);
+      const response = await messageController.updateMessage(message, args);
       res.json(response);
     })
   )
@@ -70,8 +70,8 @@ router
       const { _id } = req?.user;
       const { conversation } = req.body;
       const args = { conversation, userTo: _id };
-      await messagesController.readMessages(args);
-      res.json({ message: "messages read successfully!" });
+      await messageController.readMessages(args);
+      res.json({ message: "Operation completed successfully!" });
     })
   );
 
@@ -90,7 +90,7 @@ router.get(
       page: Number(page),
       keyword,
     };
-    const response = await messagesController.getConversations(args);
+    const response = await messageController.getConversations(args);
     res.json(response);
   })
 );

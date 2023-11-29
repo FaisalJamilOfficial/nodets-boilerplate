@@ -2,7 +2,7 @@
 import { isValidObjectId, Types } from "mongoose";
 
 // file imports
-import * as notificationsController from "./notification";
+import * as notificationController from "./notification";
 import ConversationModel from "../models/conversation";
 import MessageModel from "../models/message";
 import UserModel from "../models/user";
@@ -277,7 +277,7 @@ export const send = async (params: SendMessageDTO) => {
     type: NEW_MESSAGE,
   };
 
-  await notificationsController.notifyUsers({
+  await notificationController.notifyUsers({
     user,
     type: NEW_MESSAGE,
     useSocket: true,
@@ -289,7 +289,7 @@ export const send = async (params: SendMessageDTO) => {
     useDatabase: true,
     notificationData,
   });
-  await notificationsController.notifyUsers({
+  await notificationController.notifyUsers({
     useSocket: true,
     event: "conversations_updated",
     socketData: conversation,

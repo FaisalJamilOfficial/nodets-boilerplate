@@ -1,9 +1,9 @@
 // file imports
 import UserModel from "../models/user";
 import UserTokenModel from "../models/user-token";
-import * as usersController from "./user";
-import * as customersController from "./customer";
-import * as adminsController from "./admin";
+import * as userController from "./user";
+import * as customerController from "./customer";
+import * as adminController from "./admin";
 import NodeMailer from "../utils/node-mailer";
 import { User } from "../interfaces/user";
 import { USER_TYPES, USER_STATUSES } from "../configs/enum";
@@ -35,19 +35,18 @@ const {
  */
 export const register = async (params: User) => {
   const { type } = params;
-  const user = await usersController.addUser(params);
+  const user = await userController.addUser(params);
 
   const profileObj = { user: user._id };
   const userObj: any = {};
-  userObj.user = user._id;
   userObj.type = type;
 
   if (type === CUSTOMER)
-    userObj.customer = (await customersController.addCustomer(profileObj))._id;
+    userObj.customer = (await customerController.addCustomer(profileObj))._id;
   else if (type === ADMIN)
-    userObj.admin = (await adminsController.addAdmin(profileObj))._id;
+    userObj.admin = (await adminController.addAdmin(profileObj))._id;
 
-  await usersController.updateUser(user._id, userObj);
+  await userController.updateUser(user._id, userObj);
 
   return user.getSignedjwtToken();
 };
@@ -225,5 +224,5 @@ export const addAdmin = async (params: User) => {
   if (email) userObj.email = email;
   if (password) userObj.password = password;
   if (type) userObj.type = type;
-  return (await usersController.addUser(userObj)).getSignedjwtToken();
+  return (await userController.addUser(userObj)).getSignedjwtToken();
 };

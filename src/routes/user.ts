@@ -3,8 +3,8 @@ import express, { Request, Response } from "express";
 
 // file imports
 import * as authController from "../controllers/auth";
-import * as notificationsController from "../controllers/notification";
-import * as usersController from "../controllers/user";
+import * as notificationController from "../controllers/notification";
+import * as userController from "../controllers/user";
 import TwilioManager from "../utils/twilio-manager";
 import directories from "../configs/directories";
 import { upload } from "../middlewares/uploader";
@@ -47,7 +47,7 @@ router
         //   image: image?.key,
         image: image?.filename,
       };
-      const response = await usersController.updateUser(user, args);
+      const response = await userController.updateUser(user, args);
       res.json(response);
     })
   )
@@ -63,7 +63,7 @@ router
         limit: Number(limit),
         page: Number(page),
       };
-      const response = await usersController.getUsers(args);
+      const response = await userController.getUsers(args);
       res.json(response);
     })
   )
@@ -71,7 +71,7 @@ router
     exceptionHandler(async (req: IRequest, res: Response) => {
       let { user } = req.query;
       user = (user || "").toString();
-      const response = await usersController.deleteUser(user);
+      const response = await userController.deleteUser(user);
       res.json(response);
     })
   );
@@ -84,7 +84,7 @@ router.put(
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user, phone } = req?.user;
     const args = { phone };
-    const response = await usersController.updateUser(user, args);
+    const response = await userController.updateUser(user, args);
     res.json(response);
   })
 );
@@ -98,7 +98,7 @@ router.put(
     const args = { password, email, type };
     await authController.login(args);
     args.password = newPassword;
-    const response = await usersController.updateUser(user, args);
+    const response = await userController.updateUser(user, args);
     res.json(response);
   })
 );
@@ -133,15 +133,15 @@ router
       const { _id: user } = req?.user;
       const { page, limit } = req.query;
       const args = { user, limit: Number(limit), page: Number(page) };
-      const response = await notificationsController.getNotifications(args);
+      const response = await notificationController.getNotifications(args);
       res.json(response);
     })
   )
   .patch(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user } = req?.user;
-      await notificationsController.readNotifications(user);
-      res.json({ message: "notifications read successfully!" });
+      await notificationController.readNotifications(user);
+      res.json({ message: "Operation completed successfully!" });
     })
   );
 
@@ -153,7 +153,7 @@ router.get(
     const { _id: user } = req.user;
     const { device } = req.body;
     const args = { user, device };
-    const response = await usersController.getUserProfile(args);
+    const response = await userController.getUserProfile(args);
     res.json(response);
   })
 );
@@ -163,7 +163,7 @@ router.get(
   verifyToken,
   verifyAdmin,
   exceptionHandler(async (req: Request, res: Response) => {
-    const response = await usersController.getUser(req.params);
+    const response = await userController.getUser(req.params);
     res.json(response);
   })
 );

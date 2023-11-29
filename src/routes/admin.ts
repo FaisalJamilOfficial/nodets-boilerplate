@@ -2,7 +2,7 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as adminsController from "../controllers/admin";
+import * as adminController from "../controllers/admin";
 import { verifyToken, verifyAdmin } from "../middlewares/authenticator";
 import { exceptionHandler } from "../middlewares/exception-handler";
 
@@ -19,7 +19,7 @@ router.delete(
   exceptionHandler(async (req: Request, res: Response) => {
     const { secret } = req.headers;
     if (secret !== SECRET) throw new Error("Invalid SECRET!|||400");
-    await adminsController.cleanDB();
+    await adminController.cleanDB();
     res.json({ message: "Operation completed successfully!" });
   })
 );
