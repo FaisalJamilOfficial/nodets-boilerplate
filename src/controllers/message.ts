@@ -49,9 +49,8 @@ export const addMessage = async (messageObj: Message) => {
 export const getMessages = async (params: GetMessagesDTO) => {
   const { conversation } = params;
   let { page, limit, user1, user2 } = params;
-  if (!limit) limit = 10;
-  if (!page) page = 0;
-  if (page) page = page - 1;
+  page = page - 1 || 0;
+  limit = limit || 10;
   const query: any = {};
   if (conversation) query.conversation = new ObjectId(conversation);
   else if (user1 && user2) {
@@ -164,9 +163,8 @@ export const addConversation = async (conversationObj: Conversation) => {
 export const getConversations = async (params: GetConversationsDTO) => {
   const { user } = params;
   let { limit, page, keyword } = params;
-  if (!limit) limit = 10;
-  if (!page) page = 0;
-  if (page) page = page - 1;
+  page = page - 1 || 0;
+  limit = limit || 10;
   const query: any = {};
   const queryRegex: any = {};
 

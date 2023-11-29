@@ -56,7 +56,7 @@ router
       const { _id: user } = req?.user;
       const { page, limit } = req.query;
       let { keyword } = req.query;
-      keyword = (keyword || "").toString();
+      keyword = keyword?.toString() || "";
       const args = {
         user,
         keyword,
@@ -70,7 +70,7 @@ router
   .delete(
     exceptionHandler(async (req: IRequest, res: Response) => {
       let { user } = req.query;
-      user = (user || "").toString();
+      user = user?.toString() || "";
       const response = await userController.deleteUser(user);
       res.json(response);
     })

@@ -204,9 +204,8 @@ export const getUserProfile = async (params: getUserProfileDTO) => {
 export const getUsers = async (params: GetUsersDTO) => {
   const { type, user } = params;
   let { page, limit, keyword } = params;
-  if (!limit) limit = 10;
-  if (!page) page = 0;
-  if (page) page = page - 1;
+  page = page - 1 || 0;
+  limit = limit || 10;
   const query: any = {};
 
   if (type) query.type = type;

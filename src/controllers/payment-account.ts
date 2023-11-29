@@ -60,9 +60,8 @@ export const getPaymentAccount = async (params: GetPaymentAccountDTO) => {
 export const getPaymentAccounts = async (params: GetPaymentAccountsDTO) => {
   const { user } = params;
   let { limit, page } = params;
-  if (!limit) limit = 10;
-  if (!page) page = 0;
-  if (page) page = page - 1;
+  page = page - 1 || 0;
+  limit = limit || 10;
   const query: any = {};
   if (user) query.user = user;
   const [result] = await PaymentAccountModel.aggregate([

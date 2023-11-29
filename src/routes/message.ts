@@ -42,8 +42,8 @@ router
       const { _id: user1 } = req.user;
       const { limit, page, user } = req.query;
       let { conversation } = req.query;
-      conversation = (conversation || "").toString();
-      const user2 = (user || "").toString();
+      conversation = conversation?.toString() || "";
+      const user2 = user?.toString() || "";
       const args = {
         conversation,
         user1,
@@ -60,7 +60,7 @@ router
       let { message } = req.query;
       const { text, status } = req.body;
       const args = { text, status };
-      message = (message || "").toString();
+      message = message?.toString() || "";
       const response = await messageController.updateMessage(message, args);
       res.json(response);
     })
@@ -83,7 +83,7 @@ router.get(
     const { _id: user } = req?.user;
     const { limit, page } = req.query;
     let { keyword } = req.query;
-    keyword = (keyword || "").toString();
+    keyword = keyword?.toString() || "";
     const args = {
       user,
       limit: Number(limit),

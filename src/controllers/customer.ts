@@ -77,9 +77,8 @@ export const getCustomer = async (user: string) => {
  */
 export const getCustomers = async (params: GetCustomersDTO) => {
   let { limit, page } = params;
-  if (!limit) limit = 10;
-  if (!page) page = 0;
-  if (page) page = page - 1;
+  page = page - 1 || 0;
+  limit = limit || 10;
   const query: any = {};
   const [result] = await CustomerModel.aggregate([
     { $match: query },

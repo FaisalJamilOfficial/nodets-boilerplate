@@ -34,9 +34,8 @@ export const getNotifications = async (params: GetNotificationsDTO) => {
   let { page, limit } = params;
   const query: any = {};
   if (user) query.user = user;
-  if (!limit) limit = 10;
-  if (!page) page = 0;
-  if (page) page = page - 1;
+  page = page - 1 || 0;
+  limit = limit || 10;
   const [result] = await NotificationModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },

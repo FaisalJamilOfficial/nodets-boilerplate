@@ -71,9 +71,8 @@ export const getAdmin = async (user: string) => {
  */
 export const getAdmins = async (params: GetAdminsDTO) => {
   let { limit, page } = params;
-  if (!limit) limit = 10;
-  if (!page) page = 0;
-  if (page) page = page - 1;
+  page = page - 1 || 0;
+  limit = limit || 10;
   const query: any = {};
   const [result] = await AdminModel.aggregate([
     { $match: query },
