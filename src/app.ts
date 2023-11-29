@@ -34,7 +34,7 @@ const serverFunction = async () => {
 
     new SocketManager().initializeSocket({ server, app });
 
-    const connect = mongoose.connect(MONGO_URL ?? "");
+    const connect = mongoose.connect(MONGO_URL || "");
 
     connect.then(
       (_db) => {
@@ -78,5 +78,5 @@ const serverFunction = async () => {
 
 serverFunction();
 console.log(
-  chalk.hex("#607070")(chalk.underline(NODE_ENV ?? "".toUpperCase()))
+  chalk.hex("#607070")(chalk.underline(NODE_ENV || "".toUpperCase()))
 );

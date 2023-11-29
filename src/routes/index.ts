@@ -19,7 +19,7 @@ router.use("/message", messages);
 router.use("/user", users);
 
 router.use("/docs", (_req: Request, res: Response) =>
-  res.redirect(POSTMAN_URL ?? "")
+  res.redirect(POSTMAN_URL || "")
 );
 
 export default router;

@@ -25,7 +25,7 @@ function createSignature(config: any) {
   console.log("Creating a signature for the request...");
 
   var ts = Math.floor(Date.now() / 1000);
-  const signature = crypto.createHmac("sha256", SUMSUB_SECRET_KEY ?? "");
+  const signature = crypto.createHmac("sha256", SUMSUB_SECRET_KEY || "");
   signature.update(ts + config.method.toUpperCase() + config.url);
 
   if (config.data instanceof FormData) {

@@ -23,7 +23,7 @@ const { CUSTOMER, ADMIN, SUPER_ADMIN } = USER_TYPES;
  * @returns {Object} JWT token
  */
 export const getToken = function (params: any): string {
-  return jwt.sign(params, JWT_SECRET ?? "");
+  return jwt.sign(params, JWT_SECRET || "");
 };
 
 export const verifyToken = async (
@@ -41,7 +41,7 @@ export const verifyToken = async (
     if (token) {
       const verificationObject: any = jwt.verify(
         token.trim(),
-        JWT_SECRET ?? ""
+        JWT_SECRET || ""
       );
 
       if (verificationObject.shouldValidateOTP) {
