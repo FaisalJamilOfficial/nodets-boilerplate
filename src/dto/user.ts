@@ -1,5 +1,5 @@
 // file imports
-import { USER_TYPES, USER_STATUSES } from "../configs/enum";
+import { User } from "../interfaces/user";
 
 export type GetUsersDTO = {
   limit: number;
@@ -8,28 +8,12 @@ export type GetUsersDTO = {
   user: string;
   keyword: string;
 };
-
-export type updateUserDTO = {
-  email?: string;
-  password?: string;
-  phone?: string;
-  firstName?: string;
-  lastName?: string;
-  name?: string;
-  image?: string;
+export interface updateUserDTO extends Partial<User> {
   fcm?: { token: string; device: string };
   coordinates?: number[];
-  type?: USER_TYPES;
-  status?: USER_STATUSES;
-  isOnline?: boolean;
-  customer?: string;
-  admin?: string;
-  googleID?: string;
-  facebookID?: string;
-  twitterID?: string;
-  shallRemoveFCM?: boolean;
   device?: string;
-};
+  shallRemoveFCM?: boolean;
+}
 
 export type getUserDTO = {
   user?: string;

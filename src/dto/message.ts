@@ -1,3 +1,6 @@
+// file imports
+import { Message } from "../interfaces/message";
+
 export type GetMessagesDTO = {
   limit: number;
   page: number;
@@ -13,11 +16,6 @@ export type GetConversationsDTO = {
   keyword: string;
 };
 
-export type SendMessageDTO = {
+export interface SendMessageDTO extends Message {
   username: string;
-  conversation: string;
-  userTo: string;
-  userFrom: string;
-  text?: string;
-  attachments?: { path: string; type: string }[];
-};
+}
