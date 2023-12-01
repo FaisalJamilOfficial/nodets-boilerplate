@@ -13,8 +13,8 @@ import { GetElementsDTO } from "../dto/element";
  * @param {String} title element title
  * @returns {Object} element data
  */
-export const addElement = async (ElementObj: Element) => {
-  return await ElementModel.create(ElementObj);
+export const addElement = async (elementObj: Element) => {
+  return await ElementModel.create(elementObj);
 };
 
 /**
@@ -24,18 +24,18 @@ export const addElement = async (ElementObj: Element) => {
  */
 export const updateElement = async (
   element: string,
-  ElementObj: Partial<Element>
+  elementObj: Partial<Element>
 ) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const ElementExists = await ElementModel.findOneAndUpdate(
+  const elementExists = await ElementModel.findOneAndUpdate(
     { element },
-    ElementObj,
+    elementObj,
     { new: true }
   );
-  if (!ElementExists) throw new Error("element not found!|||404");
-  return ElementExists;
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
 };
 
 /**
@@ -47,9 +47,9 @@ export const deleteElement = async (element: string) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const ElementExists = await ElementModel.findOneAndDelete({ element });
-  if (!ElementExists) throw new Error("element not found!|||404");
-  return ElementExists;
+  const elementExists = await ElementModel.findOneAndDelete({ element });
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
 };
 
 /**
@@ -61,11 +61,11 @@ export const getElement = async (element: string) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const ElementExists = await ElementModel.findOne({ element }).select(
+  const elementExists = await ElementModel.findOne({ element }).select(
     "-createdAt -updatedAt -__v"
   );
-  if (!ElementExists) throw new Error("element not found!|||404");
-  return ElementExists;
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
 };
 
 /**
