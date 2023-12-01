@@ -29,8 +29,8 @@ export const updateElement = async (
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const elementExists = await ElementModel.findOneAndUpdate(
-    { element },
+  const elementExists = await ElementModel.findByIdAndUpdate(
+    element,
     elementObj,
     { new: true }
   );
@@ -47,7 +47,7 @@ export const deleteElement = async (element: string) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const elementExists = await ElementModel.findOneAndDelete({ element });
+  const elementExists = await ElementModel.findByIdAndDelete(element);
   if (!elementExists) throw new Error("element not found!|||404");
   return elementExists;
 };
