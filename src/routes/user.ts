@@ -151,8 +151,8 @@ router.get(
   verifyUser,
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req.user;
-    const { device } = req.body;
-    const args = { user, device };
+    const { device } = req.query;
+    const args = { user, device: device?.toString() || "" };
     const response = await userController.getUserProfile(args);
     res.json(response);
   })
