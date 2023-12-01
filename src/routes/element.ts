@@ -41,7 +41,7 @@ router
       const { title } = req.body;
       const args = { title };
       const response = await elementController.addElement(args);
-      res.json({ token: response });
+      res.json(response);
     })
   )
   .put(
