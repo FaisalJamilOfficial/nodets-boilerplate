@@ -1,3 +1,6 @@
+// file imports
+import { GetElementsDTO } from "./element";
+
 export interface GetPaymentAccountDTO {
   paymentAccount: string;
   user: string;
@@ -5,8 +8,6 @@ export interface GetPaymentAccountDTO {
   value: string;
 }
 
-export interface GetPaymentAccountsDTO {
-  limit: number;
-  page: number;
+export interface GetPaymentAccountsDTO extends GetElementsDTO {
   user: string;
 }

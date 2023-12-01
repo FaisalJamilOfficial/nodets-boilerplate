@@ -1,20 +1,16 @@
 // file imports
 import { Message } from "../interfaces/message";
+import { GetElementsDTO } from "./element";
 
-export type GetMessagesDTO = {
-  limit: number;
-  page: number;
+export interface GetMessagesDTO extends GetElementsDTO {
   conversation: string;
   user1: string;
   user2: string;
-};
+}
 
-export type GetConversationsDTO = {
-  limit: number;
-  page: number;
+export interface GetConversationsDTO extends GetElementsDTO {
   user: string;
-  keyword: string;
-};
+}
 
 export interface SendMessageDTO extends Message {
   username: string;

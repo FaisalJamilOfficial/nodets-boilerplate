@@ -1,12 +1,12 @@
 // file imports
 import { NOTIFICATION_TYPES } from "../configs/enum";
 import { Notification } from "../interfaces/notification";
+import { GetElementsDTO } from "./element";
 
-export type GetNotificationsDTO = {
-  limit: number;
-  page: number;
+export interface GetNotificationsDTO extends GetElementsDTO {
   user: string;
-};
+}
+
 export type NotifyUsersDTO = {
   query?: Object;
   user?: string;

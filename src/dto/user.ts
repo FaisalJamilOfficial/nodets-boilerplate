@@ -1,13 +1,11 @@
 // file imports
 import { User } from "../interfaces/user";
+import { GetElementsDTO } from "./element";
 
-export type GetUsersDTO = {
-  limit: number;
-  page: number;
+export interface GetUsersDTO extends GetElementsDTO {
   type?: string;
   user: string;
-  keyword: string;
-};
+}
 export interface updateUserDTO extends Partial<User> {
   fcm?: { token: string; device: string };
   coordinates?: number[];
