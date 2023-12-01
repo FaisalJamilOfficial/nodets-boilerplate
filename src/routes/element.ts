@@ -4,15 +4,37 @@ import express, { Request, Response } from "express";
 // file imports
 import * as elementController from "../controllers/element";
 import { exceptionHandler } from "../middlewares/exception-handler";
-import { verifyToken, verifyAdmin } from "../middlewares/authenticator";
+import {
+  verifyToken,
+  verifyAdmin,
+  verifyUser,
+} from "../middlewares/authenticator";
 
 // destructuring assignments
 
 // variable initializations
 const router = express.Router();
 
+router.get(
+  "/",
+  verifyToken,
+  verifyUser,
+  exceptionHandler(async (req: Request, res: Response) => {
+    const { page, limit } = req.query;
+    let { keyword } = req.query;
+    keyword = keyword?.toString() || "";
+    const args = {
+      keyword,
+      limit: Number(limit),
+      page: Number(page),
+    };
+    const response = await elementController.getElements(args);
+    res.json(response);
+  })
+);
+
 router
-  .route("/")
+  .route("/admin")
   .all(verifyToken, verifyAdmin)
   .post(
     exceptionHandler(async (req: Request, res: Response) => {
