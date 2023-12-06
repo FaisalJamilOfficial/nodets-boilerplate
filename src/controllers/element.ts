@@ -62,7 +62,7 @@ export const getElement = async (element: string) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const elementExists = await ElementModel.findOne({ element }).select(
+  const elementExists = await ElementModel.findById(element).select(
     "-createdAt -updatedAt -__v"
   );
   if (!elementExists) throw new Error("element not found!|||404");
