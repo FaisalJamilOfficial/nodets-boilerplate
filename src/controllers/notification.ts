@@ -12,10 +12,7 @@ const { READ } = NOTIFICATION_STATUSES;
 
 /**
  * Add notification
- * @param {String} user user id
- * @param {String} type type
- * @param {String} message message id
- * @param {String} messenger messenger id
+ * @param {Object} notificationObj notification data
  * @returns {Object} notification data
  */
 export const addNotification = async (notificationObj: Notification) => {
@@ -24,10 +21,8 @@ export const addNotification = async (notificationObj: Notification) => {
 
 /**
  * @description Get notifications
- * @param {String} user user id
- * @param {Number} limit notifications limit
- * @param {Number} page notifications page number
- * @returns {[Object]} array of notifications
+ * @param {Object} params notifications fetching parameters
+ * @returns {Object[]} notifications data
  */
 export const getNotifications = async (params: GetNotificationsDTO) => {
   const { user } = params;
@@ -64,20 +59,7 @@ export const getNotifications = async (params: GetNotificationsDTO) => {
 
 /**
  * @description notify users
- * @param {Object} query users model query
- * @param {String} user user id
- * @param {Object} socketData socket event data
- * @param {Object} firebaseData firebase notification data
- * @param {Object} notificationData notifications model data
- * @param {String} event socket event name
- * @param {String} type notification type
- * @param {String} title notification title
- * @param {String} body notification body
- * @param {Boolean} isGrouped notifications multicasting check
- * @param {Boolean} useFirebase firebase usage check
- * @param {Boolean} useDatabase database usage check
- * @param {Boolean} useSocket socket usage check
- * @returns {null} null
+ * @param {Object} params notify users parameters
  */
 export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
   const {
@@ -138,7 +120,6 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
 /**
  * @description read all notifications
  * @param {String} user user id
- * @returns {Object} notification data
  */
 export const readNotifications = async (user: string): Promise<void> => {
   const notificationObj = { status: READ };

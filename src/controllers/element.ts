@@ -10,7 +10,7 @@ import { GetElementsDTO } from "../dto/element";
 
 /**
  * @description Add element
- * @param {String} title element title
+ * @param {Object} elementObj element data
  * @returns {Object} element data
  */
 export const addElement = async (elementObj: Element) => {
@@ -20,6 +20,7 @@ export const addElement = async (elementObj: Element) => {
 /**
  * @description Update element data
  * @param {String} element element id
+ * @param {Object} elementObj element data
  * @returns {Object} element data
  */
 export const updateElement = async (
@@ -69,11 +70,9 @@ export const getElement = async (element: string) => {
 };
 
 /**
- * @description Get Elements
- * @param {String} keyword search keyword
- * @param {Number} limit Elements limit
- * @param {Number} page Elements page number
- * @returns {Object} element data
+ * @description Get elements
+ * @param {Object} params elements fetching parameters
+ * @returns {Object[]} elements data
  */
 export const getElements = async (params: GetElementsDTO) => {
   let { limit, page } = params;

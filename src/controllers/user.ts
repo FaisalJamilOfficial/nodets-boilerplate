@@ -20,10 +20,7 @@ const { ADMIN } = USER_TYPES;
 
 /**
  * @description Add user
- * @param {String} email user email address
- * @param {String} password user password
- * @param {String} phone user phone number
- * @param {String} type user type
+ * @param {Object} userObj user data
  * @returns {Object} user data
  */
 export const addUser = async (userObj: User) => {
@@ -36,19 +33,7 @@ export const addUser = async (userObj: User) => {
 /**
  * @description Update user
  * @param {String} user user id
- * @param {String} email user email address
- * @param {String} phone user phone number
- * @param {String} password user password
- * @param {String} type user type
- * @param {String} status user status
- * @param {Boolean} isOnline user connectivity state
- * @param {Object} fcm user fcm
- * @param {String} firstName user first name
- * @param {String} lastName user last name
- * @param {[object]} images user images array
- * @param {[number]} coordinates user location coordinates
- * @param {String} customer customer id
- * @param {String} admin admin id
+ * @param {Object} userObj user data
  * @returns {Object} user data
  */
 export const updateUser = async (user: string, userObj: updateUserDTO) => {
@@ -153,7 +138,7 @@ export const deleteUser = async (user: string) => {
 
 /**
  * @description Get user
- * @param {String} user user id
+ * @param {Object} params user fetching parameters
  * @returns {Object} user data
  */
 export const getUser = async (params: getUserDTO) => {
@@ -176,7 +161,7 @@ export const getUser = async (params: getUserDTO) => {
 
 /**
  * @description Get user profile
- * @param {String} user user id
+ * @param {Object} params user fetching parameters
  * @returns {Object} user data
  */
 export const getUserProfile = async (params: getUserProfileDTO) => {
@@ -193,13 +178,8 @@ export const getUserProfile = async (params: getUserProfileDTO) => {
 
 /**
  * @description Get users
- * @param {String} keyword users search keyword
- * @param {String} keyword search keyword
- * @param {String} type users type
- * @param {String} user user id not match
- * @param {Number} limit users limit
- * @param {Number} page users page number
- * @returns {[Object]} array of users
+ * @param {Object} params users fetching parameters
+ * @returns {Object[]} users data
  */
 export const getUsers = async (params: GetUsersDTO) => {
   const { type, user } = params;

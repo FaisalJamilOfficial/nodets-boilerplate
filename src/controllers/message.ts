@@ -27,10 +27,7 @@ const { ObjectId } = Types;
 
 /**
  * @description Add message
- * @param {String} userFrom sender user id
- * @param {String} userTo receiver user id
- * @param {String} text message text
- * @param {[object]} attachments message attachments
+ * @param {Object} messageObj message data
  * @returns {Object} message data
  */
 export const addMessage = async (messageObj: Message) => {
@@ -39,12 +36,8 @@ export const addMessage = async (messageObj: Message) => {
 
 /**
  * @description Get chat messages
- * @param {String} conversation conversation id
- * @param {Number} limit messages limit
- * @param {Number} page messages page number
- * @param {String} text message text
- * @param {[object]} attachments OPTIONAL message attachments
- * @returns {Object} message data
+ * @param {Object} params messages fetching parameters
+ * @returns {Object[]} messages data
  */
 export const getMessages = async (params: GetMessagesDTO) => {
   const { conversation } = params;
@@ -86,8 +79,7 @@ export const getMessages = async (params: GetMessagesDTO) => {
 /**
  * @description Update message data
  * @param {String} message message id
- * @param {String} text message text
- * @param {String} status message status
+ * @param {Object} messageObj message data
  * @returns {Object} message data
  */
 export const updateMessage = async (
@@ -121,8 +113,7 @@ export const deleteMessage = async (message: string) => {
 
 /**
  * @description Add conversation
- * @param {String} userFrom sender user id
- * @param {String} userTo receiver user id
+ * @param {Object} conversationObj conversation data
  * @returns {Object} conversation data
  */
 export const addConversation = async (conversationObj: Conversation) => {
@@ -154,11 +145,8 @@ export const addConversation = async (conversationObj: Conversation) => {
 
 /**
  * @description Get user conversations
- * @param {String} user user id
- * @param {String} keyword search keyword
- * @param {Number} limit conversations limit
- * @param {Number} page conversations page number
- * @returns {[Object]} array of conversations
+ * @param {Object} params conversations fetching parameters
+ * @returns {Object[]} conversations data
  */
 export const getConversations = async (params: GetConversationsDTO) => {
   const { user } = params;
@@ -245,10 +233,7 @@ export const getConversations = async (params: GetConversationsDTO) => {
 
 /**
  * @description Send message
- * @param {String} userFrom sender user id
- * @param {String} userTo receiver user id
- * @param {String} text message text
- * @param {[object]} attachments message attachments
+ * @param {Object} params send message data
  * @returns {Object} message data
  */
 export const send = async (params: SendMessageDTO) => {
@@ -299,9 +284,7 @@ export const send = async (params: SendMessageDTO) => {
 
 /**
  * @description read all messages
- * @param {String} conversation message id
- * @param {String} userTo user id
- * @returns {Object} message data
+ * @param {Object} params read messages data
  */
 export const readMessages = async (params: Partial<Message>): Promise<void> => {
   const { conversation, userTo } = params;

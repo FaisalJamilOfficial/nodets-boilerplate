@@ -14,7 +14,7 @@ import {
 
 /**
  * @description Add paymentAccount
- * @param {String} user user id
+ * @param {Object} paymentAccountObj paymentAccount data
  * @returns {Object} paymentAccount data
  */
 export const addPaymentAccount = async (paymentAccountObj: PaymentAccount) => {
@@ -31,8 +31,7 @@ export const addPaymentAccount = async (paymentAccountObj: PaymentAccount) => {
 
 /**
  * @description Get paymentAccount
- * @param {String} paymentAccount paymentAccount id
- * @param {String} user user id
+ * @param {Object} params paymentAccount fetching parameters
  * @returns {Object} paymentAccount data
  */
 export const getPaymentAccount = async (params: GetPaymentAccountDTO) => {
@@ -52,10 +51,8 @@ export const getPaymentAccount = async (params: GetPaymentAccountDTO) => {
 
 /**
  * @description Get paymentAccounts
- * @param {String} keyword search keyword
- * @param {Number} limit paymentAccounts limit
- * @param {Number} page paymentAccounts page number
- * @returns {Object} paymentAccount data
+ * @param {Object} params paymentAccounts fetching parameters
+ * @returns {Object[]} paymentAccounts data
  */
 export const getPaymentAccounts = async (params: GetPaymentAccountsDTO) => {
   const { user } = params;

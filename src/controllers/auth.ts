@@ -27,11 +27,8 @@ const {
 
 /**
  * @description Register user
- * @param {String} email user email address
- * @param {String} password user password
- * @param {String} phone user phone number
- * @param {String} type user type
- * @returns {Object} user data with token
+ * @param {Object} params user registration data
+ * @returns {String} user token
  */
 export const register = async (params: User) => {
   const { type } = params;
@@ -53,10 +50,8 @@ export const register = async (params: User) => {
 
 /**
  * @description Login user
- * @param {String} email user email address
- * @param {String} password user password
- * @param {String} type user type
- * @returns {Object} user data with token
+ * @param {Object} params user login data
+ * @returns {Object} user token
  */
 export const login = async (params: LoginDTO) => {
   const { email, password, type } = params;
@@ -84,8 +79,8 @@ export const login = async (params: LoginDTO) => {
 
 /**
  * @description Send reset password email
- * @param {String} email user email address
- * @returns {Object} user password reset result
+ * @param {Object} params user email data
+ * @returns {Object} user password reset data
  */
 export const emailResetPassword = async (params: SendEmailDTO) => {
   const { email } = params;
@@ -104,8 +99,8 @@ export const emailResetPassword = async (params: SendEmailDTO) => {
 
 /**
  * @description Send email verification email
- * @param {String} email user email address
- * @returns {Object} user email verification result
+ * @param {Object} params user email data
+ * @returns {Object} user email verification data
  */
 export const emailVerifyEmail = async (params: SendEmailDTO) => {
   const { email } = params;
@@ -124,9 +119,8 @@ export const emailVerifyEmail = async (params: SendEmailDTO) => {
 
 /**
  * @description Send welcome email
- * @param {String} email user email address
- * @param {String} name user name
- * @returns {Object} user welcome result
+ * @param {Object} params user email data
+ * @returns {Object} user welcome data
  */
 export const emailWelcomeUser = async (params: SendEmailDTO) => {
   const { email, name } = params;
@@ -139,9 +133,8 @@ export const emailWelcomeUser = async (params: SendEmailDTO) => {
 
 /**
  * @description Generate user email token
- * @param {String} email user email address
- * @param {Date} tokenExpirationTime email token expiration time
- * @returns {Object} user email token
+ * @param {Object} params user token generation data
+ * @returns {Object} user token data
  */
 export const generateEmailToken = async (params: GenerateEmailTokenDTO) => {
   const { email, tokenExpirationTime } = params;
@@ -162,10 +155,7 @@ export const generateEmailToken = async (params: GenerateEmailTokenDTO) => {
 
 /**
  * @description Reset user password
- * @param {String} user user id
- * @param {String} password user password
- * @param {String} token reset password token
- * @returns {Object} user password reset result
+ * @param {Object} params user password reset data
  */
 export const resetPassword = async (
   params: ResetPasswordDTO
@@ -187,9 +177,7 @@ export const resetPassword = async (
 
 /**
  * @description Email user email
- * @param {String} user user id
- * @param {String} token user email token
- * @returns {Object} user email verification result
+ * @param {Object} params user email verification data
  */
 export const verifyUserEmail = async (
   params: VerifyUserEmailDTO
@@ -208,21 +196,4 @@ export const verifyUserEmail = async (
   userExists.isEmailVerified = true;
   await userExists.save();
   await userTokenExists.delete();
-};
-
-/**
- * @description register super admin
- * @param {String} email user email address
- * @param {String} password user password
- * @param {String} type user type
- * @returns {Object} user data with token
- */
-export const addAdmin = async (params: User) => {
-  const { email, password, type } = params;
-
-  const userObj: any = {};
-  if (email) userObj.email = email;
-  if (password) userObj.password = password;
-  if (type) userObj.type = type;
-  return (await userController.addUser(userObj)).getSignedjwtToken();
 };

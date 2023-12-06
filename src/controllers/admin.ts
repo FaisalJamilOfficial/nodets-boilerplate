@@ -9,8 +9,8 @@ import { GetAdminsDTO } from "../dto/admin";
 // destructuring assignments
 
 /**
- * @description @description Add admin
- * @param {String} user user id
+ * @description Add admin
+ * @param {Object} adminObj admin data
  * @returns {Object} admin data
  */
 export const addAdmin = async (adminObj: Admin) => {
@@ -20,6 +20,7 @@ export const addAdmin = async (adminObj: Admin) => {
 /**
  * @description Update admin data
  * @param {String} user user id
+ * @param {Object} adminObj admin data
  * @returns {Object} admin data
  */
 export const updateAdmin = async (user: string, adminObj: Partial<Admin>) => {
@@ -65,9 +66,8 @@ export const getAdmin = async (user: string) => {
 
 /**
  * @description Get admins
- * @param {Number} limit admins limit
- * @param {Number} page admins page number
- * @returns {Object} admin data
+ * @param {Object} params admins fetching parameters
+ * @returns {Object[]} admins data
  */
 export const getAdmins = async (params: GetAdminsDTO) => {
   let { limit, page } = params;
@@ -98,7 +98,6 @@ export const getAdmins = async (params: GetAdminsDTO) => {
 
 /**
  * @description Clean DB
- * @returns {Object} success status
  */
 export const cleanDB = async (): Promise<void> => {
   const models: any = [];

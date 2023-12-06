@@ -10,7 +10,7 @@ import { GetCustomersDTO } from "../dto/customer";
 
 /**
  * @description Add customer
- * @param {String} user user id
+ * @param {Object} customerObj customer data
  * @returns {Object} customer data
  */
 export const addCustomer = async (customerObj: Customer) => {
@@ -20,6 +20,7 @@ export const addCustomer = async (customerObj: Customer) => {
 /**
  * @description Update customer data
  * @param {String} user user id
+ * @param {Object} customerObj customer data
  * @returns {Object} customer data
  */
 export const updateCustomer = async (
@@ -70,10 +71,8 @@ export const getCustomer = async (user: string) => {
 
 /**
  * @description Get customers
- * @param {String} keyword search keyword
- * @param {Number} limit customers limit
- * @param {Number} page customers page number
- * @returns {Object} customer data
+ * @param {Object} params customers fetching parameters
+ * @returns {Object[]} customers data
  */
 export const getCustomers = async (params: GetCustomersDTO) => {
   let { limit, page } = params;

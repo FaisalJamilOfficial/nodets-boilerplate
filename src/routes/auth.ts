@@ -133,7 +133,7 @@ router.post(
     const { email, password, type } = req.body;
     const args = { email, password, type: type ?? ADMIN, name: type };
     if (secret !== SECRET) throw new Error("Invalid SECRET!|||400");
-    const response = await authController.addAdmin(args);
+    const response = await authController.register(args);
     res.json({ token: response });
   })
 );
