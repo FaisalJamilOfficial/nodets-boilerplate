@@ -14,7 +14,7 @@ import SocketManager from "./utils/socket-manager";
 import errorHandler from "./middlewares/error-handler";
 
 // destructuring assignments
-const { NODE_ENV, MONGO_URL } = process.env;
+const { NODE_ENV, MONGO_URI } = process.env;
 
 // variable initializations
 
@@ -34,7 +34,7 @@ const serverFunction = async () => {
 
     new SocketManager().initializeSocket({ server, app });
 
-    const connect = mongoose.connect(MONGO_URL || "");
+    const connect = mongoose.connect(MONGO_URI || "");
 
     connect.then(
       (_db) => {
