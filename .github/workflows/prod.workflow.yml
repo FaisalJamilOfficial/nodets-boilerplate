@@ -30,7 +30,7 @@ jobs:
 
   load-node-app:
     name: Load Node App
-    runs-on: production-server
+    runs-on: ubuntu-latest # production-server
     needs: build-node-app
     # strategy:
     #   matrix:
