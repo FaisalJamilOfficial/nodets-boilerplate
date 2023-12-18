@@ -2,12 +2,12 @@
 // import admin from "firebase-admin";
 
 // file imports
-import serviceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
+import ServiceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
 
 // variable initializations
+const serviceAccount: any = ServiceAccount;
 // const connection = admin.initializeApp({
-//   // typescript-error
-//   // credential: admin.credential.cert(serviceAccount),
+//   credential: admin.credential.cert(serviceAccount),
 // });
 
 class FirebaseManager {
