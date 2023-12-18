@@ -66,7 +66,7 @@ If you didn't do this, contact us here ${EMAIL_USER}`;
    */
   getEmailVerificationEmailTemplate(params: any): string {
     const { user, token } = params;
-    const link = `${process.env.BASE_URL}api/v1/users/emails?user=${user}&token=${token}`;
+    const link = `${BASE_URL}api/v1/users/emails?user=${user}&token=${token}`;
     return `
 Please click on the link below to verify your email address, 
 ${link}

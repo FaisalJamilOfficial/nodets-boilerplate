@@ -14,7 +14,7 @@ import SocketManager from "./utils/socket-manager";
 import errorHandler from "./middlewares/error-handler";
 
 // destructuring assignments
-const { NODE_ENV, MONGO_URI } = process.env;
+const { NODE_ENV, MONGO_URI, PORT } = process.env;
 
 // variable initializations
 
@@ -38,7 +38,7 @@ const serverFunction = async () => {
 
     connect.then(
       (_db) => {
-        const port = process.env.PORT || "5002";
+        const port = PORT || "5002";
         server.listen(port, () => {
           console.log(`***App is running at port: ${chalk.underline(port)}***`);
         });
