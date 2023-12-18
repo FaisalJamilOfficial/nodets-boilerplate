@@ -3,7 +3,7 @@ import { Request } from "express";
 
 export type IRequest = Request & {
   user: any;
-  files: any[];
+  files: any;
   file: any;
   io: object;
 };
