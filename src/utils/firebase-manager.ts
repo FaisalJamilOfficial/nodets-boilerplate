@@ -41,8 +41,11 @@ class FirebaseManager {
     //   .messaging()
     //   .sendToDevice(fcms, payload)
     //   .then((response) => {
-    //     console.log("response", response);
-    //     console.log("response.results", response.results);
+    //     console.log("response =>", JSON.stringify(response, null, 4));
+    //     console.log(
+    //       "response.results =>",
+    //       JSON.stringify(response.results, null, 4)
+    //     );
     //   })
     //   .catch((error) => console.error(error));
   }
@@ -94,7 +97,7 @@ class FirebaseManager {
     // connection
     //   .messaging()
     //   .sendMulticast(message)
-    //   .then((res) => console.log(res))
+    //   .then((res) => console.log("res =>", JSON.stringify(res, null, 4)))
     //   .catch((error) => console.error(error));
   }
 }
