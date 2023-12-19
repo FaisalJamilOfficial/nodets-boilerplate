@@ -8,6 +8,7 @@ import { USER_TYPES } from "../configs/enum";
 import { exceptionHandler } from "../middlewares/exception-handler";
 import {
   verifyOTP,
+  verifySecret,
   verifyToken,
   verifyUser,
   verifyUserToken,
@@ -128,11 +129,11 @@ router.post(
 
 router.post(
   "/register/admin",
+  verifySecret,
   exceptionHandler(async (req: Request, res: Response) => {
     const { secret } = req.headers;
     const { email, password, type } = req.body;
     const args = { email, password, type: type ?? ADMIN, name: type };
-    if (secret !== SECRET) throw new Error("Invalid SECRET!|||400");
     const response = await authController.register(args);
     res.json({ token: response });
   })

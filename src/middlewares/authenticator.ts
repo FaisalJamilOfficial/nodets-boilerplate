@@ -9,7 +9,7 @@ import { exceptionHandler } from "./exception-handler";
 import { USER_STATUSES, USER_TYPES } from "../configs/enum";
 
 // destructuring assignments
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, SECRET } = process.env;
 const { ACTIVE, DELETED } = USER_STATUSES;
 const { CUSTOMER, ADMIN, SUPER_ADMIN } = USER_TYPES;
 
@@ -124,3 +124,11 @@ export const checkUserPhoneExists = exceptionHandler(
     else next(new Error("User not found!|||404"));
   }
 );
+
+export const verifySecret = (req: IRequest, _res: any, next: any): void => {
+  const { secret } = req.headers;
+  console.log("secret =>", secret);
+  console.log("SECRET =>", SECRET);
+  if (secret === SECRET) next();
+  else throw new Error("Invalid SECRET!|||400");
+};

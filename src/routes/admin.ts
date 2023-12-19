@@ -3,7 +3,11 @@ import express, { Request, Response } from "express";
 
 // file imports
 import * as adminController from "../controllers/admin";
-import { verifyToken, verifyAdmin } from "../middlewares/authenticator";
+import {
+  verifyToken,
+  verifyAdmin,
+  verifySecret,
+} from "../middlewares/authenticator";
 import { exceptionHandler } from "../middlewares/exception-handler";
 
 // destructuring assignments
@@ -16,9 +20,8 @@ router.delete(
   "/clean/DB",
   verifyToken,
   verifyAdmin,
+  verifySecret,
   exceptionHandler(async (req: Request, res: Response) => {
-    const { secret } = req.headers;
-    if (secret !== SECRET) throw new Error("Invalid SECRET!|||400");
     await adminController.cleanDB();
     res.json({ message: "Operation completed successfully!" });
   })
