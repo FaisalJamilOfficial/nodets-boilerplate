@@ -127,8 +127,6 @@ export const checkUserPhoneExists = exceptionHandler(
 
 export const verifySecret = (req: IRequest, _res: any, next: any): void => {
   const { secret } = req.headers;
-  console.log("secret =>", secret);
-  console.log("SECRET =>", SECRET);
   if (secret === SECRET) next();
   else throw new Error("Invalid SECRET!|||400");
 };
