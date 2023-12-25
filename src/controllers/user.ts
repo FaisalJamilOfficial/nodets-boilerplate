@@ -44,7 +44,6 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
     image,
     customer,
     admin,
-    isOnline,
     coordinates,
     fcm,
     shallRemoveFCM,
@@ -59,7 +58,6 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
   if (!userExists) throw new Error("User not found!|||404");
 
   if (password) await userExists.setPassword(password);
-  if (typeof isOnline === "boolean") userExists.isOnline = isOnline;
   if (fcm) {
     if (fcm?.token && fcm?.device) {
       let alreadyExists = false;
