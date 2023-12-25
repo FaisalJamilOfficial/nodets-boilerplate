@@ -57,7 +57,10 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
   let userExists: any = await UserModel.findById(user);
   if (!userExists) throw new Error("User not found!|||404");
 
-  if (password) await userExists.setPassword(password);
+  if (password) {
+    await userExists.setPassword(password);
+    delete userObj.password;
+  }
   if (fcm) {
     if (fcm?.token && fcm?.device) {
       let alreadyExists = false;
