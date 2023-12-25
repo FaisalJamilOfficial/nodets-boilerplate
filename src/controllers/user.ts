@@ -38,11 +38,7 @@ export const addUser = async (userObj: User) => {
  */
 export const updateUser = async (user: string, userObj: updateUserDTO) => {
   const {
-    email,
-    phone,
     password,
-    type,
-    status,
     firstName,
     lastName,
     image,
@@ -62,11 +58,8 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
   let userExists: any = await UserModel.findById(user);
   if (!userExists) throw new Error("User not found!|||404");
 
-  if (email) userExists.email = email;
   if (password) await userExists.setPassword(password);
-  if (phone) userExists.phone = phone;
-  if (type) userExists.type = type;
-  if (status) userExists.status = status;
+  if (typeof isOnline === "boolean") userExists.isOnline = isOnline;
   if (fcm) {
     if (fcm?.token && fcm?.device) {
       let alreadyExists = false;
@@ -85,9 +78,6 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
       userExists.fcms = userExists.fcms.filter(
         (element: any) => element?.device !== device
       );
-  if (typeof isOnline === "boolean") userExists.isOnline = isOnline;
-  if (firstName) userExists.firstName = firstName;
-  if (lastName) userExists.lastName = lastName;
   if (firstName || lastName)
     userExists.name =
       (userExists.firstName || "") + " " + (userExists.lastName || "");
@@ -104,7 +94,6 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
         "Please enter location longitude and latitude both!|||400"
       );
   }
-
   if (customer)
     if (await CustomerModel.exists({ _id: customer })) {
       userExists.customer = customer;
@@ -116,6 +105,7 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
       userExists.isAdmin = true;
     } else throw new Error("Admin not found!|||404");
 
+  userExists = { ...userExists._doc, ...userObj };
   userExists = await UserModel.findByIdAndUpdate(userExists._id, userExists, {
     new: true,
   }).select("-createdAt -updatedAt -__v");
