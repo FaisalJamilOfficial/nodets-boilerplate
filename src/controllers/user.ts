@@ -80,8 +80,7 @@ export const updateUser = async (user: string, userObj: updateUserDTO) => {
         (element: any) => element?.device !== device
       );
   if (firstName || lastName)
-    userExists.name =
-      (userExists.firstName || "") + " " + (userExists.lastName || "");
+    userExists.name = (firstName || "") + " " + (lastName || "");
   if (image) {
     if (userExists.image)
       new FilesDeleter().deleteImage({ image: userExists.image });
