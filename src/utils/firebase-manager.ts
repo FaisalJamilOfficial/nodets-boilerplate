@@ -80,7 +80,8 @@ class FirebaseManager {
       apns: {
         payload: {
           aps: {
-            "mutable-content": 1,
+            mutableContent: true,
+            sound: "default",
           },
         },
         fcm_options: {
