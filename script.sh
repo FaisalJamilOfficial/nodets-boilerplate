@@ -19,7 +19,7 @@ fi
 # Check if Yarn is installed
 if ! command -v yarn &> /dev/null; then
     echo "Yarn is not installed. Installing it now..."
-    npm install -g yarn
+    sudo npm install -g yarn
     # curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -;
     # echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list; 
     # sudo apt update && sudo apt install yarn
@@ -31,7 +31,7 @@ fi
 # Check if pm2 is installed
 if ! command -v pm2 &> /dev/null; then
     echo "PM2 is not installed. Installing it now..."
-    npm install -g pm2
+    sudo npm install -g pm2
     echo "PM2 has been installed."
     pm2 start ./dist/app.js --name app-backend;
     echo "PM2 process with name app-backend has been started."
