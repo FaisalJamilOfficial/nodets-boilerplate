@@ -1,9 +1,10 @@
 // module imports
-// import _stripe from "stripe";
+// import Stripe from "stripe";
 
 // file imports
 import * as paymentAccountController from "../controllers/payment-account";
 import * as userController from "../controllers/user";
+import userModel from "../models/user";
 import { PAYMENT_ACCOUNT_TYPES } from "../configs/enum";
 
 // destructuring assignments
@@ -11,7 +12,7 @@ const { STRIPE_SECRET_KEY, STRIPE_ENDPOINT_SECRET } = process.env;
 const { STRIPE_ACCOUNT, STRIPE_CUSTOMER } = PAYMENT_ACCOUNT_TYPES;
 
 // variable initializations
-// const stripe = _stripe(STRIPE_SECRET_KEY);
+// const stripe = new Stripe(STRIPE_SECRET_KEY || "");
 const CURRENCY = "usd";
 
 class StripeManager {
@@ -47,6 +48,39 @@ class StripeManager {
    */
   async deleteCustomer(customerId: string) {
     // return await stripe.customers.del(customerId);
+  }
+
+  /**
+   * @description Delete stripe customers
+   * @returns {Object} stripe customers deletion response
+   */
+  async deleteAllCustomers() {
+    // const customersObj = await stripe.customers.list({ limit: 500 });
+    // const customers = customersObj.data;
+    // for (let index = 0; index < customers.length; index++) {
+    //   const element = customers[index];
+    //   try {
+    //     this.deleteCustomer(element.id);
+    //   } catch (e) {
+    //     console.log("e =>", e);
+    //   }
+    // }
+  }
+
+  /**
+   * @description Create stripe customers
+   * @returns {Object} stripe customers creation response
+   */
+  async createAllCustomers() {
+    const users = await userModel.find({});
+    for (let index = 0; index < users.length; index++) {
+      const element = users[index];
+      const id = "";
+      await this.createCustomer({
+        id: element?._id.toString(),
+        email: element?.email,
+      });
+    }
   }
 
   /**
@@ -268,20 +302,15 @@ class StripeManager {
     const { amount, currency, paymentMethodTypes, customer, paymentMethod } =
       params;
     const paymentIntentObj: any = {
-      amount: amount * 100,
+      amount: Number(amount * 100).toFixed(0),
       currency: currency ?? "usd",
-      // confirmation_method: "manual",
-      capture_method: "manual",
       setup_future_usage: "on_session",
       customer,
     };
-    if (paymentMethod) {
-      paymentIntentObj.payment_method = paymentMethod;
-      paymentIntentObj.confirm = true;
-      paymentIntentObj.off_session = true;
-    }
+    if (paymentMethod) paymentIntentObj.payment_method = paymentMethod;
     if (paymentMethodTypes)
       paymentIntentObj.payment_method_types = paymentMethodTypes;
+
     // return await stripe.paymentIntents.create(paymentIntentObj);
   }
 
