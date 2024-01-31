@@ -23,7 +23,7 @@ export const addElement = async (elementObj: Element) => {
  * @param {Object} elementObj element data
  * @returns {Object} element data
  */
-export const updateElement = async (
+export const updateElementById = async (
   element: string,
   elementObj: Partial<Element>
 ) => {
@@ -35,6 +35,24 @@ export const updateElement = async (
     elementObj,
     { new: true }
   );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Update element data
+ * @param {Object} query element data
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
+ */
+export const updateElement = async (
+  query: Partial<Element>,
+  elementObj: Partial<Element>
+) => {
+  if (!query) throw new Error("Please enter query!|||400");
+  const elementExists = await ElementModel.findOneAndUpdate(query, elementObj, {
+    new: true,
+  });
   if (!elementExists) throw new Error("element not found!|||404");
   return elementExists;
 };

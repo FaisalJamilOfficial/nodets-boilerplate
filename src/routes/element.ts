@@ -50,7 +50,7 @@ router
       const { title } = req.body;
       const args = { title };
       element = element?.toString() || "";
-      const response = await elementController.updateElement(element, args);
+      const response = await elementController.updateElementById(element, args);
       res.json(response);
     })
   )
