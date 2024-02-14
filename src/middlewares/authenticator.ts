@@ -9,7 +9,7 @@ import { exceptionHandler } from "./exception-handler";
 import { USER_STATUSES, USER_TYPES } from "../configs/enum";
 
 // destructuring assignments
-const { JWT_SECRET, SECRET } = process.env;
+const { JWT_SECRET, API_KEY } = process.env;
 const { ACTIVE, DELETED } = USER_STATUSES;
 const { CUSTOMER, ADMIN, SUPER_ADMIN } = USER_TYPES;
 
@@ -126,7 +126,7 @@ export const checkUserPhoneExists = exceptionHandler(
 );
 
 export const verifySecret = (req: IRequest, _res: any, next: any): void => {
-  const { secret } = req.headers;
-  if (secret === SECRET) next();
-  else throw new Error("Invalid SECRET!|||400");
+  const { api_key } = req.headers;
+  if (api_key === API_KEY) next();
+  else throw new Error("Invalid API key!|||400");
 };

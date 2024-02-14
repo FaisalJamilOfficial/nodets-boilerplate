@@ -17,7 +17,6 @@ import { IRequest } from "../configs/types";
 
 // destructuring assignments
 const { ADMIN, CUSTOMER } = USER_TYPES;
-const { SECRET } = process.env;
 
 // variable initializations
 const router = express.Router();
@@ -131,7 +130,6 @@ router.post(
   "/register/admin",
   verifySecret,
   exceptionHandler(async (req: Request, res: Response) => {
-    const { secret } = req.headers;
     const { email, password, type } = req.body;
     const args = { email, password, type: type ?? ADMIN, name: type };
     const response = await authController.register(args);
