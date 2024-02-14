@@ -72,7 +72,7 @@ router
     exceptionHandler(async (req: Request, res: Response) => {
       let { element } = req.query;
       element = element?.toString() || "";
-      const response = await elementController.deleteElement(element);
+      const response = await elementController.deleteElementById(element);
       res.json(response);
     })
   );
@@ -83,7 +83,7 @@ router.get(
   verifyAdmin,
   exceptionHandler(async (req: Request, res: Response) => {
     const { element } = req.params;
-    const response = await elementController.getElement(element);
+    const response = await elementController.getElementById(element);
     res.json(response);
   })
 );

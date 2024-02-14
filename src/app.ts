@@ -38,7 +38,7 @@ const serverFunction = async () => {
 
     connect.then(
       (_db) => {
-        const port = PORT || "5002";
+        const port = PORT || "5000";
         server.listen(port, () => {
           console.log(`***App is running at port: ${chalk.underline(port)}***`);
         });

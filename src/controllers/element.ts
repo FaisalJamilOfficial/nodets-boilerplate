@@ -49,7 +49,8 @@ export const updateElement = async (
   query: Partial<Element>,
   elementObj: Partial<Element>
 ) => {
-  if (!query) throw new Error("Please enter query!|||400");
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
   const elementExists = await ElementModel.findOneAndUpdate(query, elementObj, {
     new: true,
   });
@@ -62,7 +63,7 @@ export const updateElement = async (
  * @param {String} element element id
  * @returns {Object} element data
  */
-export const deleteElement = async (element: string) => {
+export const deleteElementById = async (element: string) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
@@ -72,15 +73,43 @@ export const deleteElement = async (element: string) => {
 };
 
 /**
+ * @description Delete element
+ * @param {String} query element data
+ * @returns {Object} element data
+ */
+export const deleteElement = async (query: Partial<Element>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await ElementModel.findOneAndDelete(query);
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
  * @description Get element
  * @param {String} element element id
  * @returns {Object} element data
  */
-export const getElement = async (element: string) => {
+export const getElementById = async (element: string) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
   const elementExists = await ElementModel.findById(element).select(
+    "-createdAt -updatedAt -__v"
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get element
+ * @param {Object} query element data
+ * @returns {Object} element data
+ */
+export const getElement = async (query: Partial<Element>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await ElementModel.findOne(query).select(
     "-createdAt -updatedAt -__v"
   );
   if (!elementExists) throw new Error("element not found!|||404");
@@ -117,4 +146,26 @@ export const getElements = async (params: GetElementsDTO) => {
     },
   ]);
   return { data: [], totalCount: 0, totalPages: 0, ...result };
+};
+
+/**
+ * @description Check element existence
+ * @param {Object} query element data
+ * @returns {Boolean} element existence status
+ */
+export const checkElementExistence = async (query: Partial<Element>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await ElementModel.exists(query);
+};
+
+/**
+ * @description Count elements
+ * @param {Object} query element data
+ * @returns {Number} elements count
+ */
+export const countElements = async (query: Partial<Element>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await ElementModel.countDocuments(query);
 };

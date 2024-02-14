@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 
 // file imports
 import * as messageController from "../controllers/message";
+import * as conversationController from "../controllers/conversation";
 import directories from "../configs/directories";
 import { verifyToken, verifyUser } from "../middlewares/authenticator";
 import { exceptionHandler } from "../middlewares/exception-handler";
@@ -51,7 +52,7 @@ router
         limit: Number(limit),
         page: Number(page),
       };
-      const response = await messageController.getMessages(args);
+      const response = await messageController.getElements(args);
       res.json(response);
     })
   )
@@ -61,7 +62,7 @@ router
       const { text, status } = req.body;
       const args = { text, status };
       message = message?.toString() || "";
-      const response = await messageController.updateMessage(message, args);
+      const response = await messageController.updateElementById(message, args);
       res.json(response);
     })
   )
@@ -90,7 +91,7 @@ router.get(
       page: Number(page),
       keyword,
     };
-    const response = await messageController.getConversations(args);
+    const response = await conversationController.getElements(args);
     res.json(response);
   })
 );

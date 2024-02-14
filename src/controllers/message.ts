@@ -3,43 +3,132 @@ import { isValidObjectId, Types } from "mongoose";
 
 // file imports
 import * as notificationController from "./notification";
-import ConversationModel from "../models/conversation";
+import * as conversationController from "./conversation";
+import * as userController from "./user";
 import MessageModel from "../models/message";
-import UserModel from "../models/user";
-import { Conversation } from "../interfaces/conversation";
 import { Message } from "../interfaces/message";
-import {
-  GetMessagesDTO,
-  GetConversationsDTO,
-  SendMessageDTO,
-} from "../dto/message";
-import {
-  CONVERSATION_STATUSES,
-  MESSAGE_STATUSES,
-  NOTIFICATION_TYPES,
-} from "../configs/enum";
+import { GetMessagesDTO, SendMessageDTO } from "../dto/message";
+import { MESSAGE_STATUSES, NOTIFICATION_TYPES } from "../configs/enum";
 
 // destructuring assignments
-const { PENDING, ACCEPTED, REJECTED } = CONVERSATION_STATUSES;
 const { NEW_MESSAGE } = NOTIFICATION_TYPES;
 const { READ } = MESSAGE_STATUSES;
 const { ObjectId } = Types;
 
 /**
- * @description Add message
- * @param {Object} messageObj message data
- * @returns {Object} message data
+ * @description Add element
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
  */
-export const addMessage = async (messageObj: Message) => {
-  return await MessageModel.create(messageObj);
+export const addElement = async (elementObj: Message) => {
+  return await MessageModel.create(elementObj);
 };
 
 /**
- * @description Get chat messages
- * @param {Object} params messages fetching parameters
- * @returns {Object[]} messages data
+ * @description Update element data
+ * @param {String} element element id
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
  */
-export const getMessages = async (params: GetMessagesDTO) => {
+export const updateElementById = async (
+  element: string,
+  elementObj: Partial<Message>
+) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await MessageModel.findByIdAndUpdate(
+    element,
+    elementObj,
+    { new: true }
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Update element data
+ * @param {Object} query element data
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
+ */
+export const updateElement = async (
+  query: Partial<Message>,
+  elementObj: Partial<Message>
+) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await MessageModel.findOneAndUpdate(query, elementObj, {
+    new: true,
+  });
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Delete element
+ * @param {String} element element id
+ * @returns {Object} element data
+ */
+export const deleteElementById = async (element: string) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await MessageModel.findByIdAndDelete(element);
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Delete element
+ * @param {String} query element data
+ * @returns {Object} element data
+ */
+export const deleteElement = async (query: Partial<Message>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await MessageModel.findOneAndDelete(query);
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get element
+ * @param {String} element element id
+ * @returns {Object} element data
+ */
+export const getElementById = async (element: string) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await MessageModel.findById(element).select(
+    "-createdAt -updatedAt -__v"
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get element
+ * @param {Object} query element data
+ * @returns {Object} element data
+ */
+export const getElement = async (query: Partial<Message>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await MessageModel.findOne(query).select(
+    "-createdAt -updatedAt -__v"
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get elements
+ * @param {Object} params elements fetching parameters
+ * @returns {Object[]} elements data
+ */
+export const getElements = async (params: GetMessagesDTO) => {
   const { conversation } = params;
   let { page, limit, user1, user2 } = params;
   page = page - 1 || 0;
@@ -77,158 +166,25 @@ export const getMessages = async (params: GetMessagesDTO) => {
 };
 
 /**
- * @description Update message data
- * @param {String} message message id
- * @param {Object} messageObj message data
- * @returns {Object} message data
+ * @description Check element existence
+ * @param {Object} query element data
+ * @returns {Boolean} element existence status
  */
-export const updateMessage = async (
-  message: string,
-  messageObj: Partial<Message>
-) => {
-  if (!message) throw new Error("Please enter message id!|||400");
-  if (!isValidObjectId(message))
-    throw new Error("Please enter valid message id!|||400");
-  const messageExists = await MessageModel.findByIdAndUpdate(
-    message,
-    messageObj,
-    { new: true }
-  );
-  if (!messageExists) throw new Error("Message not found!|||404");
-
-  return messageExists;
+export const checkElementExistence = async (query: Partial<Message>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await MessageModel.exists(query);
 };
 
 /**
- * @description Delete message
- * @param {String} message message id
- * @returns {Object} message data
+ * @description Count elements
+ * @param {Object} query element data
+ * @returns {Number} elements count
  */
-export const deleteMessage = async (message: string) => {
-  if (!message) throw new Error("Please enter message id!|||400");
-  const messageExists = await MessageModel.findByIdAndDelete(message);
-  if (!messageExists) throw new Error("Please enter valid message id!|||400");
-  return messageExists;
-};
-
-/**
- * @description Add conversation
- * @param {Object} conversationObj conversation data
- * @returns {Object} conversation data
- */
-export const addConversation = async (conversationObj: Conversation) => {
-  const { userFrom, userTo } = conversationObj;
-  const query = {
-    $or: [
-      { $and: [{ userTo: userFrom }, { userFrom: userTo }] },
-      { $and: [{ userFrom }, { userTo }] },
-    ],
-  };
-
-  let conversationExists: any = await ConversationModel.findOne(query);
-  if (conversationExists) {
-    if (conversationExists.status === PENDING) {
-      if (userFrom === conversationExists.userTo.toString()) {
-        conversationExists.status = ACCEPTED;
-        await conversationExists.save();
-      }
-    } else if (conversationExists.status === REJECTED)
-      throw new Error("Conversation request rejected!|||400");
-  } else {
-    const conversationObj: any = {};
-    conversationObj.userTo = userTo;
-    conversationObj.userFrom = userFrom;
-    conversationExists = await ConversationModel.create(conversationObj);
-  }
-  return conversationExists;
-};
-
-/**
- * @description Get user conversations
- * @param {Object} params conversations fetching parameters
- * @returns {Object[]} conversations data
- */
-export const getConversations = async (params: GetConversationsDTO) => {
-  const { user } = params;
-  let { limit, page, keyword } = params;
-  page = page - 1 || 0;
-  limit = limit || 10;
-  const query: any = {};
-  const queryRegex: any = {};
-
-  if (user) query.$or = [{ userTo: user }, { userFrom: user }];
-  if (keyword) {
-    keyword = keyword.trim();
-    if (keyword !== "")
-      queryRegex.$or = [
-        { "lastMessage.text": { $regex: keyword, $options: "i" } },
-        { "user.name": { $regex: keyword, $options: "i" } },
-      ];
-  }
-
-  const [result] = await ConversationModel.aggregate([
-    { $match: query },
-    {
-      $lookup: {
-        from: "messages",
-        localField: "lastMessage",
-        foreignField: "_id",
-        as: "lastMessage",
-        pipeline: [
-          {
-            $project: {
-              text: 1,
-              userFrom: 1,
-              createdAt: 1,
-              "attachments.type": 1,
-            },
-          },
-        ],
-      },
-    },
-    { $unwind: { path: "$lastMessage" } },
-    { $sort: { "lastMessage.createdAt": -1 } },
-    {
-      $project: {
-        user: {
-          $cond: {
-            if: { $eq: ["$userTo", user] },
-            then: "$userFrom",
-            else: "$userTo",
-          },
-        },
-        lastMessage: 1,
-      },
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "user",
-        foreignField: "_id",
-        as: "user",
-        pipeline: [{ $project: { name: 1, image: 1 } }],
-      },
-    },
-    {
-      $unwind: { path: "$user" },
-    },
-    { $match: queryRegex },
-    {
-      $facet: {
-        totalCount: [{ $count: "totalCount" }],
-        data: [{ $skip: page * limit }, { $limit: limit }],
-      },
-    },
-    { $unwind: "$totalCount" },
-    {
-      $project: {
-        totalCount: "$totalCount.totalCount",
-        totalPages: { $ceil: { $divide: ["$totalCount.totalCount", limit] } },
-        data: 1,
-      },
-    },
-  ]);
-  return { data: [], totalCount: 0, totalPages: 0, ...result };
+export const countElements = async (query: Partial<Message>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await MessageModel.countDocuments(query);
 };
 
 /**
@@ -239,9 +195,9 @@ export const getConversations = async (params: GetConversationsDTO) => {
 export const send = async (params: SendMessageDTO) => {
   const { username } = params;
 
-  const conversation = await addConversation(params);
+  const conversation = await conversationController.addElement(params);
 
-  const message = await addMessage({
+  const message = await addElement({
     ...params,
     conversation: conversation._id,
   });
@@ -290,10 +246,10 @@ export const readMessages = async (params: Partial<Message>): Promise<void> => {
   const { conversation, userTo } = params;
   const messageObj = { status: READ };
   if (!userTo) throw new Error("Please enter userTo id!|||400");
-  if (!(await UserModel.exists({ _id: userTo })))
+  if (!(await userController.checkElementExistence({ _id: userTo })))
     throw new Error("Please enter valid userTo id!|||400");
   if (!conversation) throw new Error("Please enter conversation id!|||400");
-  if (!(await ConversationModel.exists({ _id: conversation })))
+  if (!(await conversationController.getElementById(conversation)))
     throw new Error("Please enter valid conversation id!|||400");
   await MessageModel.updateMany({ conversation, userTo }, messageObj);
 };

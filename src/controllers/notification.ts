@@ -1,4 +1,8 @@
+// module imports
+import { isValidObjectId } from "mongoose";
+
 // file imports
+import * as userController from "./user";
 import FirebaseManager from "../utils/firebase-manager";
 import SocketManager from "../utils/socket-manager";
 import NotificationModel from "../models/notification";
@@ -11,20 +15,123 @@ import { NOTIFICATION_STATUSES } from "../configs/enum";
 const { READ } = NOTIFICATION_STATUSES;
 
 /**
- * Add notification
- * @param {Object} notificationObj notification data
- * @returns {Object} notification data
+ * @description Add element
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
  */
-export const addNotification = async (notificationObj: Notification) => {
-  return await NotificationModel.create(notificationObj);
+export const addElement = async (elementObj: Notification) => {
+  return await NotificationModel.create(elementObj);
 };
 
 /**
- * @description Get notifications
- * @param {Object} params notifications fetching parameters
- * @returns {Object[]} notifications data
+ * @description Update element data
+ * @param {String} element element id
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
  */
-export const getNotifications = async (params: GetNotificationsDTO) => {
+export const updateElementById = async (
+  element: string,
+  elementObj: Partial<Notification>
+) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await NotificationModel.findByIdAndUpdate(
+    element,
+    elementObj,
+    { new: true }
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Update element data
+ * @param {Object} query element data
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
+ */
+export const updateElement = async (
+  query: Partial<Notification>,
+  elementObj: Partial<Notification>
+) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await NotificationModel.findOneAndUpdate(
+    query,
+    elementObj,
+    {
+      new: true,
+    }
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Delete element
+ * @param {String} element element id
+ * @returns {Object} element data
+ */
+export const deleteElementById = async (element: string) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await NotificationModel.findByIdAndDelete(element);
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Delete element
+ * @param {String} query element data
+ * @returns {Object} element data
+ */
+export const deleteElement = async (query: Partial<Notification>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await NotificationModel.findOneAndDelete(query);
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get element
+ * @param {String} element element id
+ * @returns {Object} element data
+ */
+export const getElementById = async (element: string) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await NotificationModel.findById(element).select(
+    "-createdAt -updatedAt -__v"
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get element
+ * @param {Object} query element data
+ * @returns {Object} element data
+ */
+export const getElement = async (query: Partial<Notification>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await NotificationModel.findOne(query).select(
+    "-createdAt -updatedAt -__v"
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get elements
+ * @param {Object} params elements fetching parameters
+ * @returns {Object[]} elements data
+ */
+export const getElements = async (params: GetNotificationsDTO) => {
   const { user } = params;
   let { page, limit } = params;
   const query: any = {};
@@ -55,6 +162,28 @@ export const getNotifications = async (params: GetNotificationsDTO) => {
     },
   ]);
   return { data: [], totalCount: 0, totalPages: 0, ...result };
+};
+
+/**
+ * @description Check element existence
+ * @param {Object} query element data
+ * @returns {Boolean} element existence status
+ */
+export const checkElementExistence = async (query: Partial<Notification>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await NotificationModel.exists(query);
+};
+
+/**
+ * @description Count elements
+ * @param {Object} query element data
+ * @returns {Number} elements count
+ */
+export const countElements = async (query: Partial<Notification>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await NotificationModel.countDocuments(query);
 };
 
 /**
@@ -92,7 +221,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
       await new SocketManager().emitGroupEvent({ event, data: socketData });
   } else {
     if (useFirebase) {
-      const userExists = await UserModel.findById(user).select("fcms");
+      const userExists = await userController.getElementById(user || "");
       userExists?.fcms.forEach((e: any) => fcms.push(e.token));
     }
     if (useSocket)
@@ -114,7 +243,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
   if (useDatabase)
     if (notificationData)
       // database notification creation
-      await addNotification(notificationData);
+      await addElement(notificationData);
 };
 
 /**
@@ -124,7 +253,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
 export const readNotifications = async (user: string): Promise<void> => {
   const notificationObj = { status: READ };
   if (!user) throw new Error("Please enter user id!|||400");
-  if (!(await UserModel.exists({ _id: user })))
+  if (!(await userController.checkElementExistence({ _id: user })))
     throw new Error("Please enter valid user id!|||400");
   await NotificationModel.updateMany({ user }, notificationObj);
 };

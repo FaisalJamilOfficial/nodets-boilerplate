@@ -32,18 +32,18 @@ const {
  */
 export const register = async (params: User) => {
   const { type } = params;
-  const user = await userController.addUser(params);
+  const user = await userController.addElement(params);
 
   const profileObj = { user: user._id };
   const userObj: any = {};
   userObj.type = type;
 
   if (type === CUSTOMER)
-    userObj.customer = (await customerController.addCustomer(profileObj))._id;
+    userObj.customer = (await customerController.addElement(profileObj))._id;
   else if (type === ADMIN)
-    userObj.admin = (await adminController.addAdmin(profileObj))._id;
+    userObj.admin = (await adminController.addElement(profileObj))._id;
 
-  await userController.updateUser(user._id, userObj);
+  await userController.updateElementById(user._id, userObj);
 
   return user.getSignedjwtToken();
 };

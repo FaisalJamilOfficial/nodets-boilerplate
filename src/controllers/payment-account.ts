@@ -3,7 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import PaymentAccountModel from "../models/payment-account";
-import UserModel from "../models/user";
+import * as userController from "../controllers/user";
 import { PaymentAccount } from "../interfaces/payment-account";
 import {
   GetPaymentAccountDTO,
@@ -13,28 +13,115 @@ import {
 // destructuring assignments
 
 /**
- * @description Add paymentAccount
- * @param {Object} paymentAccountObj paymentAccount data
- * @returns {Object} paymentAccount data
+ * @description Add element
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
  */
-export const addPaymentAccount = async (paymentAccountObj: PaymentAccount) => {
-  const { user } = paymentAccountObj;
+export const addElement = async (elementObj: PaymentAccount) => {
+  const { user } = elementObj;
 
   if (!user) throw new Error("Please enter user id!|||400");
   if (!isValidObjectId(user))
     throw new Error("Please enter valid user id!|||400");
-  if (!(await UserModel.exists({ _id: user })))
+  if (!(await userController.checkElementExistence({ _id: user })))
     throw new Error("user not found!|||404");
-
-  return await PaymentAccountModel.create(paymentAccountObj);
+  return await PaymentAccountModel.create(elementObj);
 };
 
 /**
- * @description Get paymentAccount
- * @param {Object} params paymentAccount fetching parameters
- * @returns {Object} paymentAccount data
+ * @description Update element data
+ * @param {String} element element id
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
  */
-export const getPaymentAccount = async (params: GetPaymentAccountDTO) => {
+export const updateElementById = async (
+  element: string,
+  elementObj: Partial<PaymentAccount>
+) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await PaymentAccountModel.findByIdAndUpdate(
+    element,
+    elementObj,
+    { new: true }
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Update element data
+ * @param {Object} query element data
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
+ */
+export const updateElement = async (
+  query: Partial<PaymentAccount>,
+  elementObj: Partial<PaymentAccount>
+) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await PaymentAccountModel.findOneAndUpdate(
+    query,
+    elementObj,
+    {
+      new: true,
+    }
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Delete element
+ * @param {String} element element id
+ * @returns {Object} element data
+ */
+export const deleteElementById = async (element: string) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await PaymentAccountModel.findByIdAndDelete(element);
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Delete element
+ * @param {String} query element data
+ * @returns {Object} element data
+ */
+export const deleteElement = async (query: Partial<PaymentAccount>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await PaymentAccountModel.findOneAndDelete(query);
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get element
+ * @param {String} element element id
+ * @returns {Object} element data
+ */
+export const getElementById = async (element: string) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await PaymentAccountModel.findById(element).select(
+    "-createdAt -updatedAt -__v"
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get element
+ * @param {Object} params element data
+ * @returns {Object} element data
+ */
+export const getElement = async (params: GetPaymentAccountDTO) => {
   const { paymentAccount, user, key, value } = params;
   const query: any = {};
   if (paymentAccount) query._id = paymentAccount;
@@ -50,11 +137,11 @@ export const getPaymentAccount = async (params: GetPaymentAccountDTO) => {
 };
 
 /**
- * @description Get paymentAccounts
- * @param {Object} params paymentAccounts fetching parameters
- * @returns {Object[]} paymentAccounts data
+ * @description Get elements
+ * @param {Object} params elements fetching parameters
+ * @returns {Object[]} elements data
  */
-export const getPaymentAccounts = async (params: GetPaymentAccountsDTO) => {
+export const getElements = async (params: GetPaymentAccountsDTO) => {
   const { user } = params;
   let { limit, page } = params;
   page = page - 1 || 0;
@@ -81,4 +168,26 @@ export const getPaymentAccounts = async (params: GetPaymentAccountsDTO) => {
     },
   ]);
   return { data: [], totalCount: 0, totalPages: 0, ...result };
+};
+
+/**
+ * @description Check element existence
+ * @param {Object} query element data
+ * @returns {Boolean} element existence status
+ */
+export const checkElementExistence = async (query: Partial<PaymentAccount>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await PaymentAccountModel.exists(query);
+};
+
+/**
+ * @description Count elements
+ * @param {Object} query element data
+ * @returns {Number} elements count
+ */
+export const countElements = async (query: Partial<PaymentAccount>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await PaymentAccountModel.countDocuments(query);
 };

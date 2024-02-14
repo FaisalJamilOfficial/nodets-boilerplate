@@ -2,7 +2,6 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as adminController from "../controllers/admin";
 import {
   verifyToken,
   verifyAdmin,
@@ -11,7 +10,6 @@ import {
 import { exceptionHandler } from "../middlewares/exception-handler";
 
 // destructuring assignments
-const { SECRET } = process.env;
 
 // variable initializations
 const router = express.Router();
@@ -21,8 +19,7 @@ router.delete(
   verifyToken,
   verifyAdmin,
   verifySecret,
-  exceptionHandler(async (req: Request, res: Response) => {
-    await adminController.cleanDB();
+  exceptionHandler(async (_req: Request, res: Response) => {
     res.json({ message: "Operation completed successfully!" });
   })
 );

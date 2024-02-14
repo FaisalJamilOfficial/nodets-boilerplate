@@ -2,19 +2,44 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import CustomerModel from "../models/customer";
-import { Customer } from "../interfaces/customer";
-import { GetCustomersDTO } from "../dto/customer";
+import ConversationModel from "../models/conversation";
+import { Conversation } from "../interfaces/conversation";
+import { GetConversationsDTO } from "../dto/message";
+import { CONVERSATION_STATUSES } from "../configs/enum";
 
 // destructuring assignments
+const { PENDING, ACCEPTED, REJECTED } = CONVERSATION_STATUSES;
 
 /**
  * @description Add element
  * @param {Object} elementObj element data
  * @returns {Object} element data
  */
-export const addElement = async (elementObj: Customer) => {
-  return await CustomerModel.create(elementObj);
+export const addElement = async (elementObj: Conversation) => {
+  const { userFrom, userTo } = elementObj;
+  const query = {
+    $or: [
+      { $and: [{ userTo: userFrom }, { userFrom: userTo }] },
+      { $and: [{ userFrom }, { userTo }] },
+    ],
+  };
+
+  let conversationExists: any = await ConversationModel.findOne(query);
+  if (conversationExists) {
+    if (conversationExists.status === PENDING) {
+      if (userFrom === conversationExists.userTo.toString()) {
+        conversationExists.status = ACCEPTED;
+        await conversationExists.save();
+      }
+    } else if (conversationExists.status === REJECTED)
+      throw new Error("Conversation request rejected!|||400");
+  } else {
+    const conversationObj: any = {};
+    conversationObj.userTo = userTo;
+    conversationObj.userFrom = userFrom;
+    conversationExists = await ConversationModel.create(conversationObj);
+  }
+  return conversationExists;
 };
 
 /**
@@ -25,12 +50,12 @@ export const addElement = async (elementObj: Customer) => {
  */
 export const updateElementById = async (
   element: string,
-  elementObj: Partial<Customer>
+  elementObj: Partial<Conversation>
 ) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const elementExists = await CustomerModel.findByIdAndUpdate(
+  const elementExists = await ConversationModel.findByIdAndUpdate(
     element,
     elementObj,
     { new: true }
@@ -46,12 +71,12 @@ export const updateElementById = async (
  * @returns {Object} element data
  */
 export const updateElement = async (
-  query: Partial<Customer>,
-  elementObj: Partial<Customer>
+  query: Partial<Conversation>,
+  elementObj: Partial<Conversation>
 ) => {
   if (!query || Object.keys(query).length === 0)
     throw new Error("Please enter query!|||400");
-  const elementExists = await CustomerModel.findOneAndUpdate(
+  const elementExists = await ConversationModel.findOneAndUpdate(
     query,
     elementObj,
     {
@@ -71,7 +96,7 @@ export const deleteElementById = async (element: string) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const elementExists = await CustomerModel.findByIdAndDelete(element);
+  const elementExists = await ConversationModel.findByIdAndDelete(element);
   if (!elementExists) throw new Error("element not found!|||404");
   return elementExists;
 };
@@ -81,10 +106,10 @@ export const deleteElementById = async (element: string) => {
  * @param {String} query element data
  * @returns {Object} element data
  */
-export const deleteElement = async (query: Partial<Customer>) => {
+export const deleteElement = async (query: Partial<Conversation>) => {
   if (!query || Object.keys(query).length === 0)
     throw new Error("Please enter query!|||400");
-  const elementExists = await CustomerModel.findOneAndDelete(query);
+  const elementExists = await ConversationModel.findOneAndDelete(query);
   if (!elementExists) throw new Error("element not found!|||404");
   return elementExists;
 };
@@ -98,7 +123,7 @@ export const getElementById = async (element: string) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const elementExists = await CustomerModel.findById(element).select(
+  const elementExists = await ConversationModel.findById(element).select(
     "-createdAt -updatedAt -__v"
   );
   if (!elementExists) throw new Error("element not found!|||404");
@@ -110,10 +135,10 @@ export const getElementById = async (element: string) => {
  * @param {Object} query element data
  * @returns {Object} element data
  */
-export const getElement = async (query: Partial<Customer>) => {
+export const getElement = async (query: Partial<Conversation>) => {
   if (!query || Object.keys(query).length === 0)
     throw new Error("Please enter query!|||400");
-  const elementExists = await CustomerModel.findOne(query).select(
+  const elementExists = await ConversationModel.findOne(query).select(
     "-createdAt -updatedAt -__v"
   );
   if (!elementExists) throw new Error("element not found!|||404");
@@ -125,15 +150,71 @@ export const getElement = async (query: Partial<Customer>) => {
  * @param {Object} params elements fetching parameters
  * @returns {Object[]} elements data
  */
-export const getElements = async (params: GetCustomersDTO) => {
-  let { limit, page } = params;
+export const getElements = async (params: GetConversationsDTO) => {
+  const { user } = params;
+  let { limit, page, keyword } = params;
   page = page - 1 || 0;
   limit = limit || 10;
   const query: any = {};
-  const [result] = await CustomerModel.aggregate([
+  const queryRegex: any = {};
+
+  if (user) query.$or = [{ userTo: user }, { userFrom: user }];
+  if (keyword) {
+    keyword = keyword.trim();
+    if (keyword !== "")
+      queryRegex.$or = [
+        { "lastMessage.text": { $regex: keyword, $options: "i" } },
+        { "user.name": { $regex: keyword, $options: "i" } },
+      ];
+  }
+
+  const [result] = await ConversationModel.aggregate([
     { $match: query },
-    { $sort: { createdAt: -1 } },
-    { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },
+    {
+      $lookup: {
+        from: "messages",
+        localField: "lastMessage",
+        foreignField: "_id",
+        as: "lastMessage",
+        pipeline: [
+          {
+            $project: {
+              text: 1,
+              userFrom: 1,
+              createdAt: 1,
+              "attachments.type": 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: { path: "$lastMessage" } },
+    { $sort: { "lastMessage.createdAt": -1 } },
+    {
+      $project: {
+        user: {
+          $cond: {
+            if: { $eq: ["$userTo", user] },
+            then: "$userFrom",
+            else: "$userTo",
+          },
+        },
+        lastMessage: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "user",
+        foreignField: "_id",
+        as: "user",
+        pipeline: [{ $project: { name: 1, image: 1 } }],
+      },
+    },
+    {
+      $unwind: { path: "$user" },
+    },
+    { $match: queryRegex },
     {
       $facet: {
         totalCount: [{ $count: "totalCount" }],
@@ -157,10 +238,10 @@ export const getElements = async (params: GetCustomersDTO) => {
  * @param {Object} query element data
  * @returns {Boolean} element existence status
  */
-export const checkElementExistence = async (query: Partial<Customer>) => {
+export const checkElementExistence = async (query: Partial<Conversation>) => {
   if (!query || Object.keys(query).length === 0)
     throw new Error("Please enter query!|||400");
-  return await CustomerModel.exists(query);
+  return await ConversationModel.exists(query);
 };
 
 /**
@@ -168,8 +249,8 @@ export const checkElementExistence = async (query: Partial<Customer>) => {
  * @param {Object} query element data
  * @returns {Number} elements count
  */
-export const countElements = async (query: Partial<Customer>) => {
+export const countElements = async (query: Partial<Conversation>) => {
   if (!query || Object.keys(query).length === 0)
     throw new Error("Please enter query!|||400");
-  return await CustomerModel.countDocuments(query);
+  return await ConversationModel.countDocuments(query);
 };

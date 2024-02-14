@@ -9,67 +9,119 @@ import { GetAdminsDTO } from "../dto/admin";
 // destructuring assignments
 
 /**
- * @description Add admin
- * @param {Object} adminObj admin data
- * @returns {Object} admin data
+ * @description Add element
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
  */
-export const addAdmin = async (adminObj: Admin) => {
-  return await AdminModel.create(adminObj);
+export const addElement = async (elementObj: Admin) => {
+  return await AdminModel.create(elementObj);
 };
 
 /**
- * @description Update admin data
- * @param {String} user user id
- * @param {Object} adminObj admin data
- * @returns {Object} admin data
+ * @description Update element data
+ * @param {String} element element id
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
  */
-export const updateAdmin = async (user: string, adminObj: Partial<Admin>) => {
-  if (!user) throw new Error("Please enter user id!|||400");
-  if (!isValidObjectId(user))
-    throw new Error("Please enter valid user id!|||400");
-  const adminExists = await AdminModel.findOneAndUpdate({ user }, adminObj, {
+export const updateElementById = async (
+  element: string,
+  elementObj: Partial<Admin>
+) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await AdminModel.findByIdAndUpdate(
+    element,
+    elementObj,
+    { new: true }
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Update element data
+ * @param {Object} query element data
+ * @param {Object} elementObj element data
+ * @returns {Object} element data
+ */
+export const updateElement = async (
+  query: Partial<Admin>,
+  elementObj: Partial<Admin>
+) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await AdminModel.findOneAndUpdate(query, elementObj, {
     new: true,
   });
-  if (!adminExists) throw new Error("Admin not found!|||404");
-  return adminExists;
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
 };
 
 /**
- * @description Delete admin
- * @param {String} user user id
- * @returns {Object} admin data
+ * @description Delete element
+ * @param {String} element element id
+ * @returns {Object} element data
  */
-export const deleteAdmin = async (user: string) => {
-  if (!user) throw new Error("Please enter user id!|||400");
-  if (!isValidObjectId(user))
-    throw new Error("Please enter valid user id!|||400");
-  const adminExists = await AdminModel.findOneAndDelete({ user });
-  if (!adminExists) throw new Error("Admin not found!|||404");
-  return adminExists;
+export const deleteElementById = async (element: string) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await AdminModel.findByIdAndDelete(element);
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
 };
 
 /**
- * @description Get admin
- * @param {String} user user id
- * @returns {Object} admin data
+ * @description Delete element
+ * @param {String} query element data
+ * @returns {Object} element data
  */
-export const getAdmin = async (user: string) => {
-  if (!user) throw new Error("Please enter user id!|||400");
-  if (!isValidObjectId(user))
-    throw new Error("Please enter valid user id!|||400");
-  const adminExists = await AdminModel.findOne({ user }).select(
+export const deleteElement = async (query: Partial<Admin>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await AdminModel.findOneAndDelete(query);
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get element
+ * @param {String} element element id
+ * @returns {Object} element data
+ */
+export const getElementById = async (element: string) => {
+  if (!element) throw new Error("Please enter element id!|||400");
+  if (!isValidObjectId(element))
+    throw new Error("Please enter valid element id!|||400");
+  const elementExists = await AdminModel.findById(element).select(
     "-createdAt -updatedAt -__v"
   );
-  if (!adminExists) throw new Error("Admin not found!|||404");
-  return adminExists;
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
 };
 
 /**
- * @description Get admins
- * @param {Object} params admins fetching parameters
- * @returns {Object[]} admins data
+ * @description Get element
+ * @param {Object} query element data
+ * @returns {Object} element data
  */
-export const getAdmins = async (params: GetAdminsDTO) => {
+export const getElement = async (query: Partial<Admin>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  const elementExists = await AdminModel.findOne(query).select(
+    "-createdAt -updatedAt -__v"
+  );
+  if (!elementExists) throw new Error("element not found!|||404");
+  return elementExists;
+};
+
+/**
+ * @description Get elements
+ * @param {Object} params elements fetching parameters
+ * @returns {Object[]} elements data
+ */
+export const getElements = async (params: GetAdminsDTO) => {
   let { limit, page } = params;
   page = page - 1 || 0;
   limit = limit || 10;
@@ -97,11 +149,23 @@ export const getAdmins = async (params: GetAdminsDTO) => {
 };
 
 /**
- * @description Clean DB
+ * @description Check element existence
+ * @param {Object} query element data
+ * @returns {Boolean} element existence status
  */
-export const cleanDB = async (): Promise<void> => {
-  const models: any = [];
-  Promise.all(models.map((model: any) => model.remove())).then((res) =>
-    res.map((element) => console.log(element.status))
-  );
+export const checkElementExistence = async (query: Partial<Admin>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await AdminModel.exists(query);
+};
+
+/**
+ * @description Count elements
+ * @param {Object} query element data
+ * @returns {Number} elements count
+ */
+export const countElements = async (query: Partial<Admin>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new Error("Please enter query!|||400");
+  return await AdminModel.countDocuments(query);
 };
