@@ -3,7 +3,7 @@
 // import otpGenerator from "otp-generator";
 
 // file imports
-import * as userController from "../controllers/user";
+import * as userController from "../modules/user/controller";
 import { getToken } from "../middlewares/authenticator";
 
 // destructuring assignments

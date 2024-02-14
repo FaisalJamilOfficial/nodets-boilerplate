@@ -2,7 +2,7 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as elementController from "../controllers/element";
+import * as elementController from "../modules/element/controller";
 import { exceptionHandler } from "../middlewares/exception-handler";
 import {
   verifyToken,

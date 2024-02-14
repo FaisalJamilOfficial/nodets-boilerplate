@@ -2,9 +2,9 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as authController from "../controllers/auth";
-import * as notificationController from "../controllers/notification";
-import * as userController from "../controllers/user";
+import * as authController from "../modules/auth/controller";
+import * as notificationController from "../modules/notification/controller";
+import * as userController from "../modules/user/controller";
 import TwilioManager from "../utils/twilio-manager";
 import directories from "../configs/directories";
 import { upload } from "../middlewares/uploader";

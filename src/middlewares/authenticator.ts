@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
 // file imports
-import UserModel from "../models/user";
+import UserModel from "../modules/user/model";
 import { IRequest } from "../configs/types";
 import { exceptionHandler } from "./exception-handler";
 import { USER_STATUSES, USER_TYPES } from "../configs/enum";
