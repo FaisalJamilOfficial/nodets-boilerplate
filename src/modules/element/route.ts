@@ -2,13 +2,13 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as elementController from "../modules/element/controller";
-import { exceptionHandler } from "../middlewares/exception-handler";
+import * as elementController from "./controller";
+import { exceptionHandler } from "../../middlewares/exception-handler";
 import {
   verifyToken,
   verifyAdmin,
   verifyUser,
-} from "../middlewares/authenticator";
+} from "../../middlewares/authenticator";
 
 // destructuring assignments
 

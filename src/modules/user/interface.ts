@@ -1,7 +1,7 @@
 // file imports
 import { USER_STATUSES, USER_TYPES } from "../../configs/enum";
 
-export interface User {
+export interface Element {
   _id?: string;
   email: string;
   password: string;
@@ -20,4 +20,5 @@ export interface User {
   googleID?: string;
   facebookID?: string;
   twitterID?: string;
+  lastLogin?: Date;
 }

@@ -4,7 +4,6 @@
 // file imports
 import * as paymentAccountController from "../modules/payment-account/controller";
 import * as userController from "../modules/user/controller";
-import userModel from "../modules/user/model";
 import { PAYMENT_ACCOUNT_TYPES } from "../configs/enum";
 
 // destructuring assignments
@@ -72,7 +71,8 @@ class StripeManager {
    * @returns {Object} stripe customers creation response
    */
   async createAllCustomers() {
-    const users = await userModel.find({});
+    const query: any = { limit: Math.pow(2, 32) };
+    const { data: users } = await userController.getElements(query);
     for (let index = 0; index < users.length; index++) {
       const element = users[index];
       const id = "";

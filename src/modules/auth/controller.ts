@@ -1,11 +1,10 @@
 // file imports
-import UserModel from "../user/model";
-import UserTokenModel from "../user-token/model";
+import NodeMailer from "../../utils/node-mailer";
 import * as userController from "../user/controller";
+import * as userTokenController from "../user-token/controller";
 import * as customerController from "../customer/controller";
 import * as adminController from "../admin/controller";
-import NodeMailer from "../../utils/node-mailer";
-import { User } from "../user/interface";
+import { Element } from "../user/interface";
 import { USER_TYPES, USER_STATUSES } from "../../configs/enum";
 import {
   LoginDTO,
@@ -30,7 +29,7 @@ const {
  * @param {Object} params user registration data
  * @returns {String} user token
  */
-export const register = async (params: User) => {
+export const register = async (params: Element) => {
   const { type } = params;
   const user = await userController.addElement(params);
 
@@ -61,7 +60,7 @@ export const login = async (params: LoginDTO) => {
   if (email && password) query.email = email;
   else throw new Error("Please enter login credentials!|||400");
 
-  const userExists: any = await UserModel.findOne(query);
+  const userExists: any = await userController.getElement(query);
   if (!userExists) throw new Error("User not registered!|||404");
 
   if (userExists.type !== type) throw new Error("User not found!|||404");
@@ -72,7 +71,10 @@ export const login = async (params: LoginDTO) => {
   if (userExists.status !== ACTIVE)
     throw new Error(`User ${userExists.status}!|||403`);
 
-  await UserModel.updateOne({ _id: userExists._id }, { lastLogin: new Date() });
+  await userController.updateElement(
+    { _id: userExists._id },
+    { lastLogin: new Date() }
+  );
 
   return userExists.getSignedjwtToken();
 };
@@ -138,17 +140,19 @@ export const emailWelcomeUser = async (params: SendEmailDTO) => {
  */
 export const generateEmailToken = async (params: GenerateEmailTokenDTO) => {
   const { email, tokenExpirationTime } = params;
-  const userExists: any = await UserModel.findOne({ email });
+  const userExists: any = await userController.getElement({ email });
   if (!userExists)
     throw new Error("User with given email doesn't exist!|||404");
-  let userTokenExists = await UserTokenModel.findOne({ user: userExists._id });
+  let userTokenExists = await userTokenController.getElement({
+    user: userExists._id,
+  });
   if (!userTokenExists) {
     const userTokenObj: any = {};
     userTokenObj.user = userExists._id;
     userTokenObj.token = userExists.getSignedjwtToken();
     userTokenObj.expireAt = tokenExpirationTime;
-    const UserTokensModel = UserTokenModel;
-    userTokenExists = await new UserTokensModel(userTokenObj).save();
+
+    userTokenExists = await userTokenController.addElement(userTokenObj);
   }
   return userTokenExists;
 };
@@ -162,10 +166,10 @@ export const resetPassword = async (
 ): Promise<void> => {
   const { password, user, token } = params;
 
-  const userExists: any = await UserModel.findById(user);
+  const userExists: any = await userController.getElementById(user);
   if (!userExists) throw new Error("Invalid link!|||400");
 
-  const userTokenExists: any = await UserTokenModel.findOne({
+  const userTokenExists: any = await userTokenController.getElement({
     user,
     token,
   });
@@ -184,10 +188,10 @@ export const verifyUserEmail = async (
 ): Promise<void> => {
   const { user, token } = params;
 
-  const userExists = await UserModel.findById(user);
+  const userExists = await userController.getElementById(user);
   if (!userExists) throw new Error("Invalid link!|||400");
 
-  const userTokenExists: any = await UserTokenModel.findOne({
+  const userTokenExists: any = await userTokenController.getElement({
     user,
     token,
   });

@@ -1,6 +1,6 @@
 // file imports
 import { NOTIFICATION_TYPES } from "../../configs/enum";
-import { Notification } from "./interface";
+import { Element } from "./interface";
 import { GetElementsDTO } from "../element/dto";
 
 export interface GetNotificationsDTO extends GetElementsDTO {
@@ -13,7 +13,7 @@ export type NotifyUsersDTO = {
   socketData?: Object;
   firebaseData?: Object;
   event?: string;
-  notificationData?: Notification;
+  notificationData?: Element;
   title?: string;
   body?: string;
   type?: NOTIFICATION_TYPES;

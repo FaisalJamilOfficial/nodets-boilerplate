@@ -2,9 +2,9 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import ConversationModel from "./model";
-import { Conversation } from "./interface";
-import { GetConversationsDTO } from "../message/dto";
+import ElementModel from "./model";
+import { Element } from "./interface";
+import { GetConversationsDTO } from "./dto";
 import { CONVERSATION_STATUSES } from "../../configs/enum";
 
 // destructuring assignments
@@ -15,7 +15,7 @@ const { PENDING, ACCEPTED, REJECTED } = CONVERSATION_STATUSES;
  * @param {Object} elementObj element data
  * @returns {Object} element data
  */
-export const addElement = async (elementObj: Conversation) => {
+export const addElement = async (elementObj: Element) => {
   const { userFrom, userTo } = elementObj;
   const query = {
     $or: [
@@ -24,7 +24,7 @@ export const addElement = async (elementObj: Conversation) => {
     ],
   };
 
-  let conversationExists: any = await ConversationModel.findOne(query);
+  let conversationExists: any = await ElementModel.findOne(query);
   if (conversationExists) {
     if (conversationExists.status === PENDING) {
       if (userFrom === conversationExists.userTo.toString()) {
@@ -32,86 +32,14 @@ export const addElement = async (elementObj: Conversation) => {
         await conversationExists.save();
       }
     } else if (conversationExists.status === REJECTED)
-      throw new Error("Conversation request rejected!|||400");
+      throw new Error("Element request rejected!|||400");
   } else {
     const conversationObj: any = {};
     conversationObj.userTo = userTo;
     conversationObj.userFrom = userFrom;
-    conversationExists = await ConversationModel.create(conversationObj);
+    conversationExists = await ElementModel.create(conversationObj);
   }
   return conversationExists;
-};
-
-/**
- * @description Update element data
- * @param {String} element element id
- * @param {Object} elementObj element data
- * @returns {Object} element data
- */
-export const updateElementById = async (
-  element: string,
-  elementObj: Partial<Conversation>
-) => {
-  if (!element) throw new Error("Please enter element id!|||400");
-  if (!isValidObjectId(element))
-    throw new Error("Please enter valid element id!|||400");
-  const elementExists = await ConversationModel.findByIdAndUpdate(
-    element,
-    elementObj,
-    { new: true }
-  );
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
-};
-
-/**
- * @description Update element data
- * @param {Object} query element data
- * @param {Object} elementObj element data
- * @returns {Object} element data
- */
-export const updateElement = async (
-  query: Partial<Conversation>,
-  elementObj: Partial<Conversation>
-) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  const elementExists = await ConversationModel.findOneAndUpdate(
-    query,
-    elementObj,
-    {
-      new: true,
-    }
-  );
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
-};
-
-/**
- * @description Delete element
- * @param {String} element element id
- * @returns {Object} element data
- */
-export const deleteElementById = async (element: string) => {
-  if (!element) throw new Error("Please enter element id!|||400");
-  if (!isValidObjectId(element))
-    throw new Error("Please enter valid element id!|||400");
-  const elementExists = await ConversationModel.findByIdAndDelete(element);
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
-};
-
-/**
- * @description Delete element
- * @param {String} query element data
- * @returns {Object} element data
- */
-export const deleteElement = async (query: Partial<Conversation>) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  const elementExists = await ConversationModel.findOneAndDelete(query);
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
 };
 
 /**
@@ -123,22 +51,7 @@ export const getElementById = async (element: string) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const elementExists = await ConversationModel.findById(element).select(
-    "-createdAt -updatedAt -__v"
-  );
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
-};
-
-/**
- * @description Get element
- * @param {Object} query element data
- * @returns {Object} element data
- */
-export const getElement = async (query: Partial<Conversation>) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  const elementExists = await ConversationModel.findOne(query).select(
+  const elementExists = await ElementModel.findById(element).select(
     "-createdAt -updatedAt -__v"
   );
   if (!elementExists) throw new Error("element not found!|||404");
@@ -168,7 +81,7 @@ export const getElements = async (params: GetConversationsDTO) => {
       ];
   }
 
-  const [result] = await ConversationModel.aggregate([
+  const [result] = await ElementModel.aggregate([
     { $match: query },
     {
       $lookup: {
@@ -231,26 +144,4 @@ export const getElements = async (params: GetConversationsDTO) => {
     },
   ]);
   return { data: [], totalCount: 0, totalPages: 0, ...result };
-};
-
-/**
- * @description Check element existence
- * @param {Object} query element data
- * @returns {Boolean} element existence status
- */
-export const checkElementExistence = async (query: Partial<Conversation>) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  return await ConversationModel.exists(query);
-};
-
-/**
- * @description Count elements
- * @param {Object} query element data
- * @returns {Number} elements count
- */
-export const countElements = async (query: Partial<Conversation>) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  return await ConversationModel.countDocuments(query);
 };

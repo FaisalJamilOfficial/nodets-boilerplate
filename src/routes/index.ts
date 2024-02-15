@@ -2,11 +2,11 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import admin from "./admin";
-import auth from "./auth";
-import element from "./element";
-import message from "./message";
-import user from "./user";
+import admin from "../modules/admin/route";
+import auth from "../modules/auth/route";
+import element from "../modules/element/route";
+import message from "../modules/message/route";
+import user from "../modules/user/route";
 
 // destructuring assignments
 const { POSTMAN_URL } = process.env;

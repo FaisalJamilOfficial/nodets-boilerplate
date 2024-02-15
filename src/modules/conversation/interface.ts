@@ -1,6 +1,6 @@
 // file imports
 import { MESSAGE_STATUSES } from "../../configs/enum";
-export interface Conversation {
+export interface Element {
   _id?: string;
   userTo: string;
   userFrom: string;

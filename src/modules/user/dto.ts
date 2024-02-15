@@ -1,12 +1,12 @@
 // file imports
-import { User } from "./interface";
+import { Element } from "./interface";
 import { GetElementsDTO } from "../element/dto";
 
 export interface GetUsersDTO extends GetElementsDTO {
   type?: string;
   user: string;
 }
-export interface updateUserDTO extends Partial<User> {
+export interface updateUserDTO extends Partial<Element> {
   fcm?: { token: string; device: string };
   coordinates?: number[];
   device?: string;

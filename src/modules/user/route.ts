@@ -2,21 +2,21 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as authController from "../modules/auth/controller";
-import * as notificationController from "../modules/notification/controller";
-import * as userController from "../modules/user/controller";
-import TwilioManager from "../utils/twilio-manager";
-import directories from "../configs/directories";
-import { upload } from "../middlewares/uploader";
-import { exceptionHandler } from "../middlewares/exception-handler";
+import TwilioManager from "../../utils/twilio-manager";
+import directories from "../../configs/directories";
+import * as authController from "../auth/controller";
+import * as notificationController from "../notification/controller";
+import * as userController from "./controller";
+import { upload } from "../../middlewares/uploader";
+import { exceptionHandler } from "../../middlewares/exception-handler";
+import { IRequest } from "../../configs/types";
 import {
   verifyOTP,
   verifyToken,
   verifyUser,
   verifyAdmin,
   verifyUserToken,
-} from "../middlewares/authenticator";
-import { IRequest } from "../configs/types";
+} from "../../middlewares/authenticator";
 
 // destructuring assignments
 const { PUBLIC_DIRECTORY } = directories;

@@ -1,4 +1,4 @@
-export type GetCustomersDTO = {
-  limit: number;
-  page: number;
-};
+// file imports
+import { GetElementsDTO } from "../element/dto";
+
+export interface GetCustomersDTO extends GetElementsDTO {}

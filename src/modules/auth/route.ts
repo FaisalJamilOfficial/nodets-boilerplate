@@ -2,18 +2,18 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as authController from "../modules/auth/controller";
-import * as userController from "../modules/user/controller";
-import { USER_TYPES } from "../configs/enum";
-import { exceptionHandler } from "../middlewares/exception-handler";
+import * as authController from "./controller";
+import * as userController from "../user/controller";
+import { USER_TYPES } from "../../configs/enum";
+import { exceptionHandler } from "../../middlewares/exception-handler";
 import {
   verifyOTP,
   verifySecret,
   verifyToken,
   verifyUser,
   verifyUserToken,
-} from "../middlewares/authenticator";
-import { IRequest } from "../configs/types";
+} from "../../middlewares/authenticator";
+import { IRequest } from "../../configs/types";
 
 // destructuring assignments
 const { ADMIN, CUSTOMER } = USER_TYPES;

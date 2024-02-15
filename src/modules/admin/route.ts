@@ -2,12 +2,13 @@
 import express, { Request, Response } from "express";
 
 // file imports
+
+import { exceptionHandler } from "../../middlewares/exception-handler";
 import {
   verifyToken,
   verifyAdmin,
   verifySecret,
-} from "../middlewares/authenticator";
-import { exceptionHandler } from "../middlewares/exception-handler";
+} from "../../middlewares/authenticator";
 
 // destructuring assignments
 

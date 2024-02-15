@@ -2,11 +2,11 @@
 import { isValidObjectId, Types } from "mongoose";
 
 // file imports
+import ElementModel from "./model";
 import * as notificationController from "../notification/controller";
 import * as conversationController from "../conversation/controller";
 import * as userController from "../user/controller";
-import MessageModel from "./model";
-import { Message } from "./interface";
+import { Element } from "./interface";
 import { GetMessagesDTO, SendMessageDTO } from "./dto";
 import { MESSAGE_STATUSES, NOTIFICATION_TYPES } from "../../configs/enum";
 
@@ -20,8 +20,8 @@ const { ObjectId } = Types;
  * @param {Object} elementObj element data
  * @returns {Object} element data
  */
-export const addElement = async (elementObj: Message) => {
-  return await MessageModel.create(elementObj);
+export const addElement = async (elementObj: Element) => {
+  return await ElementModel.create(elementObj);
 };
 
 /**
@@ -32,92 +32,15 @@ export const addElement = async (elementObj: Message) => {
  */
 export const updateElementById = async (
   element: string,
-  elementObj: Partial<Message>
+  elementObj: Partial<Element>
 ) => {
   if (!element) throw new Error("Please enter element id!|||400");
   if (!isValidObjectId(element))
     throw new Error("Please enter valid element id!|||400");
-  const elementExists = await MessageModel.findByIdAndUpdate(
+  const elementExists = await ElementModel.findByIdAndUpdate(
     element,
     elementObj,
     { new: true }
-  );
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
-};
-
-/**
- * @description Update element data
- * @param {Object} query element data
- * @param {Object} elementObj element data
- * @returns {Object} element data
- */
-export const updateElement = async (
-  query: Partial<Message>,
-  elementObj: Partial<Message>
-) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  const elementExists = await MessageModel.findOneAndUpdate(query, elementObj, {
-    new: true,
-  });
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
-};
-
-/**
- * @description Delete element
- * @param {String} element element id
- * @returns {Object} element data
- */
-export const deleteElementById = async (element: string) => {
-  if (!element) throw new Error("Please enter element id!|||400");
-  if (!isValidObjectId(element))
-    throw new Error("Please enter valid element id!|||400");
-  const elementExists = await MessageModel.findByIdAndDelete(element);
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
-};
-
-/**
- * @description Delete element
- * @param {String} query element data
- * @returns {Object} element data
- */
-export const deleteElement = async (query: Partial<Message>) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  const elementExists = await MessageModel.findOneAndDelete(query);
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
-};
-
-/**
- * @description Get element
- * @param {String} element element id
- * @returns {Object} element data
- */
-export const getElementById = async (element: string) => {
-  if (!element) throw new Error("Please enter element id!|||400");
-  if (!isValidObjectId(element))
-    throw new Error("Please enter valid element id!|||400");
-  const elementExists = await MessageModel.findById(element).select(
-    "-createdAt -updatedAt -__v"
-  );
-  if (!elementExists) throw new Error("element not found!|||404");
-  return elementExists;
-};
-
-/**
- * @description Get element
- * @param {Object} query element data
- * @returns {Object} element data
- */
-export const getElement = async (query: Partial<Message>) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  const elementExists = await MessageModel.findOne(query).select(
-    "-createdAt -updatedAt -__v"
   );
   if (!elementExists) throw new Error("element not found!|||404");
   return elementExists;
@@ -143,7 +66,7 @@ export const getElements = async (params: GetMessagesDTO) => {
       { $and: [{ userFrom: userOne }, { userTo: userTwo }] },
     ];
   } else throw new Error("Please enter conversation id!|||400");
-  const [result] = await MessageModel.aggregate([
+  const [result] = await ElementModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },
@@ -163,28 +86,6 @@ export const getElements = async (params: GetMessagesDTO) => {
     },
   ]);
   return { data: [], totalCount: 0, totalPages: 0, ...result };
-};
-
-/**
- * @description Check element existence
- * @param {Object} query element data
- * @returns {Boolean} element existence status
- */
-export const checkElementExistence = async (query: Partial<Message>) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  return await MessageModel.exists(query);
-};
-
-/**
- * @description Count elements
- * @param {Object} query element data
- * @returns {Number} elements count
- */
-export const countElements = async (query: Partial<Message>) => {
-  if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
-  return await MessageModel.countDocuments(query);
 };
 
 /**
@@ -223,7 +124,7 @@ export const send = async (params: SendMessageDTO) => {
     event: "new_message_" + message.conversation,
     socketData: message,
     useFirebase: true,
-    title: "New Message",
+    title: "New Element",
     body: `New message from ${username}`,
     useDatabase: true,
     notificationData,
@@ -242,7 +143,7 @@ export const send = async (params: SendMessageDTO) => {
  * @description read all messages
  * @param {Object} params read messages data
  */
-export const readMessages = async (params: Partial<Message>): Promise<void> => {
+export const readMessages = async (params: Partial<Element>): Promise<void> => {
   const { conversation, userTo } = params;
   const messageObj = { status: READ };
   if (!userTo) throw new Error("Please enter userTo id!|||400");
@@ -251,5 +152,5 @@ export const readMessages = async (params: Partial<Message>): Promise<void> => {
   if (!conversation) throw new Error("Please enter conversation id!|||400");
   if (!(await conversationController.getElementById(conversation)))
     throw new Error("Please enter valid conversation id!|||400");
-  await MessageModel.updateMany({ conversation, userTo }, messageObj);
+  await ElementModel.updateMany({ conversation, userTo }, messageObj);
 };

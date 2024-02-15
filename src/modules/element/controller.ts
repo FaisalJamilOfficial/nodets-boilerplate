@@ -8,6 +8,8 @@ import { GetElementsDTO } from "./dto";
 
 // destructuring assignments
 
+// variable initializations
+
 /**
  * @description Add element
  * @param {Object} elementObj element data

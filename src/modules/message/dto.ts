@@ -1,5 +1,5 @@
 // file imports
-import { Message } from "./interface";
+import { Element } from "./interface";
 import { GetElementsDTO } from "../element/dto";
 
 export interface GetMessagesDTO extends GetElementsDTO {
@@ -8,10 +8,6 @@ export interface GetMessagesDTO extends GetElementsDTO {
   user2: string;
 }
 
-export interface GetConversationsDTO extends GetElementsDTO {
-  user: string;
-}
-
-export interface SendMessageDTO extends Message {
+export interface SendMessageDTO extends Element {
   username: string;
 }

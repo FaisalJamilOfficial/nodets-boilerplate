@@ -2,13 +2,13 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as messageController from "../modules/message/controller";
-import * as conversationController from "../modules/conversation/controller";
-import directories from "../configs/directories";
-import { verifyToken, verifyUser } from "../middlewares/authenticator";
-import { exceptionHandler } from "../middlewares/exception-handler";
-import { upload } from "../middlewares/uploader";
-import { IRequest } from "../configs/types";
+import directories from "../../configs/directories";
+import * as messageController from "./controller";
+import * as conversationController from "../conversation/controller";
+import { verifyToken, verifyUser } from "../../middlewares/authenticator";
+import { exceptionHandler } from "../../middlewares/exception-handler";
+import { upload } from "../../middlewares/uploader";
+import { IRequest } from "../../configs/types";
 
 // destructuring assignments
 const { PUBLIC_DIRECTORY } = directories;
