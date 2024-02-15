@@ -2,8 +2,8 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as authController from "../modules/auth/controller";
-import * as userController from "../modules/user/controller";
+import * as authController from "../controllers/auth";
+import * as userController from "../controllers/user";
 import { USER_TYPES } from "../configs/enum";
 import { exceptionHandler } from "../middlewares/exception-handler";
 import {

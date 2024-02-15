@@ -2,9 +2,9 @@
 // import Stripe from "stripe";
 
 // file imports
-import * as paymentAccountController from "../modules/payment-account/controller";
-import * as userController from "../modules/user/controller";
-import userModel from "../modules/user/model";
+import * as paymentAccountController from "../controllers/payment-account";
+import * as userController from "../controllers/user";
+import userModel from "../models/user";
 import { PAYMENT_ACCOUNT_TYPES } from "../configs/enum";
 
 // destructuring assignments

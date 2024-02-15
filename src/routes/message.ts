@@ -2,8 +2,8 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import * as messageController from "../modules/message/controller";
-import * as conversationController from "../modules/conversation/controller";
+import * as messageController from "../controllers/message";
+import * as conversationController from "../controllers/conversation";
 import directories from "../configs/directories";
 import { verifyToken, verifyUser } from "../middlewares/authenticator";
 import { exceptionHandler } from "../middlewares/exception-handler";
