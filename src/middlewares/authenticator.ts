@@ -125,7 +125,7 @@ export const checkUserPhoneExists = exceptionHandler(
   }
 );
 
-export const verifySecret = (req: IRequest, _res: any, next: any): void => {
+export const verifyKey = (req: IRequest, _res: any, next: any): void => {
   const { api_key } = req.headers;
   if (api_key === API_KEY) next();
   else throw new Error("Invalid API key!|||400");

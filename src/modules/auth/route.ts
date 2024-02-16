@@ -8,7 +8,7 @@ import { USER_TYPES } from "../../configs/enum";
 import { exceptionHandler } from "../../middlewares/exception-handler";
 import {
   verifyOTP,
-  verifySecret,
+  verifyKey,
   verifyToken,
   verifyUser,
   verifyUserToken,
@@ -128,7 +128,7 @@ router.post(
 
 router.post(
   "/register/admin",
-  verifySecret,
+  verifyKey,
   exceptionHandler(async (req: Request, res: Response) => {
     const { email, password, type } = req.body;
     const args = { email, password, type: type ?? ADMIN, name: type };

@@ -7,7 +7,7 @@ import { exceptionHandler } from "../../middlewares/exception-handler";
 import {
   verifyToken,
   verifyAdmin,
-  verifySecret,
+  verifyKey,
 } from "../../middlewares/authenticator";
 
 // destructuring assignments
@@ -19,7 +19,7 @@ router.delete(
   "/clean/DB",
   verifyToken,
   verifyAdmin,
-  verifySecret,
+  verifyKey,
   exceptionHandler(async (_req: Request, res: Response) => {
     res.json({ message: "Operation completed successfully!" });
   })
