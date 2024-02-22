@@ -134,15 +134,11 @@ const userSchema = new Schema(
       select: false,
       default: false,
     },
-    googleID: {
+    googleId: {
       type: String,
       trim: true,
     },
-    facebookID: {
-      type: String,
-      trim: true,
-    },
-    twitterID: {
+    facebookId: {
       type: String,
       trim: true,
     },

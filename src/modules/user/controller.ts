@@ -178,13 +178,12 @@ export const getElementById = async (element: string) => {
  * @returns {Object} element data
  */
 export const getElement = async (params: getUserDTO) => {
-  const { user, email, phone, googleId, facebookId, twitterId } = params;
+  const { user, email, phone, googleId, facebookId } = params;
   const query: any = {};
   if (user) query._id = user;
   if (email) query.email = email;
   if (googleId) query.googleId = googleId;
   if (facebookId) query.facebookId = facebookId;
-  if (twitterId) query.twitterId = twitterId;
   if (phone) query.phone = phone;
   if (Object.keys(query).length === 0) query._id = null;
 

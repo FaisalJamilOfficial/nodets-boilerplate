@@ -17,8 +17,7 @@ export interface Element {
   isOnline?: boolean;
   customer?: string;
   admin?: string;
-  googleID?: string;
-  facebookID?: string;
-  twitterID?: string;
+  googleId?: string;
+  facebookId?: string;
   lastLogin?: Date;
 }

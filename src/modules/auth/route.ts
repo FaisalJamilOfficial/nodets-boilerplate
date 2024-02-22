@@ -107,16 +107,6 @@ router.post(
 );
 
 router.post(
-  "/login/twitter",
-  exceptionHandler(async (req: Request, res: Response) => {
-    const { twitterId } = req.body;
-    const args = { twitterId };
-    const response: any = await userController.getElement(args);
-    res.json({ token: response.getSignedjwtToken() });
-  })
-);
-
-router.post(
   "/login/admin",
   exceptionHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body;

@@ -19,7 +19,6 @@ export type getUserDTO = {
   phone?: string;
   googleId?: string;
   facebookId?: string;
-  twitterId?: string;
 };
 
 export type getUserProfileDTO = {
