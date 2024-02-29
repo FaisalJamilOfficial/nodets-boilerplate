@@ -8,9 +8,14 @@ import * as conversationController from "../conversation/controller";
 import * as userController from "../user/controller";
 import { Element } from "./interface";
 import { GetMessagesDTO, SendMessageDTO } from "./dto";
-import { MESSAGE_STATUSES, NOTIFICATION_TYPES } from "../../configs/enum";
+import {
+  MESSAGE_STATUSES,
+  NOTIFICATION_TYPES,
+  SOCKET_EVENTS,
+} from "../../configs/enum";
 
 // destructuring assignments
+const { CONVERSATIONS_UPDATED, NEW_MESSAGE_ } = SOCKET_EVENTS;
 const { NEW_MESSAGE } = NOTIFICATION_TYPES;
 const { READ } = MESSAGE_STATUSES;
 const { ObjectId } = Types;
@@ -121,17 +126,17 @@ export const send = async (params: SendMessageDTO) => {
     user,
     type: NEW_MESSAGE,
     useSocket: true,
-    event: "new_message_" + message.conversation,
+    event: NEW_MESSAGE_ + message.conversation,
     socketData: message,
     useFirebase: true,
-    title: "New Element",
+    title: "New Message",
     body: `New message from ${username}`,
     useDatabase: true,
     notificationData,
   });
   await notificationController.notifyUsers({
     useSocket: true,
-    event: "conversations_updated",
+    event: CONVERSATIONS_UPDATED,
     socketData: conversation,
     user,
   });

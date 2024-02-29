@@ -51,3 +51,8 @@ export enum NOTIFICATION_STATUSES {
   UNREAD = "unread",
   READ = "read",
 }
+
+export enum SOCKET_EVENTS {
+  NEW_MESSAGE_ = "new_message_",
+  CONVERSATIONS_UPDATED = "conversations_updated",
+}
