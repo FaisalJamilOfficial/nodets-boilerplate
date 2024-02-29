@@ -6,9 +6,6 @@ NodeTS Backend Boilerplate
 
 Author: [Faisal Jamil Khan](https://github.com/FaisalJamilOfficial) [[Develo IT Solutions Pvt Ltd.]](https://github.com/DeveloITSolutions)
 
+Contributor: [Malik Abdullah](https://github.com/abdullah2011-gif) [[Develo IT Solutions Pvt Ltd.]](https://github.com/DeveloITSolutions)
 
-Coordinator: [Malik Abdullah](https://github.com/abdullah2011-gif) [[Develo IT Solutions Pvt Ltd.]](https://github.com/DeveloITSolutions)
-
-Coordinator: [Hussam Khan](https://github.com/hussamk98) [[Develo IT Solutions Pvt Ltd.]](https://github.com/DeveloITSolutions)
-
-Coordinator: [Shoaib Ahmed](https://github.com/shoaib2527) [[Develo IT Solutions Pvt Ltd.]](https://github.com/DeveloITSolutions)
+Contributor: [Hussam Khan](https://github.com/hussamk98) [[Develo IT Solutions Pvt Ltd.]](https://github.com/DeveloITSolutions)
