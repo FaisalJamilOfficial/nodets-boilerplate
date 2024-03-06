@@ -1,6 +1,8 @@
 // file imports
 import { NOTIFICATION_TYPES } from "../../configs/enum";
 import { Element } from "./interface";
+import { Element as Message } from "../message/interface";
+import { Element as Conversation } from "../conversation/interface";
 import { GetElementsDTO } from "../element/dto";
 
 export interface GetNotificationsDTO extends GetElementsDTO {
@@ -21,4 +23,12 @@ export type NotifyUsersDTO = {
   useFirebase?: boolean;
   useDatabase?: boolean;
   useSocket?: boolean;
+};
+
+export type sendNotificationsDTO = {
+  username: string;
+  notificationData: Element;
+  conversationData?: Conversation;
+  messageData?: Message;
+  query?: Object;
 };

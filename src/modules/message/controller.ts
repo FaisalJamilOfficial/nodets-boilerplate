@@ -3,20 +3,14 @@ import { isValidObjectId, Types } from "mongoose";
 
 // file imports
 import ElementModel from "./model";
-import * as notificationController from "../notification/controller";
 import * as conversationController from "../conversation/controller";
 import * as userController from "../user/controller";
 import { Element } from "./interface";
 import { GetMessagesDTO, SendMessageDTO } from "./dto";
-import {
-  MESSAGE_STATUSES,
-  NOTIFICATION_TYPES,
-  SOCKET_EVENTS,
-} from "../../configs/enum";
+import { sendNewMessageNotification } from "../notification/controller";
+import { MESSAGE_STATUSES } from "../../configs/enum";
 
 // destructuring assignments
-const { CONVERSATIONS_UPDATED, NEW_MESSAGE_ } = SOCKET_EVENTS;
-const { NEW_MESSAGE } = NOTIFICATION_TYPES;
 const { READ } = MESSAGE_STATUSES;
 const { ObjectId } = Types;
 
@@ -113,33 +107,19 @@ export const send = async (params: SendMessageDTO) => {
 
   conversation.lastMessage = message;
 
-  const user = message.userTo.toString();
-
   const notificationData = {
     user: message.userTo.toString(),
     message: message._id.toString(),
     messenger: message.userFrom.toString(),
-    type: NEW_MESSAGE,
   };
 
-  await notificationController.notifyUsers({
-    user,
-    type: NEW_MESSAGE,
-    useSocket: true,
-    event: NEW_MESSAGE_ + message.conversation,
-    socketData: message,
-    useFirebase: true,
-    title: "New Message",
-    body: `New message from ${username}`,
-    useDatabase: true,
+  const args: any = {
+    username,
     notificationData,
-  });
-  await notificationController.notifyUsers({
-    useSocket: true,
-    event: CONVERSATIONS_UPDATED,
-    socketData: conversation,
-    user,
-  });
+    messageData: message,
+    conversationData: conversation,
+  };
+  await sendNewMessageNotification(args);
 
   return message;
 };

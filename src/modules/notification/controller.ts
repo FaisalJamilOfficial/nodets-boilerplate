@@ -6,11 +6,21 @@ import SocketManager from "../../utils/socket-manager";
 import ElementModel from "./model";
 import * as userController from "../user/controller";
 import { Element } from "./interface";
-import { GetNotificationsDTO, NotifyUsersDTO } from "./dto";
-import { NOTIFICATION_STATUSES } from "../../configs/enum";
+import {
+  GetNotificationsDTO,
+  NotifyUsersDTO,
+  sendNotificationsDTO,
+} from "./dto";
+import {
+  NOTIFICATION_STATUSES,
+  NOTIFICATION_TYPES,
+  SOCKET_EVENTS,
+} from "../../configs/enum";
 
 // destructuring assignments
 const { READ } = NOTIFICATION_STATUSES;
+const { NEW_MESSAGE_, CONVERSATIONS_UPDATED } = SOCKET_EVENTS;
+const { NEW_MESSAGE } = NOTIFICATION_TYPES;
 
 /**
  * @description Add element
@@ -19,6 +29,15 @@ const { READ } = NOTIFICATION_STATUSES;
  */
 export const addElement = async (elementObj: Element) => {
   return await ElementModel.create(elementObj);
+};
+
+/**
+ * @description Add elements
+ * @param {Object[]} elements elements data
+ * @returns {Object} element data
+ */
+export const addElements = async (elements: Element[]) => {
+  return await ElementModel.create(elements);
 };
 
 /**
@@ -81,12 +100,14 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
   } = params;
 
   const fcms: any = [];
+  let usersExist: any = [];
 
   if (isGrouped) {
     if (useFirebase) {
       const queryObj: any = query ?? {};
       queryObj.limit = Math.pow(2, 32);
-      const { data: usersExist } = await userController.getElements(queryObj);
+      const { data } = await userController.getElements(queryObj);
+      usersExist = data;
       usersExist.forEach(async (element: any) => {
         element.fcms.forEach((e: any) => fcms.push(e.token));
       });
@@ -116,9 +137,16 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
       data: firebaseData ? { ...firebaseData, type } : { type },
     });
   if (useDatabase)
-    if (notificationData)
+    if (notificationData) {
       // database notification creation
-      await addElement(notificationData);
+      if (type) notificationData.type = type;
+      if (isGrouped) {
+        const elements = usersExist?.map((element: any) => {
+          return { ...notificationData, user: element._id };
+        });
+        await addElements(elements);
+      } else await addElement(notificationData);
+    }
 };
 
 /**
@@ -131,4 +159,32 @@ export const readNotifications = async (user: string): Promise<void> => {
   if (!(await userController.checkElementExistence({ _id: user })))
     throw new Error("Please enter valid user id!|||400");
   await ElementModel.updateMany({ user }, notificationObj);
+};
+
+/**
+ * @description send new message notification
+ * @param {Object} params notification parameters
+ */
+export const sendNewMessageNotification = async (
+  params: sendNotificationsDTO
+): Promise<void> => {
+  const { username, notificationData, conversationData, messageData } = params;
+  await notifyUsers({
+    user: notificationData.user,
+    type: NEW_MESSAGE,
+    useSocket: true,
+    event: NEW_MESSAGE_ + messageData?.conversation,
+    socketData: messageData,
+    useFirebase: true,
+    title: "New Message",
+    body: `New message from ${username}`,
+    useDatabase: true,
+    notificationData,
+  });
+  await notifyUsers({
+    useSocket: true,
+    event: CONVERSATIONS_UPDATED,
+    socketData: conversationData,
+    user: notificationData.user,
+  });
 };
