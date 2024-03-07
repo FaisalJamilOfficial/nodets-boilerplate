@@ -1,5 +1,8 @@
+// file imports
+import { MongoID } from "../../configs/types";
+
 export interface UserToken {
-  _id?: string;
-  user?: string;
+  _id?: MongoID;
+  user: MongoID;
   token?: string;
 }

@@ -112,22 +112,11 @@ const userSchema = new Schema(
       type: Date,
       select: false,
     },
-    customer: {
+    profile: {
       type: Schema.Types.ObjectId,
-      ref: "customers",
+      ref: "profiles",
       select: false,
       index: true,
-    },
-    admin: {
-      type: Schema.Types.ObjectId,
-      ref: "admins",
-      select: false,
-      index: true,
-    },
-    isCustomer: {
-      type: Boolean,
-      select: false,
-      default: false,
     },
     isAdmin: {
       type: Boolean,
@@ -159,25 +148,24 @@ userSchema.methods.getSignedjwtToken = function () {
   );
 };
 
-userSchema.methods.populate = async function (field: any) {
+userSchema.methods.populate = async function (field: string) {
   if (field === SUPER_ADMIN || this.type === SUPER_ADMIN) field = "";
   return await model("users", userSchema)
     .findById(this._id)
     .populate(field ?? this.type);
 };
 
-userSchema.methods.setPassword = async function (newPassword: any) {
+userSchema.methods.setPassword = async function (newPassword: string) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(newPassword, salt);
   this.save();
 };
 
-userSchema.methods.validatePassword = async function (enteredPassword: any) {
-  const userExists: any = await model("users", userSchema)
+userSchema.methods.validatePassword = async function (enteredPassword: string) {
+  const userExists = await model("users", userSchema)
     .findById(this._id, { password: 1 })
     .select("+password");
-  const isMatched = await bcrypt.compare(enteredPassword, userExists.password);
-  return isMatched;
+  return await bcrypt.compare(enteredPassword, userExists?.password || "");
 };
 
 export default model("users", userSchema);

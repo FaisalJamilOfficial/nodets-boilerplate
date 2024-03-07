@@ -1,4 +1,5 @@
 // file imports
+import { MongoID } from "../../configs/types";
 import { USER_TYPES } from "../../configs/enum";
 
 export type LoginDTO = {
@@ -18,12 +19,12 @@ export type GenerateEmailTokenDTO = {
 };
 
 export type ResetPasswordDTO = {
-  user: string;
+  user: MongoID;
   password: string;
   token: string;
 };
 
 export type VerifyUserEmailDTO = {
-  user: string;
+  user: MongoID;
   token: string;
 };

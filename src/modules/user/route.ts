@@ -3,7 +3,6 @@ import express, { Request, Response } from "express";
 
 // file imports
 import TwilioManager from "../../utils/twilio-manager";
-import directories from "../../configs/directories";
 import * as authController from "../auth/controller";
 import * as notificationController from "../notification/controller";
 import * as userController from "./controller";
@@ -19,7 +18,6 @@ import {
 } from "../../middlewares/authenticator";
 
 // destructuring assignments
-const { PUBLIC_DIRECTORY } = directories;
 
 // variable initializations
 const router = express.Router();
@@ -36,10 +34,10 @@ router
     })
   )
   .put(
-    upload(PUBLIC_DIRECTORY).single("image"),
+    upload().single("image"),
     exceptionHandler(async (req: IRequest, res: Response) => {
       const image = req.file || {};
-      const { _id: user } = req?.user;
+      const { _id: user } = req.user;
       const { firstName, lastName } = req.body;
       const args = {
         firstName,
@@ -53,7 +51,7 @@ router
   )
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id: user } = req?.user;
+      const { _id: user } = req.user;
       const { page, limit } = req.query;
       let { keyword } = req.query;
       keyword = keyword?.toString() || "";
@@ -82,7 +80,7 @@ router.put(
   verifyOTP,
   verifyUserToken,
   exceptionHandler(async (req: IRequest, res: Response) => {
-    const { _id: user, phone } = req?.user;
+    const { _id: user, phone } = req.user;
     const args = { phone };
     const response = await userController.updateElementById(user, args);
     res.json(response);
@@ -93,7 +91,7 @@ router.put(
   verifyToken,
   verifyUser,
   exceptionHandler(async (req: IRequest, res: Response) => {
-    const { _id: user, email, type } = req?.user;
+    const { _id: user, email, type } = req.user;
     const { password, newPassword } = req.body;
     const args = { password, email, type };
     await authController.login(args);
@@ -109,7 +107,7 @@ router
     verifyToken,
     verifyUser,
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id: user } = req?.user;
+      const { _id: user } = req.user;
       const { phone } = req.body;
       const args = { user, phone };
       const response = await new TwilioManager().sendOTP(args);
@@ -130,7 +128,7 @@ router
   .all(verifyToken, verifyUser)
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id: user } = req?.user;
+      const { _id: user } = req.user;
       const { page, limit } = req.query;
       const args = { user, limit: Number(limit), page: Number(page) };
       const response = await notificationController.getElements(args);
@@ -139,7 +137,7 @@ router
   )
   .patch(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id: user } = req?.user;
+      const { _id: user } = req.user;
       await notificationController.readNotifications(user);
       res.json({ message: "Operation completed successfully!" });
     })

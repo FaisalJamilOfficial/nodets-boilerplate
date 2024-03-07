@@ -79,7 +79,7 @@ router.post(
   verifyOTP,
   verifyUserToken,
   exceptionHandler(async (req: IRequest, res: Response) => {
-    const { _id: user } = req?.user;
+    const { _id: user } = req.user;
     const args = { user };
     const response: any = await userController.getElement(args);
     res.json({ token: response.getSignedjwtToken() });

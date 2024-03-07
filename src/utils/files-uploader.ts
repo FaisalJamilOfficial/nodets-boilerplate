@@ -3,6 +3,9 @@ import fs from "fs";
 import { v4 } from "uuid";
 import mime from "mime";
 
+// file imports
+import { PUBLIC_DIRECTORY } from "../configs/directories";
+
 class FilesUploader {
   fs: typeof fs;
   constructor() {
@@ -15,11 +18,10 @@ class FilesUploader {
    * @param {String} directory directory to save file
    * @returns {Object} file object
    */
-  uploadFile(params: any) {
-    const { file, directory } = params;
+  uploadFile(file: any) {
     const fileExtension = mime.getExtension(file.mimetype);
     file.filename = v4() + "." + fileExtension;
-    file.path = directory + file.filename;
+    file.path = PUBLIC_DIRECTORY + file.filename;
     fs.createWriteStream(file.path).write(file.buffer);
     return file;
   }
@@ -30,12 +32,11 @@ class FilesUploader {
    * @param {String} directory directory to save file
    * @returns {[Object]} array of file
    */
-  uploadFiles(params: any) {
-    let { files, directory } = params;
+  uploadFiles(files: any[]) {
     files = files.map((file: any) => {
       const fileExtension = mime.getExtension(file.mimetype);
       file.filename = v4() + "." + fileExtension;
-      file.path = directory + file.filename;
+      file.path = PUBLIC_DIRECTORY + file.filename;
       fs.createWriteStream(file.path).write(file.buffer);
       return file;
     });

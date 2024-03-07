@@ -4,6 +4,7 @@
 
 // file imports
 // import { deactivateElementByName } from "../modules/cron-job/controller";
+import { ErrorHandler } from "../middlewares/error-handler";
 
 class NodeScheduler {
   nodeSchedule: any;
@@ -23,7 +24,7 @@ class NodeScheduler {
     let response;
     // const name = v4();
     if (time && new Date(time) < new Date())
-      throw new Error("Time cannot be in the past");
+      throw new ErrorHandler("Time cannot be in the past");
     // if (time)
     //   response = nodeSchedule.scheduleJob(name, time, async () => {
     //     await func();

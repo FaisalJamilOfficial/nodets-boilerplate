@@ -3,11 +3,12 @@ import { isValidObjectId } from "mongoose";
 
 // file imports
 import ElementModel from "./model";
-import FilesDeleter from "../../utils/files-deleter";
-import * as adminController from "../admin/controller";
-import * as customerController from "../customer/controller";
+import FilesRemover from "../../utils/files-remover";
+import * as profileController from "../profile/controller";
 import { Element } from "./interface";
+import { MongoID } from "../../configs/types";
 import { USER_TYPES } from "../../configs/enum";
+import { ErrorHandler } from "../../middlewares/error-handler";
 import {
   GetUsersDTO,
   getUserDTO,
@@ -37,31 +38,30 @@ export const addElement = async (elementObj: Element) => {
  * @returns {Object} element data
  */
 export const updateElementById = async (
-  user: string,
+  user: MongoID,
   userObj: updateUserDTO
 ) => {
-  if (!user) throw new Error("Please enter user id!|||400");
+  if (!user) throw new ErrorHandler("Please enter user id!", 400);
   if (!isValidObjectId(user))
-    throw new Error("Please enter valid user id!|||400");
+    throw new ErrorHandler("Please enter valid user id!", 400);
   const {
     password,
     firstName,
     lastName,
     image,
-    customer,
-    admin,
+    profile,
     coordinates,
     fcm,
     shallRemoveFCM,
     device,
   } = userObj;
 
-  if (!user) throw new Error("Please enter user id!|||400");
+  if (!user) throw new ErrorHandler("Please enter user id!", 400);
   if (!isValidObjectId(user))
-    throw new Error("Please enter valid user id!|||400");
+    throw new ErrorHandler("Please enter valid user id!", 400);
 
   let userExists: any = await ElementModel.findById(user);
-  if (!userExists) throw new Error("Element not found!|||404");
+  if (!userExists) throw new ErrorHandler("Element not found!", 404);
 
   if (password) {
     await userExists.setPassword(password);
@@ -78,7 +78,8 @@ export const updateElementById = async (
       });
       if (!alreadyExists)
         userExists.fcms.push({ device: fcm.device, token: fcm.token });
-    } else throw new Error("Please enter FCM token and device both!|||400");
+    } else
+      throw new ErrorHandler("Please enter FCM token and device both!", 400);
   }
   if (shallRemoveFCM)
     if (device)
@@ -88,28 +89,22 @@ export const updateElementById = async (
   if (firstName || lastName)
     userExists.name = (firstName || "") + " " + (lastName || "");
   if (image) {
-    if (userExists.image)
-      new FilesDeleter().deleteImage({ image: userExists.image });
+    if (userExists.image) new FilesRemover().remove([userExists.image]);
     userExists.image = image;
   }
   if (coordinates) {
     if (coordinates?.length === 2)
       userExists.location.coordinates = coordinates;
     else
-      throw new Error(
-        "Please enter location longitude and latitude both!|||400"
+      throw new ErrorHandler(
+        "Please enter location longitude and latitude both!",
+        400
       );
   }
-  if (customer)
-    if (await customerController.checkElementExistence({ _id: customer })) {
-      userExists.customer = customer;
-      userExists.isCustomer = true;
-    } else throw new Error("Customer not found!|||404");
-  if (admin)
-    if (await adminController.checkElementExistence({ _id: admin })) {
-      userExists.admin = admin;
-      userExists.isAdmin = true;
-    } else throw new Error("Admin not found!|||404");
+  if (profile)
+    if (await profileController.checkElementExistence({ _id: profile })) {
+      userExists.profile = profile;
+    } else throw new ErrorHandler("Profile not found!", 404);
 
   userExists = { ...userExists._doc, ...userObj };
   userExists = await ElementModel.findByIdAndUpdate(
@@ -119,7 +114,7 @@ export const updateElementById = async (
       new: true,
     }
   ).select("-createdAt -updatedAt -__v");
-  if (!userExists) throw new Error("user not found!|||404");
+  if (!userExists) throw new ErrorHandler("user not found!", 404);
   return userExists;
 };
 
@@ -134,11 +129,11 @@ export const updateElement = async (
   elementObj: Partial<Element>
 ) => {
   if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
+    throw new ErrorHandler("Please enter query!", 400);
   const elementExists = await ElementModel.findOneAndUpdate(query, elementObj, {
     new: true,
   });
-  if (!elementExists) throw new Error("element not found!|||404");
+  if (!elementExists) throw new ErrorHandler("element not found!", 404);
   return elementExists;
 };
 
@@ -147,12 +142,12 @@ export const updateElement = async (
  * @param {String} element element id
  * @returns {Object} element data
  */
-export const deleteElementById = async (element: string) => {
-  if (!element) throw new Error("Please enter element id!|||400");
+export const deleteElementById = async (element: MongoID) => {
+  if (!element) throw new ErrorHandler("Please enter element id!", 400);
   if (!isValidObjectId(element))
-    throw new Error("Please enter valid element id!|||400");
+    throw new ErrorHandler("Please enter valid element id!", 400);
   const elementExists = await ElementModel.findByIdAndDelete(element);
-  if (!elementExists) throw new Error("element not found!|||404");
+  if (!elementExists) throw new ErrorHandler("element not found!", 404);
   return elementExists;
 };
 
@@ -161,14 +156,14 @@ export const deleteElementById = async (element: string) => {
  * @param {String} element element id
  * @returns {Object} element data
  */
-export const getElementById = async (element: string) => {
-  if (!element) throw new Error("Please enter element id!|||400");
+export const getElementById = async (element: MongoID) => {
+  if (!element) throw new ErrorHandler("Please enter element id!", 400);
   if (!isValidObjectId(element))
-    throw new Error("Please enter valid element id!|||400");
+    throw new ErrorHandler("Please enter valid element id!", 400);
   const elementExists = await ElementModel.findById(element).select(
     "-createdAt -updatedAt -__v"
   );
-  if (!elementExists) throw new Error("element not found!|||404");
+  if (!elementExists) throw new ErrorHandler("element not found!", 404);
   return elementExists;
 };
 
@@ -246,7 +241,7 @@ export const getElements = async (params: GetUsersDTO) => {
  */
 export const checkElementExistence = async (query: Partial<Element>) => {
   if (!query || Object.keys(query).length === 0)
-    throw new Error("Please enter query!|||400");
+    throw new ErrorHandler("Please enter query!", 400);
   return await ElementModel.exists(query);
 };
 

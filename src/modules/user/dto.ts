@@ -1,10 +1,11 @@
 // file imports
+import { MongoID } from "../../configs/types";
 import { Element } from "./interface";
 import { GetElementsDTO } from "../element/dto";
 
 export interface GetUsersDTO extends GetElementsDTO {
   type?: string;
-  user: string;
+  user: MongoID;
 }
 export interface updateUserDTO extends Partial<Element> {
   fcm?: { token: string; device: string };
@@ -14,7 +15,7 @@ export interface updateUserDTO extends Partial<Element> {
 }
 
 export type getUserDTO = {
-  user?: string;
+  user?: MongoID;
   email?: string;
   phone?: string;
   googleId?: string;
@@ -22,6 +23,6 @@ export type getUserDTO = {
 };
 
 export type getUserProfileDTO = {
-  user: string;
+  user: MongoID;
   device: string;
 };

@@ -3,11 +3,12 @@
 import { v4 } from "uuid";
 
 // file imports
-import FilesUploader from "./files_uploader";
-import directories from "../configs/directories";
+import FilesUploader from "./files-uploader";
 
 // destructuring assignments
-const { PUBLIC_DIRECTORY } = directories;
+
+// variable initializations
+const { uploadFile } = new FilesUploader();
 
 class SharpManager {
   sharp: any;
@@ -21,8 +22,7 @@ class SharpManager {
    * @param {String} path directory to save resized images
    * @returns {[Object]} array of resized images
    */
-  async resizeImages(params: any) {
-    const { images, path } = params;
+  async resizeImages(images: any[]) {
     const array = [];
     if (images) {
       // const imagesMimeRegex = new RegExp("image/(.*)");
@@ -49,10 +49,7 @@ class SharpManager {
           //   })
           //   .toFile(path + id);
         } else {
-          const file = await new FilesUploader().uploadFile({
-            file: images[i],
-            directory: PUBLIC_DIRECTORY,
-          });
+          const file = await uploadFile(images[i]);
           id = file.filename;
         }
         array.push({
@@ -70,9 +67,7 @@ class SharpManager {
    * @param {String} path directory to save resized images
    * @returns {[Object]} array of resized images
    */
-  async resizeImagesWithThumbnails(params: any) {
-    const { images, path } = params;
-
+  async resizeImagesWithThumbnails(images: any[]) {
     const array = [];
     if (images) {
       // if (path);
@@ -110,10 +105,7 @@ class SharpManager {
           //   })
           //   .toFile(path + id);
         } else {
-          const file = await new FilesUploader().uploadFile({
-            file: images[i],
-            directory: PUBLIC_DIRECTORY,
-          });
+          const file = await uploadFile(images[i]);
           id = file.filename;
         }
 

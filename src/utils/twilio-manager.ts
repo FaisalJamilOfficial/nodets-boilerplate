@@ -5,6 +5,7 @@
 // file imports
 import * as userController from "../modules/user/controller";
 import { getToken } from "../middlewares/authenticator";
+import { ErrorHandler } from "../middlewares/error-handler";
 
 // destructuring assignments
 const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, APP_TITLE } = process.env;
@@ -27,7 +28,7 @@ class TwilioManager {
   async sendOTP(params: any) {
     const { user, phone, phoneCode } = params;
 
-    if (!phone) throw new Error("Please enter phone number!|||400");
+    if (!phone) throw new ErrorHandler("Please enter phone number!", 400);
 
     const query: any = {};
     if (user) query.user = user;
@@ -65,7 +66,7 @@ class TwilioManager {
    */
   async send(params: any) {
     const { phone, message } = params;
-    if (!phone) throw new Error("Please enter phone number!|||400");
+    if (!phone) throw new ErrorHandler("Please enter phone number!", 400);
     try {
       // await client.messages.create({
       //   body: message,

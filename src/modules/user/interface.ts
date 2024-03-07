@@ -1,8 +1,9 @@
 // file imports
+import { MongoID } from "../../configs/types";
 import { USER_STATUSES, USER_TYPES } from "../../configs/enum";
 
 export interface Element {
-  _id?: string;
+  _id?: MongoID;
   email: string;
   password: string;
   phone?: string;
@@ -15,9 +16,9 @@ export interface Element {
   type: USER_TYPES;
   status?: USER_STATUSES;
   isOnline?: boolean;
-  customer?: string;
-  admin?: string;
+  profile?: MongoID;
   googleId?: string;
   facebookId?: string;
   lastLogin?: Date;
+  otp?: string;
 }

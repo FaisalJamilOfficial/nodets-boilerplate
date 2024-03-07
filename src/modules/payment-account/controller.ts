@@ -6,6 +6,7 @@ import ElementModel from "./model";
 import * as userController from "../user/controller";
 import { Element } from "./interface";
 import { GetPaymentAccountDTO } from "./dto";
+import { ErrorHandler } from "../../middlewares/error-handler";
 
 // destructuring assignments
 
@@ -17,11 +18,11 @@ import { GetPaymentAccountDTO } from "./dto";
 export const addElement = async (elementObj: Element) => {
   const { user } = elementObj;
 
-  if (!user) throw new Error("Please enter user id!|||400");
+  if (!user) throw new ErrorHandler("Please enter user id!", 400);
   if (!isValidObjectId(user))
-    throw new Error("Please enter valid user id!|||400");
+    throw new ErrorHandler("Please enter valid user id!", 400);
   if (!(await userController.checkElementExistence({ _id: user })))
-    throw new Error("user not found!|||404");
+    throw new ErrorHandler("user not found!", 404);
   return await ElementModel.create(elementObj);
 };
 
@@ -41,6 +42,6 @@ export const getElement = async (params: GetPaymentAccountDTO) => {
     "-createdAt -updatedAt -__v"
   );
   // if (paymentAccountExists);
-  // else throw new Error("Element not found!|||404");
+  // else throw new ErrorHandler("Element not found!",404);
   return paymentAccountExists;
 };

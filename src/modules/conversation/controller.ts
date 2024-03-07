@@ -5,7 +5,9 @@ import { isValidObjectId } from "mongoose";
 import ElementModel from "./model";
 import { Element } from "./interface";
 import { GetConversationsDTO } from "./dto";
+import { MongoID } from "../../configs/types";
 import { CONVERSATION_STATUSES } from "../../configs/enum";
+import { ErrorHandler } from "../../middlewares/error-handler";
 
 // destructuring assignments
 const { PENDING, ACCEPTED, REJECTED } = CONVERSATION_STATUSES;
@@ -32,7 +34,7 @@ export const addElement = async (elementObj: Element) => {
         await conversationExists.save();
       }
     } else if (conversationExists.status === REJECTED)
-      throw new Error("Element request rejected!|||400");
+      throw new ErrorHandler("Element request rejected!", 400);
   } else {
     const conversationObj: any = {};
     conversationObj.userTo = userTo;
@@ -47,14 +49,14 @@ export const addElement = async (elementObj: Element) => {
  * @param {String} element element id
  * @returns {Object} element data
  */
-export const getElementById = async (element: string) => {
-  if (!element) throw new Error("Please enter element id!|||400");
+export const getElementById = async (element: MongoID) => {
+  if (!element) throw new ErrorHandler("Please enter element id!", 400);
   if (!isValidObjectId(element))
-    throw new Error("Please enter valid element id!|||400");
+    throw new ErrorHandler("Please enter valid element id!", 400);
   const elementExists = await ElementModel.findById(element).select(
     "-createdAt -updatedAt -__v"
   );
-  if (!elementExists) throw new Error("element not found!|||404");
+  if (!elementExists) throw new ErrorHandler("element not found!", 404);
   return elementExists;
 };
 

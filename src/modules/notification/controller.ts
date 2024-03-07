@@ -6,6 +6,8 @@ import SocketManager from "../../utils/socket-manager";
 import ElementModel from "./model";
 import * as userController from "../user/controller";
 import { Element } from "./interface";
+import { MongoID } from "../../configs/types";
+import { ErrorHandler } from "../../middlewares/error-handler";
 import {
   GetNotificationsDTO,
   NotifyUsersDTO,
@@ -153,11 +155,11 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
  * @description read all notifications
  * @param {String} user user id
  */
-export const readNotifications = async (user: string): Promise<void> => {
+export const readNotifications = async (user: MongoID): Promise<void> => {
   const notificationObj = { status: READ };
-  if (!user) throw new Error("Please enter user id!|||400");
+  if (!user) throw new ErrorHandler("Please enter user id!", 400);
   if (!(await userController.checkElementExistence({ _id: user })))
-    throw new Error("Please enter valid user id!|||400");
+    throw new ErrorHandler("Please enter valid user id!", 400);
   await ElementModel.updateMany({ user }, notificationObj);
 };
 

@@ -1,9 +1,9 @@
 // module imports
 import { NextFunction, Request, Response } from "express";
 
-class ErrorHandler extends Error {
-  statusCode: any;
-  constructor(message: any, statusCode: any) {
+export class ErrorHandler extends Error {
+  statusCode: number;
+  constructor(message: string, statusCode = 500) {
     super(message);
     this.statusCode = statusCode;
   }
@@ -11,8 +11,6 @@ class ErrorHandler extends Error {
 
 const error = (err: any, _req: Request, res: Response, _next: NextFunction) => {
   let error = { ...err };
-  error.message = err.message.toString().split("|||")[0] ?? err.message;
-  error.statusCode = err.message.toString().split("|||")[1] ?? 500;
 
   console.error(err);
 
@@ -23,7 +21,7 @@ const error = (err: any, _req: Request, res: Response, _next: NextFunction) => {
 
   if (err.name === "ValidationError") {
     const message = Object.values(err.errors).map((e: any) => e.message);
-    error = new ErrorHandler(message, 400);
+    error = new ErrorHandler(message.toString(), 400);
   }
 
   // duplicate value found
@@ -34,7 +32,7 @@ const error = (err: any, _req: Request, res: Response, _next: NextFunction) => {
     error = new ErrorHandler(message, 400);
   }
 
-  res.status(Number(error.statusCode)).json({
+  res.status(Number(error?.statusCode) || 500).json({
     error: error.message || "Server Error",
   });
 };

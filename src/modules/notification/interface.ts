@@ -1,10 +1,11 @@
 // file imports
+import { MongoID } from "../../configs/types";
 import { NOTIFICATION_TYPES } from "../../configs/enum";
 
 export interface Element {
-  _id?: string;
+  _id?: MongoID;
   type: NOTIFICATION_TYPES;
-  user: string;
-  message?: string;
-  messenger?: string;
+  user: MongoID;
+  message?: MongoID;
+  messenger?: MongoID;
 }

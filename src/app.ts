@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 import "./bin/www";
 import indexRouter from "./routes";
 import SocketManager from "./utils/socket-manager";
-import errorHandler from "./middlewares/error-handler";
+import errorHandler, { ErrorHandler } from "./middlewares/error-handler";
 
 // destructuring assignments
 const { NODE_ENV, MONGO_URI, PORT } = process.env;
@@ -66,7 +66,7 @@ const serverFunction = async () => {
 
     // catch 404 and forward to error handler
     app.use(function (_req: Request, _res: Response, next: NextFunction) {
-      next(new Error("Not Found|||404"));
+      next(new ErrorHandler("Not Found", 404));
     });
 
     // error handler

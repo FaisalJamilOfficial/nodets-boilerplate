@@ -1,4 +1,5 @@
 // file imports
+import { MongoID } from "../../configs/types";
 import { NOTIFICATION_TYPES } from "../../configs/enum";
 import { Element } from "./interface";
 import { Element as Message } from "../message/interface";
@@ -6,12 +7,12 @@ import { Element as Conversation } from "../conversation/interface";
 import { GetElementsDTO } from "../element/dto";
 
 export interface GetNotificationsDTO extends GetElementsDTO {
-  user: string;
+  user: MongoID;
 }
 
 export type NotifyUsersDTO = {
   query?: Object;
-  user?: string;
+  user?: MongoID;
   socketData?: Object;
   firebaseData?: Object;
   event?: string;

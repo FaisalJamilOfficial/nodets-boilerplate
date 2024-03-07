@@ -2,7 +2,6 @@
 import express, { Request, Response } from "express";
 
 // file imports
-import directories from "../../configs/directories";
 import * as messageController from "./controller";
 import * as conversationController from "../conversation/controller";
 import { verifyToken, verifyUser } from "../../middlewares/authenticator";
@@ -11,7 +10,6 @@ import { upload } from "../../middlewares/uploader";
 import { IRequest } from "../../configs/types";
 
 // destructuring assignments
-const { PUBLIC_DIRECTORY } = directories;
 
 // variable initializations
 const router = express.Router();
@@ -20,9 +18,9 @@ router
   .route("/")
   .all(verifyToken, verifyUser)
   .post(
-    upload(PUBLIC_DIRECTORY).array("attachments", 8),
+    upload().array("attachments", 8),
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id: userFrom, name: username } = req?.user;
+      const { _id: userFrom, name: username } = req.user;
       const { user: userTo, text } = req.body;
       const attachments = req.files || [];
       const args: any = { userFrom, username, userTo, text, attachments: [] };
@@ -68,7 +66,7 @@ router
   )
   .patch(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id } = req?.user;
+      const { _id } = req.user;
       const { conversation } = req.body;
       const args = { conversation, userTo: _id };
       await messageController.readMessages(args);
@@ -81,7 +79,7 @@ router.get(
   verifyToken,
   verifyUser,
   exceptionHandler(async (req: IRequest, res: Response) => {
-    const { _id: user } = req?.user;
+    const { _id: user } = req.user;
     const { limit, page } = req.query;
     let { keyword } = req.query;
     keyword = keyword?.toString() || "";
