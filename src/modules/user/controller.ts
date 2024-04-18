@@ -185,7 +185,9 @@ export const getElement = async (params: getUserDTO) => {
   let userExists = await ElementModel.findOne(query).select(
     "-createdAt -updatedAt -__v -fcms"
   );
-  if (userExists) userExists = await userExists.populate(userExists.type);
+  if (userExists)
+    if (userExists?.profile)
+      userExists = await userExists.populate(userExists.type);
   return userExists;
 };
 
