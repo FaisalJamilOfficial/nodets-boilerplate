@@ -22,6 +22,15 @@ export const addElement = async (elementObj: Element) => {
 };
 
 /**
+ * @description Add elements
+ * @param {Object[]} elementsArray elements data
+ * @returns {Object} element data
+ */
+export const addElements = async (elementsArray: Element[]) => {
+  return await ElementModel.create(elementsArray);
+};
+
+/**
  * @description Update element data
  * @param {String} element element id
  * @param {Object} elementObj element data
@@ -63,6 +72,21 @@ export const updateElement = async (
 };
 
 /**
+ * @description Update elements data
+ * @param {Object} query element data
+ * @param {Object} elementObj element data
+ * @returns {Object} updating result data
+ */
+export const updateElements = async (
+  query: Partial<Element>,
+  elementObj: Partial<Element>
+) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new ErrorHandler("Please enter query!", 400);
+  return await ElementModel.updateMany(query, elementObj);
+};
+
+/**
  * @description Delete element
  * @param {String} element element id
  * @returns {Object} element data
@@ -87,6 +111,17 @@ export const deleteElement = async (query: Partial<Element>) => {
   const elementExists = await ElementModel.findOneAndDelete(query);
   if (!elementExists) throw new ErrorHandler("element not found!", 404);
   return elementExists;
+};
+
+/**
+ * @description Delete elements
+ * @param {String} query element data
+ * @returns {Object} deletion data
+ */
+export const deleteElements = async (query: Partial<Element>) => {
+  if (!query || Object.keys(query).length === 0)
+    throw new ErrorHandler("Please enter query!", 400);
+  return await ElementModel.deleteMany(query);
 };
 
 /**

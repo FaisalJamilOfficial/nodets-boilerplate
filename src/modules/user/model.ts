@@ -1,7 +1,7 @@
 // module imports
-import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { model, Schema } from "mongoose";
 
 // file imports
 import { USER_STATUSES, USER_TYPES, GEO_JSON_TYPES } from "../../configs/enum";
@@ -12,8 +12,6 @@ const { SUPER_ADMIN } = USER_TYPES;
 const { POINT } = GEO_JSON_TYPES;
 
 // variable initializations
-const Schema = mongoose.Schema;
-const model = mongoose.model;
 
 const fcm = {
   device: { type: String, required: [true, "Please enter FCM device id!"] },

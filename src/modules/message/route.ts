@@ -1,5 +1,5 @@
 // module imports
-import express, { Request, Response } from "express";
+import { Request, Response, Router } from "express";
 
 // file imports
 import * as messageController from "./controller";
@@ -12,7 +12,7 @@ import { IRequest } from "../../configs/types";
 // destructuring assignments
 
 // variable initializations
-const router = express.Router();
+const router = Router();
 
 router
   .route("/")

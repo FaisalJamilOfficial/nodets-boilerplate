@@ -1,5 +1,5 @@
 // module imports
-import express, { Request, Response } from "express";
+import { Request, Response, Router } from "express";
 
 // file imports
 import * as elementController from "./controller";
@@ -13,7 +13,7 @@ import {
 // destructuring assignments
 
 // variable initializations
-const router = express.Router();
+const router = Router();
 
 router.get(
   "/",

@@ -1,9 +1,7 @@
 // module imports
-import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
 
 // variable initializations
-const Schema = mongoose.Schema;
-const model = mongoose.model;
 
 const customerSchema = new Schema(
   {

@@ -1,5 +1,5 @@
 // module imports
-import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
 
 // file imports
 import { NOTIFICATION_TYPES, NOTIFICATION_STATUSES } from "../../configs/enum";
@@ -8,8 +8,6 @@ import { NOTIFICATION_TYPES, NOTIFICATION_STATUSES } from "../../configs/enum";
 const { UNREAD } = NOTIFICATION_STATUSES;
 
 // variable initializations
-const Schema = mongoose.Schema;
-const model = mongoose.model;
 
 const notificationSchema = new Schema(
   {
@@ -24,17 +22,17 @@ const notificationSchema = new Schema(
       default: "",
     },
     message: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "messages",
       index: true,
     },
     messenger: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "users",
       index: true,
     },
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "users",
       required: true,
       index: true,

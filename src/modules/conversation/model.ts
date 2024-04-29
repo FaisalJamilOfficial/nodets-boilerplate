@@ -1,5 +1,5 @@
 // module imports
-import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
 
 // file imports
 import { CONVERSATION_STATUSES } from "../../configs/enum";
@@ -8,8 +8,6 @@ import { CONVERSATION_STATUSES } from "../../configs/enum";
 const { PENDING } = CONVERSATION_STATUSES;
 
 // variable initializations
-const Schema = mongoose.Schema;
-const model = mongoose.model;
 
 const conversationSchema = new Schema(
   {

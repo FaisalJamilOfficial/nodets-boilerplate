@@ -1,5 +1,5 @@
 // module imports
-import express, { Request, Response } from "express";
+import { Request, Response, Router } from "express";
 
 // file imports
 import * as authController from "./controller";
@@ -19,7 +19,7 @@ import { IRequest } from "../../configs/types";
 const { ADMIN, CUSTOMER } = USER_TYPES;
 
 // variable initializations
-const router = express.Router();
+const router = Router();
 
 router.post(
   "/register/customer",

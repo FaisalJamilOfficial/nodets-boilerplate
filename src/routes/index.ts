@@ -1,5 +1,5 @@
 // module imports
-import express, { Request, Response } from "express";
+import { Request, Response, Router } from "express";
 
 // file imports
 import admin from "../modules/admin/route";
@@ -12,7 +12,7 @@ import user from "../modules/user/route";
 const { POSTMAN_URL } = process.env;
 
 // variable initializations
-const router = express.Router();
+const router = Router();
 
 router.use("/admin", admin);
 router.use("/auth", auth);

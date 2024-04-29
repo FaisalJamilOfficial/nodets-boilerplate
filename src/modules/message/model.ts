@@ -1,5 +1,5 @@
 // module imports
-import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
 
 // file imports
 import { MESSAGE_STATUSES } from "../../configs/enum";
@@ -8,8 +8,6 @@ import { MESSAGE_STATUSES } from "../../configs/enum";
 const { UNREAD } = MESSAGE_STATUSES;
 
 // variable initializations
-const Schema = mongoose.Schema;
-const model = mongoose.model;
 
 const attachmentSchema = new Schema({
   path: { type: String, required: true },

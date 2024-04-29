@@ -1,5 +1,5 @@
 // module imports
-import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
 
 // file imports
 import { PAYMENT_ACCOUNT_TYPES } from "../../configs/enum";
@@ -7,8 +7,6 @@ import { PAYMENT_ACCOUNT_TYPES } from "../../configs/enum";
 // destructuring assignments
 
 // variable initializations
-const Schema = mongoose.Schema;
-const model = mongoose.model;
 
 const paymentAccountSchema = new Schema(
   {
