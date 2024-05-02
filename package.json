@@ -9,7 +9,7 @@
     "build": "npm run clean && npx tsc && npm run copy-files",
     "start": "node dist/app.js",
     "build:start": "npm run build && npm run start",
-    "dev": "concurrently \"npx tsc -w\"  \"nodemon dist/index.js\"",
+    "dev": "concurrently \"npx tsc -w\"  \"nodemon dist/app.js\"",
     "lint": "eslint . --ext .ts"
   },
   "repository": {
