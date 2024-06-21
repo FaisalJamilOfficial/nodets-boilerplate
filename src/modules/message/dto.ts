@@ -1,5 +1,5 @@
 // file imports
-import { Element } from "./interface";
+import { Message } from "./interface";
 import { MongoID } from "../../configs/types";
 import { GetElementsDTO } from "../element/dto";
 
@@ -9,6 +9,6 @@ export interface GetMessagesDTO extends GetElementsDTO {
   user2: MongoID;
 }
 
-export interface SendMessageDTO extends Element {
+export interface SendMessageDTO extends Message {
   username: string;
 }

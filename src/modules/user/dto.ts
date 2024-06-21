@@ -1,13 +1,13 @@
 // file imports
 import { MongoID } from "../../configs/types";
-import { Element } from "./interface";
+import { User } from "./interface";
 import { GetElementsDTO } from "../element/dto";
 
 export interface GetUsersDTO extends GetElementsDTO {
   type?: string;
   user: MongoID;
 }
-export interface updateUserDTO extends Partial<Element> {
+export interface updateUserDTO extends Partial<User> {
   fcm?: { token: string; device: string };
   coordinates?: number[];
   device?: string;

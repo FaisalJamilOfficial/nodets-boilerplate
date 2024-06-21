@@ -3,9 +3,9 @@
 // file imports
 import FirebaseManager from "../../utils/firebase-manager";
 import SocketManager from "../../utils/socket-manager";
-import ElementModel from "./model";
+import NotificationModel from "./model";
 import * as userController from "../user/controller";
-import { Element } from "./interface";
+import { Notification } from "./interface";
 import { MongoID } from "../../configs/types";
 import { ErrorHandler } from "../../middlewares/error-handler";
 import {
@@ -25,36 +25,36 @@ const { NEW_MESSAGE_, CONVERSATIONS_UPDATED } = SOCKET_EVENTS;
 const { NEW_MESSAGE } = NOTIFICATION_TYPES;
 
 /**
- * @description Add element
- * @param {Object} elementObj element data
- * @returns {Object} element data
+ * @description Add notification
+ * @param {Object} notificationObj notification data
+ * @returns {Object} notification data
  */
-export const addElement = async (elementObj: Element) => {
-  return await ElementModel.create(elementObj);
+export const addNotification = async (notificationObj: Notification) => {
+  return await NotificationModel.create(notificationObj);
 };
 
 /**
- * @description Add elements
- * @param {Object[]} elements elements data
- * @returns {Object} element data
+ * @description Add notifications
+ * @param {Object[]} notifications notifications data
+ * @returns {Object} notification data
  */
-export const addElements = async (elements: Element[]) => {
-  return await ElementModel.create(elements);
+export const addNotifications = async (notifications: Notification[]) => {
+  return await NotificationModel.create(notifications);
 };
 
 /**
- * @description Get elements
- * @param {Object} params elements fetching parameters
- * @returns {Object[]} elements data
+ * @description Get notifications
+ * @param {Object} params notifications fetching parameters
+ * @returns {Object[]} notifications data
  */
-export const getElements = async (params: GetNotificationsDTO) => {
+export const getNotifications = async (params: GetNotificationsDTO) => {
   const { user } = params;
   let { page, limit } = params;
   const query: any = {};
   if (user) query.user = user;
   page = page - 1 || 0;
   limit = limit || 10;
-  const [result] = await ElementModel.aggregate([
+  const [result] = await NotificationModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },
     { $project: { createdAt: 0, updatedAt: 0, __v: 0 } },
@@ -108,10 +108,10 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
     if (useFirebase) {
       const queryObj: any = query ?? {};
       queryObj.limit = Math.pow(2, 32);
-      const { data } = await userController.getElements(queryObj);
+      const { data } = await userController.getUsers(queryObj);
       usersExist = data;
-      usersExist.forEach(async (element: any) => {
-        element.fcms.forEach((e: any) => fcms.push(e.token));
+      usersExist.forEach(async (notification: any) => {
+        notification.fcms.forEach((e: any) => fcms.push(e.token));
       });
     }
     if (useSocket)
@@ -119,7 +119,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
       await new SocketManager().emitGroupEvent({ event, data: socketData });
   } else {
     if (useFirebase) {
-      const userExists = await userController.getElementById(user || "");
+      const userExists = await userController.getUserById(user || "");
       userExists?.fcms.forEach((e: any) => fcms.push(e.token));
     }
     if (useSocket)
@@ -143,11 +143,11 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
       // database notification creation
       if (type) notificationData.type = type;
       if (isGrouped) {
-        const elements = usersExist?.map((element: any) => {
-          return { ...notificationData, user: element._id };
+        const notifications = usersExist?.map((notification: any) => {
+          return { ...notificationData, user: notification._id };
         });
-        await addElements(elements);
-      } else await addElement(notificationData);
+        await addNotifications(notifications);
+      } else await addNotification(notificationData);
     }
 };
 
@@ -158,9 +158,9 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
 export const readNotifications = async (user: MongoID): Promise<void> => {
   const notificationObj = { status: READ };
   if (!user) throw new ErrorHandler("Please enter user id!", 400);
-  if (!(await userController.checkElementExistence({ _id: user })))
+  if (!(await userController.checkUserExistence({ _id: user })))
     throw new ErrorHandler("Please enter valid user id!", 400);
-  await ElementModel.updateMany({ user }, notificationObj);
+  await NotificationModel.updateMany({ user }, notificationObj);
 };
 
 /**

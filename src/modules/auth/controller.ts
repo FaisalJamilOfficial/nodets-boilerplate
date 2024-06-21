@@ -3,7 +3,7 @@ import NodeMailer from "../../utils/node-mailer";
 import * as userController from "../user/controller";
 import * as userTokenController from "../user-token/controller";
 import * as profileController from "../profile/controller";
-import { Element as User } from "../user/interface";
+import { User } from "../user/interface";
 import { USER_TYPES, USER_STATUSES } from "../../configs/enum";
 import { ErrorHandler } from "../../middlewares/error-handler";
 import {
@@ -31,17 +31,17 @@ const {
  */
 export const register = async (params: User) => {
   const { type } = params;
-  const user = await userController.addElement(params);
+  const user = await userController.addUser(params);
 
   const profileObj = { user: user._id };
   const userObj: any = {};
   userObj.type = type;
 
   if (type === CUSTOMER)
-    userObj.profile = (await profileController.addElement(profileObj))._id;
+    userObj.profile = (await profileController.addProfile(profileObj))._id;
   else if (type === ADMIN) userObj.isAdmin = true;
 
-  await userController.updateElementById(user._id, userObj);
+  await userController.updateUserById(user._id, userObj);
 
   return user.getSignedjwtToken();
 };
@@ -59,7 +59,7 @@ export const login = async (params: LoginDTO) => {
   if (email && password) query.email = email;
   else throw new ErrorHandler("Please enter login credentials!", 400);
 
-  const userExists: any = await userController.getElement(query);
+  const userExists: any = await userController.getUser(query);
   if (!userExists) throw new ErrorHandler("User not registered!", 404);
 
   if (userExists.type !== type) throw new ErrorHandler("User not found!", 404);
@@ -70,7 +70,7 @@ export const login = async (params: LoginDTO) => {
   if (userExists.status !== ACTIVE)
     throw new ErrorHandler(`User ${userExists.status}!`, 403);
 
-  await userController.updateElement(
+  await userController.updateUser(
     { _id: userExists._id },
     { lastLogin: new Date() }
   );
@@ -139,7 +139,7 @@ export const emailWelcomeUser = async (params: SendEmailDTO) => {
  */
 export const generateEmailToken = async (params: GenerateEmailTokenDTO) => {
   const { email, tokenExpirationTime } = params;
-  const userExists: any = await userController.getElement({ email });
+  const userExists: any = await userController.getUser({ email });
   if (!userExists)
     throw new ErrorHandler("User with given email doesn't exist!", 404);
   let userTokenExists = await userTokenController.getElement({
@@ -165,7 +165,7 @@ export const resetPassword = async (
 ): Promise<void> => {
   const { password, user, token } = params;
 
-  const userExists: any = await userController.getElementById(user);
+  const userExists: any = await userController.getUserById(user);
   if (!userExists) throw new ErrorHandler("Invalid link!", 400);
 
   const userTokenExists = await userTokenController.getElement({
@@ -187,7 +187,7 @@ export const verifyUserEmail = async (
 ): Promise<void> => {
   const { user, token } = params;
 
-  const userExists = await userController.getElementById(user);
+  const userExists = await userController.getUserById(user);
   if (!userExists) throw new ErrorHandler("Invalid link!", 400);
 
   const userTokenExists = await userTokenController.getElement({

@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import { Response, NextFunction } from "express";
 
 // file imports
+import urls from "../configs/urls";
 import * as userController from "../modules/user/controller";
 import { IRequest } from "../configs/types";
 import serviceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
@@ -64,11 +65,7 @@ class SocketManager {
    */
   async initializeSocket(params: any): Promise<void> {
     const { server, app } = params;
-    const io = new Server(server, {
-      cors: {
-        origin: ["http://localhost:3000", "https://admin.app.com"],
-      },
-    });
+    const io = new Server(server, { cors: { origin: Object.keys(urls) } });
     socketIO = io;
     io.on("connection", (socket: any) => {
       socket.on("join", async (data: any) => {
@@ -76,7 +73,7 @@ class SocketManager {
         console.log(`${data} joined`);
         try {
           const args = { isOnline: true };
-          await userController.updateElementById(data, args);
+          await userController.updateUserById(data, args);
         } catch (error) {
           console.log(error);
         }
@@ -86,7 +83,7 @@ class SocketManager {
         console.log(`${data} left`);
         try {
           const args = { user: data, isOnline: false };
-          await userController.updateElementById(data, args);
+          await userController.updateUserById(data, args);
         } catch (error) {
           console.log(error);
         }

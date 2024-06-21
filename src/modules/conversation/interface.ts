@@ -1,9 +1,9 @@
 // file imports
 import { MongoID } from "../../configs/types";
+import { Element } from "../element/interface";
 import { MESSAGE_STATUSES } from "../../configs/enum";
 
-export interface Element {
-  _id?: MongoID;
+export interface Conversation extends Element {
   userTo: MongoID;
   userFrom: MongoID;
   lastMessage?: MongoID;

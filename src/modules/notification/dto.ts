@@ -1,9 +1,9 @@
 // file imports
 import { MongoID } from "../../configs/types";
 import { NOTIFICATION_TYPES } from "../../configs/enum";
-import { Element } from "./interface";
-import { Element as Message } from "../message/interface";
-import { Element as Conversation } from "../conversation/interface";
+import { Notification } from "./interface";
+import { Message } from "../message/interface";
+import { Conversation } from "../conversation/interface";
 import { GetElementsDTO } from "../element/dto";
 
 export interface GetNotificationsDTO extends GetElementsDTO {
@@ -16,7 +16,7 @@ export type NotifyUsersDTO = {
   socketData?: Object;
   firebaseData?: Object;
   event?: string;
-  notificationData?: Element;
+  notificationData?: Notification;
   title?: string;
   body?: string;
   type?: NOTIFICATION_TYPES;
@@ -28,7 +28,7 @@ export type NotifyUsersDTO = {
 
 export type sendNotificationsDTO = {
   username: string;
-  notificationData: Element;
+  notificationData: Notification;
   conversationData?: Conversation;
   messageData?: Message;
   query?: Object;

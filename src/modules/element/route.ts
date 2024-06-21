@@ -38,8 +38,8 @@ router
   .all(verifyToken, verifyAdmin)
   .post(
     exceptionHandler(async (req: Request, res: Response) => {
-      const { title } = req.body;
-      const args = { title };
+      const {} = req.body;
+      const args = {};
       const response = await elementController.addElement(args);
       res.json(response);
     })
@@ -47,8 +47,8 @@ router
   .put(
     exceptionHandler(async (req: Request, res: Response) => {
       let { element } = req.query;
-      const { title } = req.body;
-      const args = { title };
+      const {} = req.body;
+      const args = {};
       element = element?.toString() || "";
       const response = await elementController.updateElementById(element, args);
       res.json(response);

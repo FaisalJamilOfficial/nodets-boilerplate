@@ -2,8 +2,8 @@
 import { isValidObjectId } from "mongoose";
 
 // file imports
-import ElementModel from "./model";
-import { Element } from "./interface";
+import ConversationModel from "./model";
+import { Conversation } from "./interface";
 import { GetConversationsDTO } from "./dto";
 import { MongoID } from "../../configs/types";
 import { CONVERSATION_STATUSES } from "../../configs/enum";
@@ -13,12 +13,12 @@ import { ErrorHandler } from "../../middlewares/error-handler";
 const { PENDING, ACCEPTED, REJECTED } = CONVERSATION_STATUSES;
 
 /**
- * @description Add element
- * @param {Object} elementObj element data
- * @returns {Object} element data
+ * @description Add conversation
+ * @param {Object} conversationObj conversation data
+ * @returns {Object} conversation data
  */
-export const addElement = async (elementObj: Element) => {
-  const { userFrom, userTo } = elementObj;
+export const addConversation = async (conversationObj: Conversation) => {
+  const { userFrom, userTo } = conversationObj;
   const query = {
     $or: [
       { $and: [{ userTo: userFrom }, { userFrom: userTo }] },
@@ -26,7 +26,7 @@ export const addElement = async (elementObj: Element) => {
     ],
   };
 
-  let conversationExists: any = await ElementModel.findOne(query);
+  let conversationExists: any = await ConversationModel.findOne(query);
   if (conversationExists) {
     if (conversationExists.status === PENDING) {
       if (userFrom === conversationExists.userTo.toString()) {
@@ -34,38 +34,38 @@ export const addElement = async (elementObj: Element) => {
         await conversationExists.save();
       }
     } else if (conversationExists.status === REJECTED)
-      throw new ErrorHandler("Element request rejected!", 400);
+      throw new ErrorHandler("Conversation request rejected!", 400);
   } else {
     const conversationObj: any = {};
     conversationObj.userTo = userTo;
     conversationObj.userFrom = userFrom;
-    conversationExists = await ElementModel.create(conversationObj);
+    conversationExists = await ConversationModel.create(conversationObj);
   }
   return conversationExists;
 };
 
 /**
- * @description Get element
- * @param {String} element element id
- * @returns {Object} element data
+ * @description Get conversation
+ * @param {String} conversation conversation id
+ * @returns {Object} conversation data
  */
-export const getElementById = async (element: MongoID) => {
-  if (!element) throw new ErrorHandler("Please enter element id!", 400);
-  if (!isValidObjectId(element))
-    throw new ErrorHandler("Please enter valid element id!", 400);
-  const elementExists = await ElementModel.findById(element).select(
+export const getConversationById = async (conversation: MongoID) => {
+  if (!conversation) throw new ErrorHandler("Please enter conversation id!", 400);
+  if (!isValidObjectId(conversation))
+    throw new ErrorHandler("Please enter valid conversation id!", 400);
+  const conversationExists = await ConversationModel.findById(conversation).select(
     "-createdAt -updatedAt -__v"
   );
-  if (!elementExists) throw new ErrorHandler("element not found!", 404);
-  return elementExists;
+  if (!conversationExists) throw new ErrorHandler("conversation not found!", 404);
+  return conversationExists;
 };
 
 /**
- * @description Get elements
- * @param {Object} params elements fetching parameters
- * @returns {Object[]} elements data
+ * @description Get conversations
+ * @param {Object} params conversations fetching parameters
+ * @returns {Object[]} conversations data
  */
-export const getElements = async (params: GetConversationsDTO) => {
+export const getConversations = async (params: GetConversationsDTO) => {
   const { user } = params;
   let { limit, page, keyword } = params;
   page = page - 1 || 0;
@@ -83,7 +83,7 @@ export const getElements = async (params: GetConversationsDTO) => {
       ];
   }
 
-  const [result] = await ElementModel.aggregate([
+  const [result] = await ConversationModel.aggregate([
     { $match: query },
     {
       $lookup: {

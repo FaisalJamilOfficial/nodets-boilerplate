@@ -50,7 +50,7 @@ router
         limit: Number(limit),
         page: Number(page),
       };
-      const response = await messageController.getElements(args);
+      const response = await messageController.getMessages(args);
       res.json(response);
     })
   )
@@ -60,7 +60,7 @@ router
       const { text, status } = req.body;
       const args = { text, status };
       message = message?.toString() || "";
-      const response = await messageController.updateElementById(message, args);
+      const response = await messageController.updateMessageById(message, args);
       res.json(response);
     })
   )
@@ -89,7 +89,7 @@ router.get(
       page: Number(page),
       keyword,
     };
-    const response = await conversationController.getElements(args);
+    const response = await conversationController.getConversations(args);
     res.json(response);
   })
 );

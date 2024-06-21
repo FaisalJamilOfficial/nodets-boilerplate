@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 
 // file imports
 import UserModel from "../modules/user/model";
-import { Element as User } from "../modules/user/interface";
+import { User } from "../modules/user/interface";
 import { IRequest } from "../configs/types";
 import { exceptionHandler } from "./exception-handler";
 import { ErrorHandler } from "./error-handler";

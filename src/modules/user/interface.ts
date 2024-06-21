@@ -1,8 +1,9 @@
 // file imports
 import { MongoID } from "../../configs/types";
+import { Element } from "../element/interface";
 import { USER_STATUSES, USER_TYPES } from "../../configs/enum";
 
-export interface Element {
+export interface User extends Element {
   _id?: MongoID;
   email: string;
   password: string;
