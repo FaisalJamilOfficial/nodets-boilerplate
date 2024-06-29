@@ -135,7 +135,9 @@ export const send = async (params: SendMessageDTO) => {
  * @param {Object} params read messages data
  */
 export const readMessages = async (params: Partial<Message>): Promise<void> => {
-  const { conversation, userTo } = params;
+  let { conversation, userTo } = params;
+  conversation = new ObjectId(conversation);
+  userTo = new ObjectId(userTo);
   const messageObj = { status: READ };
   if (!userTo) throw new ErrorHandler("Please enter userTo id!", 400);
   if (!(await userController.checkUserExistence({ _id: userTo })))
