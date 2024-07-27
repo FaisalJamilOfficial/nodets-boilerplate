@@ -75,24 +75,26 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
       });
       if (!alreadyExists)
         userExists.fcms.push({ device: fcm.device, token: fcm.token });
+      userObj.fcms = userExists.fcms;
     } else
       throw new ErrorHandler("Please enter FCM token and device both!", 400);
   }
   if (shallRemoveFCM)
     if (device)
-      userExists.fcms = userExists.fcms.filter(
+      userObj.fcms = userExists.fcms.filter(
         (user: any) => user?.device !== device
       );
   if (firstName || lastName)
-    userExists.name = (firstName || "") + " " + (lastName || "");
+    userObj.name = (firstName || "") + " " + (lastName || "");
   if (image) {
     if (userExists.image) new FilesRemover().remove([userExists.image]);
-    userExists.image = image;
+    userObj.image = image;
   }
   if (coordinates) {
-    if (coordinates?.length === 2)
+    if (coordinates?.length === 2) {
       userExists.location.coordinates = coordinates;
-    else
+      userObj.location = userExists.location;
+    } else
       throw new ErrorHandler(
         "Please enter location longitude and latitude both!",
         400
@@ -100,15 +102,12 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
   }
   if (profile)
     if (await profileController.checkProfileExistence({ _id: profile })) {
-      userExists.profile = profile;
+      userObj.profile = profile;
     } else throw new ErrorHandler("Profile not found!", 404);
 
-  userExists = { ...userExists._doc, ...userObj };
-  userExists = await UserModel.findByIdAndUpdate(userExists._id, userExists, {
+  return await UserModel.findByIdAndUpdate(userExists._id, userObj, {
     new: true,
   }).select("-createdAt -updatedAt -__v");
-  if (!userExists) throw new ErrorHandler("user not found!", 404);
-  return userExists;
 };
 
 /**
