@@ -57,7 +57,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
   if (!isValidObjectId(user))
     throw new ErrorHandler("Please enter valid user id!", 400);
 
-  let userExists: any = await UserModel.findById(user);
+  const userExists: any = await UserModel.findById(user);
   if (!userExists) throw new ErrorHandler("User not found!", 404);
 
   if (password) {
