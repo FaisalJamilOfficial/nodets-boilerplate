@@ -10,6 +10,7 @@
     "start": "node dist/app.js",
     "build:start": "npm run build && npm run start",
     "dev": "concurrently \"npx tsc -w\"  \"nodemon dist/app.js\"",
+    "generate": "node ./src/generator/index.js",
     "lint": "eslint . --ext .ts"
   },
   "repository": {
