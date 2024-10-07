@@ -190,7 +190,7 @@ export const getElements = async (params: GetElementsDTO) => {
 /**
  * @description Check element existence
  * @param {Object} query element data
- * @returns {Boolean} element existence status
+ * @returns {Object} element existence status
  */
 export const checkElementExistence = async (query: Partial<Element>) => {
   if (!query || Object.keys(query).length === 0)

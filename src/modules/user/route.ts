@@ -156,6 +156,19 @@ router.get(
   })
 );
 
+router.put(
+  "/fcm",
+  verifyToken,
+  verifyUser,
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const { _id: user } = req?.user;
+    const { fcm } = req.body;
+    const args = { fcm };
+    const response = await userController.updateUserById(user, args);
+    res.json(response);
+  })
+);
+
 router.get(
   "/:user",
   verifyToken,
