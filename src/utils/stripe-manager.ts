@@ -126,7 +126,7 @@ class StripeManager {
     const { source, cardHolderName, user, email, phone } = params;
 
     const paymentAccountExists =
-      await paymentAccountController.getPaymentAccount(user);
+      await paymentAccountController.getPaymentAccount({ user });
 
     let userStripeId;
 
@@ -177,7 +177,7 @@ class StripeManager {
   async createAccountWithCheck(params: any) {
     const { user, email } = params;
     const paymentAccountExists =
-      await paymentAccountController.getPaymentAccount(user);
+      await paymentAccountController.getPaymentAccount({ user });
 
     if (paymentAccountExists) return paymentAccountExists;
     else {
@@ -277,7 +277,7 @@ class StripeManager {
   async createTransfer(params: any) {
     const { user, amount, currency, description } = params;
     const paymentAccountExists =
-      await paymentAccountController.getPaymentAccount(user);
+      await paymentAccountController.getPaymentAccount({ user });
     const transferObj = {
       amount,
       currency: currency ?? CURRENCY,
