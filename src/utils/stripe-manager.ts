@@ -361,60 +361,36 @@ class StripeManager {
     //   ending_before: endingBefore,
     // });
   }
-
   /**
    * @description Construct stripe webhook event
    * @param {String} rawBody body from stripe request
    * @param {String} signature stripe signature from request headers
-   * @param {String} endpointSecret stripe CLI webhook secret
    * @returns {Object} stripe webhook event
    */
   async constructWebhooksEvent(params: any) {
     const { rawBody, signature } = params;
 
-    const rawBodyString = JSON.stringify(rawBody, null, 2);
-
-    // const header = stripe.webhooks.generateTestHeaderString({
-    //   payload: rawBodyString,
-    //   secret: STRIPE_ENDPOINT_SECRET,
-    // });
-
     // const event = stripe.webhooks.constructEvent(
-    //   rawBodyString,
-    //   signature ?? header,
-    //   STRIPE_ENDPOINT_SECRET
+    //   rawBody,
+    //   signature,
+    //   STRIPE_ENDPOINT_SECRET || ""
     // );
 
-    // if (event.type === "account.external_account.created") {
-    //   console.log("EVENT: ", JSON.stringify(event));
+    // console.log("EVENT_TYPE: ", event.type);
 
-    //   const paymentAccountExists =
-    //     await paymentAccountController.getPaymentAccount({
-    //       key: "account.id",
-    //       value: rawBody.account,
-    //     });
-    //   await userController.updateUser({
-    //     user: paymentAccountExists?.user,
-    //     isStripeConnected: true,
+    // if (event.type === "account.external_account.created") {
+    //   const bodyJSON = JSON.parse(rawBody);
+    //   const paymentAccountExists = await paymentAccountController.getElement({
+    //     key: "account.id",
+    //     value: bodyJSON.account,
     //   });
+    //   await userController.updateElementById(
+    //     paymentAccountExists?.user as any,
+    //     { isStripeConnected: true } as any
+    //   );
     // }
     // return event;
   }
 }
-
-export const constructWebhooksEvent = async (params: any) => {
-  const { request } = params;
-  const signature = request.headers["stripe-signature"];
-  console.log("SIGNATURE: ", JSON.stringify(signature));
-
-  const args = { rawBody: request.body };
-
-  const event = await new StripeManager().constructWebhooksEvent(args);
-
-  return {
-    message: "Done",
-    event,
-  };
-};
 
 export default StripeManager;
