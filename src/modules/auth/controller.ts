@@ -27,7 +27,7 @@ const {
 /**
  * @description Register user
  * @param {Object} params user registration data
- * @returns {String} user token
+ * @returns {string} user token
  */
 export const register = async (params: User) => {
   const { type } = params;

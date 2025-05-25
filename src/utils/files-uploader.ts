@@ -15,7 +15,7 @@ class FilesUploader {
   /**
    * @description Upload file
    * @param {Object} file file object
-   * @param {String} directory directory to save file
+   * @param {string} directory directory to save file
    * @returns {Object} file object
    */
   uploadFile(file: any) {
@@ -29,7 +29,7 @@ class FilesUploader {
   /**
    * @description Upload files
    * @param {[object]} files array of file
-   * @param {String} directory directory to save file
+   * @param {string} directory directory to save file
    * @returns {[Object]} array of file
    */
   uploadFiles(files: any[]) {

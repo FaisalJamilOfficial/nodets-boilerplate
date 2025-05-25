@@ -32,7 +32,7 @@ export const addElements = async (elementsArray: Element[]) => {
 
 /**
  * @description Update element data
- * @param {String} element element id
+ * @param {string} element element id
  * @param {Object} elementObj element data
  * @returns {Object} element data
  */
@@ -88,7 +88,7 @@ export const updateElements = async (
 
 /**
  * @description Delete element
- * @param {String} element element id
+ * @param {string} element element id
  * @returns {Object} element data
  */
 export const deleteElementById = async (element: MongoID) => {
@@ -102,7 +102,7 @@ export const deleteElementById = async (element: MongoID) => {
 
 /**
  * @description Delete element
- * @param {String} query element data
+ * @param {string} query element data
  * @returns {Object} element data
  */
 export const deleteElement = async (query: Partial<Element>) => {
@@ -115,7 +115,7 @@ export const deleteElement = async (query: Partial<Element>) => {
 
 /**
  * @description Delete elements
- * @param {String} query element data
+ * @param {string} query element data
  * @returns {Object} deletion data
  */
 export const deleteElements = async (query: Partial<Element>) => {
@@ -126,7 +126,7 @@ export const deleteElements = async (query: Partial<Element>) => {
 
 /**
  * @description Get element
- * @param {String} element element id
+ * @param {string} element element id
  * @returns {Object} element data
  */
 export const getElementById = async (element: MongoID) => {
@@ -201,7 +201,7 @@ export const checkElementExistence = async (query: Partial<Element>) => {
 /**
  * @description Count elements
  * @param {Object} query element data
- * @returns {Number} elements count
+ * @returns {number} elements count
  */
 export const countElements = async (query: Partial<Element>) => {
   if (!query || Object.keys(query).length === 0)

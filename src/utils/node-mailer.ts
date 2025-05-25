@@ -24,9 +24,9 @@ class NodeMailer {
 
   /**
    * @description Send email
-   * @param {String} to receiver email address
-   * @param {String} subject email subject
-   * @param {String} text email text
+   * @param {string} to receiver email address
+   * @param {string} subject email subject
+   * @param {string} text email text
    * @param {Object} html email html
    * @returns {Object} email response
    */
@@ -43,8 +43,8 @@ class NodeMailer {
 
   /**
    * @description Get reset password email template
-   * @param {String} user user id
-   * @param {String} token user token
+   * @param {string} user user id
+   * @param {string} token user token
    * @returns {Object} email template
    */
   getResetPasswordEmailTemplate(params: any): string {
@@ -60,8 +60,8 @@ If you didn't do this, contact us here ${EMAIL_USER}`;
 
   /**
    * @description Get email verification email template
-   * @param {String} user user id
-   * @param {String} token user token
+   * @param {string} user user id
+   * @param {string} token user token
    * @returns {Object} email template
    */
   getEmailVerificationEmailTemplate(params: any): string {
@@ -77,7 +77,7 @@ If you didn't do this, contact us here ${EMAIL_USER}`;
 
   /**
    * @description Get user welcome email template
-   * @param {String} name user name
+   * @param {string} name user name
    * @returns {Object} email template
    */
   getWelcomeUserEmailTemplate(params: any): string {
@@ -93,8 +93,8 @@ If you didn't do this, contact us here ${EMAIL_USER}`;
 
   /**
    * @description Get reset password email template
-   * @param {String} name user name
-   * @param {String} otp otp code
+   * @param {string} name user name
+   * @param {string} otp otp code
    * @returns {Object} email template
    */
   getOTPSendingEmailTemplate(params: any): string {

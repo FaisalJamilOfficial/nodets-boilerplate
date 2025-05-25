@@ -27,7 +27,7 @@ export const addMessage = async (messageObj: Message) => {
 
 /**
  * @description Update message data
- * @param {String} message message id
+ * @param {string} message message id
  * @param {Object} messageObj message data
  * @returns {Object} message data
  */

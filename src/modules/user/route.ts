@@ -162,8 +162,8 @@ router.put(
   verifyUser,
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req?.user;
-    const { fcm } = req.body;
-    const args = { fcm };
+    const { fcm, device } = req.body;
+    const args = { fcm, device };
     const response = await userController.updateUserById(user, args);
     res.json(response);
   })

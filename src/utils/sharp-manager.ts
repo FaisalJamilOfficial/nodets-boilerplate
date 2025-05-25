@@ -19,7 +19,7 @@ class SharpManager {
   /**
    * @description Resize images
    * @param {[object]} images image files
-   * @param {String} path directory to save resized images
+   * @param {string} path directory to save resized images
    * @returns {[Object]} array of resized images
    */
   async resizeImages(images: any[]) {
@@ -64,7 +64,7 @@ class SharpManager {
   /**
    * @description Resize images with thumbnails
    * @param {[object]} images image files
-   * @param {String} path directory to save resized images
+   * @param {string} path directory to save resized images
    * @returns {[Object]} array of resized images
    */
   async resizeImagesWithThumbnails(images: any[]) {

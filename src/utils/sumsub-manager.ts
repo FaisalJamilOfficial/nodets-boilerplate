@@ -56,8 +56,8 @@ class SumsubManager {
 
   /**
    * @description Create applicant
-   * @param {String} externalUserId external user id
-   * @param {String} levelName level name
+   * @param {string} externalUserId external user id
+   * @param {string} levelName level name
    * @returns {Object} applicant
    */
   // https://developers.sumsub.com/api-reference/#creating-an-applicant
@@ -88,7 +88,7 @@ class SumsubManager {
 
   /**
    * @description Get applicant status
-   * @param {String} applicantId applicant id
+   * @param {string} applicantId applicant id
    * @returns {Object} applicant status
    */
   // https://developers.sumsub.com/api-reference/#getting-applicant-status-sdk
@@ -113,13 +113,13 @@ class SumsubManager {
 
   /**
    * @description Get applicant data
-   * @param {String} applicantId applicant id
+   * @param {string} applicantId applicant id
    * @returns {Object} applicant data
    */
 
   /**
    * @description Get applicant data
-   * @param {String} applicantId applicant id
+   * @param {string} applicantId applicant id
    * @returns {Object} applicant data
    */
   // https://developers.sumsub.com/api-reference/#getting-applicant-data
@@ -144,9 +144,9 @@ class SumsubManager {
 
   /**
    * @description Create access token
-   * @param {String} externalUserId external user id
-   * @param {String} levelName level name
-   * @param {String} ttlInSecs ttl in seconds
+   * @param {string} externalUserId external user id
+   * @param {string} levelName level name
+   * @param {string} ttlInSecs ttl in seconds
    * @returns {Object} access token
    */
   // https://developers.sumsub.com/api-reference/#access-tokens-for-sdks
@@ -175,7 +175,7 @@ class SumsubManager {
 
   /**
    * @description Add document
-   * @param {String} applicantId applicant id
+   * @param {string} applicantId applicant id
    * @returns {Object} document
    */
   // https://developers.sumsub.com/api-reference/#adding-an-id-document

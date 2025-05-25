@@ -46,7 +46,7 @@ export const addConversation = async (conversationObj: Conversation) => {
 
 /**
  * @description Get conversation
- * @param {String} conversation conversation id
+ * @param {string} conversation conversation id
  * @returns {Object} conversation data
  */
 export const getConversationById = async (conversation: MongoID) => {

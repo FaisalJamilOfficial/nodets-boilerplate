@@ -7,9 +7,9 @@ class StatisticsGenerator {
    * Generate weekly statistics
    * @param {Object} model mongo database model
    * @param {Object} query query
-   * @param {Number} year year number
-   * @param {Number} month month number
-   * @param {Number} week week number
+   * @param {number} year year number
+   * @param {number} month month number
+   * @param {number} week week number
    * @returns {Object} statistics
    */
   async generateWeeklyStatistics(params: any) {
@@ -105,9 +105,9 @@ class StatisticsGenerator {
    * Generate monthly statistics
    * @param {Object} model mongo database model
    * @param {Object} query query
-   * @param {Number} year year number
-   * @param {Number} month month number
-   * @param {Boolean} isCustom custom query check
+   * @param {number} year year number
+   * @param {number} month month number
+   * @param {boolean} isCustom custom query check
    * @returns {Object} statistics
    */
   async generateMonthlyStatistics(params: any) {
@@ -186,7 +186,7 @@ class StatisticsGenerator {
    * Generate yearly statistics
    * @param {Object} model mongo database model
    * @param {Object} query query
-   * @param {Number} year year number
+   * @param {number} year year number
    * @returns {Object} statistics
    */
   async generateYearlyStatistics(params: any) {

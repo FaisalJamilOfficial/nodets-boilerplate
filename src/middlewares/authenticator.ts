@@ -17,10 +17,10 @@ const { CUSTOMER, ADMIN, SUPER_ADMIN } = USER_TYPES;
 
 /**
  * @description Get JWT token
- * @param {String} _id user id
- * @param {String} phone user phone number
- * @param {String} otp OTP code
- * @param {String} shouldValidateOTP OTP validation check
+ * @param {string} _id user id
+ * @param {string} phone user phone number
+ * @param {string} otp OTP code
+ * @param {string} shouldValidateOTP OTP validation check
  * @param {string | boolean } variable any variable
  * @returns {Object} JWT token
  */
@@ -52,7 +52,7 @@ export const verifyToken = async (
       }
       const user = await UserModel.findOne({
         _id: verificationObject._id,
-      }).select("-createdAt -updatedAt -__v -fcms");
+      }).select("-createdAt -updatedAt -__v -fcm");
       if (user) {
         if (user.status === DELETED)
           next(new ErrorHandler("User account deleted!", 403));
@@ -82,7 +82,7 @@ export const verifyOTP = exceptionHandler(
     if (req.user?._id) query._id = req.user._id;
     else if (req.user?.phone) query.phone = req.user.phone;
     else query._id = null;
-    const userExists: User = await UserModel.findOne(query).select("+otp");
+    const userExists: any = await UserModel.findOne(query).select("+otp");
 
     if (userExists && code === userExists?.otp) next();
     else if (code === otp) next();

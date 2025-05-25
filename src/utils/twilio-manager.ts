@@ -21,8 +21,8 @@ class TwilioManager {
 
   /**
    * @description Send OTP to phone number
-   * @param {String} user user id
-   * @param {String} phone user phone number in INTERNATIONAL format
+   * @param {string} user user id
+   * @param {string} phone user phone number in INTERNATIONAL format
    * @returns {Object} token
    */
   async sendOTP(params: any) {
@@ -60,8 +60,8 @@ class TwilioManager {
 
   /**
    * @description Send OTP to phone number
-   * @param {String} phone user phone number in INTERNATIONAL format
-   * @param {String} message message text
+   * @param {string} phone user phone number in INTERNATIONAL format
+   * @param {string} message message text
    * @returns {Object} token
    */
   async send(params: any) {
