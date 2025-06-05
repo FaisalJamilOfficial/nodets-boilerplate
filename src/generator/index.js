@@ -27,7 +27,7 @@ const _dirname = `${process.cwd()}/src/modules/`;
 
       if (fs.existsSync(modulePath)) {
         console.log(
-          chalk.blue("Warning: Module already exists ->", moduleName)
+          chalk.blue("Warning: Module already exists ->", moduleName),
         );
         continue;
         // throw new Error("Module already exists!");
@@ -40,31 +40,31 @@ const _dirname = `${process.cwd()}/src/modules/`;
       // make interface file
       fs.appendFileSync(
         path.join(modulePath, "interface.ts"),
-        InterfaceGenerator(moduleName)
+        InterfaceGenerator(moduleName),
       );
 
       // make DTO file
       fs.appendFileSync(
         path.join(modulePath, "dto.ts"),
-        DTOGenerator(moduleName)
+        DTOGenerator(moduleName),
       );
 
       // make controller file
       fs.appendFileSync(
         path.join(modulePath, "controller.ts"),
-        ControllerGenerator(moduleName)
+        ControllerGenerator(moduleName),
       );
 
       // make model file
       fs.appendFileSync(
         path.join(modulePath, "model.ts"),
-        ModelGenerator(moduleName)
+        ModelGenerator(moduleName),
       );
 
       // make route file
       fs.appendFileSync(
         path.join(modulePath, "route.ts"),
-        RouteGenerator(moduleName)
+        RouteGenerator(moduleName),
       );
 
       console.log(
@@ -73,8 +73,8 @@ const _dirname = `${process.cwd()}/src/modules/`;
 Success: Module created successfully -> ${moduleName}
 Folder(1): src/modules
 Files(5): controller.ts, model.ts, route.ts interface.ts dto.ts
-`
-        )
+`,
+        ),
       );
     }
   } catch (error) {

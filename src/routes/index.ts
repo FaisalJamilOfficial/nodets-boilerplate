@@ -1,5 +1,6 @@
 // module imports
 import { Request, Response, Router } from "express";
+import swaggerUi from "swagger-ui-express";
 
 // file imports
 import admin from "../modules/admin/route";
@@ -10,6 +11,7 @@ import user from "../modules/user/route";
 import { upload } from "../middlewares/uploader";
 import { exceptionHandler } from "../middlewares/exception-handler";
 import { verifyToken } from "../middlewares/authenticator";
+import { swaggerSpec } from "../configs/swagger";
 
 // destructuring assignments
 const { POSTMAN_URL } = process.env;
@@ -23,8 +25,10 @@ router.use("/element", element);
 router.use("/message", message);
 router.use("/user", user);
 
+// Swagger UI setup
+router.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 router.use("/docs", (_req: Request, res: Response) =>
-  res.redirect(POSTMAN_URL || "")
+  res.redirect(POSTMAN_URL || ""),
 );
 
 router.use("/ping", (_req: Request, res: any) => res.send("OK"));
@@ -35,7 +39,7 @@ router.use(
   upload().single("file"),
   exceptionHandler((req: Request, res: Response) => {
     res.json(req.file);
-  })
+  }),
 );
 
 router.use(
@@ -44,7 +48,7 @@ router.use(
   upload().array("files"),
   exceptionHandler((req: Request, res: Response) => {
     res.json(req.files);
-  })
+  }),
 );
 
 export default router;

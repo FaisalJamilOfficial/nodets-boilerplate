@@ -1,0 +1,142 @@
+{
+  "version": "1.0",
+  "rules": {
+    "fileStructure": {
+      "required": [
+        "src/configs",
+        "src/middlewares",
+        "src/modules",
+        "src/utils"
+      ],
+      "moduleStructure": {
+        "required": [
+          "controller.ts",
+          "interface.ts",
+          "model.ts",
+          "route.ts",
+          "swagger.ts"
+        ],
+        "optional": ["dto.ts"]
+      }
+    },
+    "naming": {
+      "files": {
+        "pattern": "^[a-z][a-zA-Z0-9]*\\.ts$",
+        "examples": [
+          "controller.ts",
+          "interface.ts",
+          "model.ts",
+          "route.ts",
+          "swagger.ts",
+          "dto.ts"
+        ]
+      },
+      "variables": {
+        "pattern": "^[a-z][a-zA-Z0-9]*$",
+        "examples": ["userController", "authMiddleware", "errorHandler"]
+      },
+      "interfaces": {
+        "pattern": "^[A-Z][a-zA-Z0-9]*$",
+        "examples": ["User", "UserToken", "PaymentAccount"]
+      },
+      "functions": {
+        "pattern": "^[a-z][a-zA-Z0-9]*$",
+        "examples": ["getUserById", "createUser", "updateProfile"]
+      }
+    },
+    "documentation": {
+      "swagger": {
+        "required": ["tags", "components", "schemas", "endpoints"],
+        "endpoint": {
+          "required": ["summary", "tags", "security", "responses"]
+        }
+      },
+      "code": {
+        "required": [
+          "file header",
+          "function documentation",
+          "interface documentation"
+        ]
+      }
+    },
+    "errorHandling": {
+      "required": [
+        "try-catch blocks",
+        "error middleware",
+        "proper status codes"
+      ],
+      "statusCodes": {
+        "200": "Success",
+        "400": "Bad Request",
+        "401": "Unauthorized",
+        "403": "Forbidden",
+        "404": "Not Found",
+        "500": "Server Error"
+      }
+    },
+    "security": {
+      "required": [
+        "JWT authentication",
+        "role-based access control",
+        "input validation",
+        "secure password handling"
+      ],
+      "middleware": {
+        "required": ["verifyToken", "verifyAdmin", "verifyUser"]
+      }
+    },
+    "database": {
+      "required": [
+        "proper indexing",
+        "schema validation",
+        "timestamps",
+        "references"
+      ],
+      "indexes": {
+        "required": [
+          "user references",
+          "searchable fields",
+          "TTL indexes where needed"
+        ]
+      }
+    },
+    "api": {
+      "required": [
+        "RESTful endpoints",
+        "proper HTTP methods",
+        "consistent URL structure",
+        "query parameter standardization"
+      ],
+      "methods": {
+        "GET": "Retrieve data",
+        "POST": "Create data",
+        "PUT": "Update data",
+        "DELETE": "Remove data"
+      }
+    },
+    "typescript": {
+      "required": [
+        "strict typing",
+        "interface usage",
+        "proper type definitions",
+        "enum usage for constants"
+      ],
+      "types": {
+        "required": ["MongoID", "Element", "User", "Response types"]
+      }
+    },
+    "testing": {
+      "recommended": ["unit tests", "integration tests", "API endpoint tests"],
+      "coverage": {
+        "minimum": 80
+      }
+    },
+    "logging": {
+      "recommended": [
+        "structured logging",
+        "error tracking",
+        "request/response logging"
+      ]
+    }
+  }
+}

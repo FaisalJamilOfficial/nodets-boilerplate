@@ -32,7 +32,7 @@ export const verifyToken = async (
   req: any,
   _res: Response,
   next: NextFunction,
-  shouldReturnUserOnFailure = false
+  shouldReturnUserOnFailure = false,
 ) => {
   try {
     const token =
@@ -43,7 +43,7 @@ export const verifyToken = async (
     if (token) {
       const verificationObject: any = jwt.verify(
         token.trim(),
-        JWT_SECRET || ""
+        JWT_SECRET || "",
       );
 
       if (verificationObject.shouldValidateOTP) {
@@ -87,7 +87,7 @@ export const verifyOTP = exceptionHandler(
     if (userExists && code === userExists?.otp) next();
     else if (code === otp) next();
     else return next(new ErrorHandler("Invalid Code!", 400));
-  }
+  },
 );
 
 export const verifyAdmin = (req: IRequest, _res: object, next: any): void => {
@@ -102,7 +102,7 @@ export const verifyAdmin = (req: IRequest, _res: object, next: any): void => {
 export const verifySuperAdmin = (
   req: IRequest,
   _res: object,
-  next: any
+  next: any,
 ): void => {
   if (req.user?.type === SUPER_ADMIN && req.user?.status === ACTIVE) next();
   else next(new ErrorHandler("Unauthorized as super-admin!", 403));
@@ -111,7 +111,7 @@ export const verifySuperAdmin = (
 export const verifyCustomer = (
   req: IRequest,
   _res: object,
-  next: any
+  next: any,
 ): void => {
   if (req.user?.type === CUSTOMER && req.user?.status === ACTIVE) next();
   else next(new ErrorHandler("Unauthorized as customer!", 403));
@@ -125,7 +125,7 @@ export const verifyUser = (req: IRequest, _res: object, next: any): void => {
 export const verifyUserToken = (
   req: IRequest,
   _res: object,
-  next: any
+  next: any,
 ): void => {
   if (req.user?._id) next();
   else next(new ErrorHandler("Invalid user token!", 400));
@@ -136,7 +136,7 @@ export const checkUserPhoneExists = exceptionHandler(
     const userExists = await UserModel.exists({ phone: req.body.phone });
     if (userExists) next();
     else next(new ErrorHandler("User not found!", 404));
-  }
+  },
 );
 
 export const verifyKey = (req: IRequest, _res: object, next: any): void => {

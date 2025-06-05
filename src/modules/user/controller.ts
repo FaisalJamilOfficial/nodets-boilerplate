@@ -86,7 +86,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
     } else
       throw new ErrorHandler(
         "Please enter location longitude and latitude both!",
-        400
+        400,
       );
   }
   if (profile)
@@ -107,7 +107,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
  */
 export const updateUser = async (
   query: Partial<User>,
-  userObj: Partial<User>
+  userObj: Partial<User>,
 ) => {
   if (!query || Object.keys(query).length === 0)
     throw new ErrorHandler("Please enter query!", 400);
@@ -142,7 +142,7 @@ export const getUserById = async (user: MongoID) => {
   if (!isValidObjectId(user))
     throw new ErrorHandler("Please enter valid user id!", 400);
   const userExists = await UserModel.findById(user).select(
-    "-createdAt -updatedAt -__v"
+    "-createdAt -updatedAt -__v",
   );
   if (!userExists) throw new ErrorHandler("user not found!", 404);
   return userExists;
@@ -164,7 +164,7 @@ export const getUser = async (params: getUserDTO) => {
   if (Object.keys(query).length === 0) query._id = null;
 
   let userExists = await UserModel.findOne(query).select(
-    "-createdAt -updatedAt -__v -fcm"
+    "-createdAt -updatedAt -__v -fcm",
   );
   if (userExists)
     if (userExists?.profile)

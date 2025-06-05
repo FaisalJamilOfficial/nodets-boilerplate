@@ -61,7 +61,9 @@ class FirebaseManager {
     const { topicName, title, body, imageUrl } = parameters;
     let { fcm, fcms, data } = parameters;
     fcms = fcms?.length > 0 ? fcms : fcm ? [fcm] : ["null"];
-    data = data ?? {};
+    const stringifiedData = JSON.stringify(data || {}, null, 2);
+    const jsonData = { title, body };
+    data = data ? { stringifiedData } : jsonData;
     const message = {
       tokens: fcms,
       notification: {
