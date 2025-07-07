@@ -22,11 +22,11 @@ class StripeManager {
 
   /**
    * @description Create stripe token
-   * @param {String} number card number
-   * @param {String} expMonth expiry month
-   * @param {String} expYear expiry year
-   * @param {String} cvc card cvc
-   * @param {String} name user name
+   * @param {string} number card number
+   * @param {string} expMonth expiry month
+   * @param {string} expYear expiry year
+   * @param {string} cvc card cvc
+   * @param {string} name user name
    * @returns {Object} stripe token
    */
   async createToken(params: any) {
@@ -42,7 +42,7 @@ class StripeManager {
 
   /**
    * @description Delete stripe customer
-   * @param {String} customerId stripe customer id
+   * @param {string} customerId stripe customer id
    * @returns {Object} stripe customer deletion response
    */
   async deleteCustomer(customerId: string) {
@@ -85,7 +85,7 @@ class StripeManager {
 
   /**
    * @description Refund stripe charge
-   * @param {String} charge stripe charge id
+   * @param {string} charge stripe charge id
    * @returns {Object} stripe charge refund response
    */
   async createRefund(charge: string) {
@@ -94,11 +94,11 @@ class StripeManager {
 
   /**
    * @description Create stripe charge
-   * @param {String} customer stripe customer id
-   * @param {String} amount charge amount in currency smallest unit
-   * @param {String} currency amount currency e.g "usd"
-   * @param {String} source stripe source token
-   * @param {String} description charge description
+   * @param {string} customer stripe customer id
+   * @param {string} amount charge amount in currency smallest unit
+   * @param {string} currency amount currency e.g "usd"
+   * @param {string} source stripe source token
+   * @param {string} description charge description
    * @returns {Object} stripe charge response
    */
   async createCharge(params: any) {
@@ -116,10 +116,10 @@ class StripeManager {
 
   /**
    * @description Create stripe customer source with customer existence check
-   * @param {String} source stripe source token
-   * @param {String} cardHolderName user card title
-   * @param {String} user user id
-   * @param {String} email OPTIONAL user email address
+   * @param {string} source stripe source token
+   * @param {string} cardHolderName user card title
+   * @param {string} user user id
+   * @param {string} email OPTIONAL user email address
    * @returns {Object} paymentAccount
    */
   async createCustomerSourceWithCheck(params: any) {
@@ -157,9 +157,9 @@ class StripeManager {
 
   /**
    * @description Create stripe customer
-   * @param {String} id OPTIONAL user id
-   * @param {String} email OPTIONAL user email address
-   * @param {String} phone OPTIONAL user phone number
+   * @param {string} id OPTIONAL user id
+   * @param {string} email OPTIONAL user email address
+   * @param {string} phone OPTIONAL user phone number
    * @returns {Object} stripe customer data
    */
   async createCustomer(params: any) {
@@ -170,8 +170,8 @@ class StripeManager {
 
   /**
    * @description Create stripe express account with account existence check
-   * @param {String} user user id
-   * @param {String} email user email address
+   * @param {string} user user id
+   * @param {string} email user email address
    * @returns {Object} paymentAccount
    */
   async createAccountWithCheck(params: any) {
@@ -207,9 +207,9 @@ class StripeManager {
 
   /**
    * @description Create stripe account sign up link
-   * @param {String} account stripe account id
-   * @param {String} refreshUrl redirect url for link expiration or invalidity
-   * @param {String} returnUrl redirect url for completion or incompletion linked flow
+   * @param {string} account stripe account id
+   * @param {string} refreshUrl redirect url for link expiration or invalidity
+   * @param {string} returnUrl redirect url for completion or incompletion linked flow
    * @returns {Object} stripe account link
    */
   async createAccountLink(params: any) {
@@ -248,10 +248,10 @@ class StripeManager {
 
   /**
    * @description Create stripe topUp
-   * @param {String} amount topUp amount in smaller units of currency
-   * @param {String} currency amount currency e.g "usd"
-   * @param {String} description OPTIONAL topUp description
-   * @param {String} statementDescriptor OPTIONAL statement description e.g "Top-up"
+   * @param {string} amount topUp amount in smaller units of currency
+   * @param {string} currency amount currency e.g "usd"
+   * @param {string} description OPTIONAL topUp description
+   * @param {string} statementDescriptor OPTIONAL statement description e.g "Top-up"
    * @returns {Object} stripe topUp response
    */
   async createTopUp(params: any) {
@@ -267,11 +267,11 @@ class StripeManager {
 
   /**
    * @description Create stripe transfer
-   * @param {String} user user id
-   * @param {String} amount transfer amount in smaller units of currency
-   * @param {String} currency amount currency e.g "usd"
-   * @param {String} destination destination stripe account
-   * @param {String} description OPTIONAL transfer description
+   * @param {string} user user id
+   * @param {string} amount transfer amount in smaller units of currency
+   * @param {string} currency amount currency e.g "usd"
+   * @param {string} destination destination stripe account
+   * @param {string} description OPTIONAL transfer description
    * @returns {Object} stripe transfer response
    */
   async createTransfer(params: any) {
@@ -292,45 +292,57 @@ class StripeManager {
 
   /**
    * Create stripe payment intent
-   * @param {String} customer customer id
-   * @param {String} amount payment amount
-   * @param {String} currency payment currency
+   * @param {string} customer customer id
+   * @param {string} amount payment amount
+   * @param {string} currency payment currency
    * @param {[String]} payment_method_types payment method types
    * @returns {Object} stripe payment intent object
    */
   async createPaymentIntent(params: any) {
-    const { amount, currency, paymentMethodTypes, customer, paymentMethod } =
-      params;
+    const { amount, currency, paymentMethod, customer } = params;
+
     const paymentIntentObj: any = {
       amount: Number(amount * 100).toFixed(0),
       currency: currency ?? "usd",
-      setup_future_usage: "on_session",
       customer,
+      capture_method: "manual", // authorize now, capture later
+      setup_future_usage: "on_session", // saves for future use
     };
-    if (paymentMethod) paymentIntentObj.payment_method = paymentMethod;
-    if (paymentMethodTypes)
-      paymentIntentObj.payment_method_types = paymentMethodTypes;
+
+    if (paymentMethod) {
+      // Immediate confirmation with provided payment method
+      paymentIntentObj.payment_method = paymentMethod;
+      paymentIntentObj.confirm = true;
+      paymentIntentObj.payment_method_types = ["card"];
+    } else {
+      // No payment method yet; client will confirm via PaymentSheet
+      paymentIntentObj.automatic_payment_methods = {
+        enabled: true,
+        allow_redirects: "never", // to avoid redirect errors
+      };
+    }
 
     // return await stripe.paymentIntents.create(paymentIntentObj);
   }
 
   /**
    * Capture payment intent
-   * @param {String} paymentIntent payment intent id
-   * @param {String} amount payment amount
+   * @param {string} paymentIntent payment intent id
+   * @param {string} amount payment amount
    * @returns {Object} capture payment intent object
    */
   async capturePaymentIntent(params: any) {
     const { paymentIntent, amount } = params;
-    const paymentIntentObj = {
-      amount_to_capture: amount * 100,
-    };
-    // return await stripe.paymentIntents.capture(paymentIntent, paymentIntentObj);
+    const captureObj: any = {};
+    if (amount) {
+      captureObj.amount_to_capture = Math.round(Number(amount)) * 100;
+    }
+    // return await stripe.paymentIntents.capture(paymentIntent, captureObj);
   }
 
   /**
    * Cancel payment intent
-   * @param {String} paymentIntent payment intent id
+   * @param {string} paymentIntent payment intent id
    * @returns {Object} cancel payment intent object
    */
   async cancelPaymentIntent(paymentIntent: string) {
@@ -339,7 +351,7 @@ class StripeManager {
 
   /**
    * Refund payment intent
-   * @param {String} paymentIntent payment intent id
+   * @param {string} paymentIntent payment intent id
    * @returns {Object} refund payment intent object
    */
   async refundPaymentIntent(paymentIntent: string) {
@@ -348,7 +360,7 @@ class StripeManager {
 
   /**
    * Get customer sources
-   * @param {String} customer customer id
+   * @param {string} customer customer id
    * @returns {[object]} stripe customer sources
    */
   async getCustomerSources(params: any) {
@@ -361,10 +373,11 @@ class StripeManager {
     //   ending_before: endingBefore,
     // });
   }
+
   /**
    * @description Construct stripe webhook event
-   * @param {String} rawBody body from stripe request
-   * @param {String} signature stripe signature from request headers
+   * @param {string} rawBody body from stripe request
+   * @param {string} signature stripe signature from request headers
    * @returns {Object} stripe webhook event
    */
   async constructWebhooksEvent(params: any) {

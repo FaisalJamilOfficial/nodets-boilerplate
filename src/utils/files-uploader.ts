@@ -15,11 +15,11 @@ class FilesUploader {
   /**
    * @description Upload file
    * @param {Object} file file object
-   * @param {String} directory directory to save file
+   * @param {string} directory directory to save file
    * @returns {Object} file object
    */
   uploadFile(file: any) {
-    const fileExtension = mime.getExtension(file.mimetype);
+    const fileExtension = mime.extension(file.mimetype);
     file.filename = v4() + "." + fileExtension;
     file.path = PUBLIC_DIRECTORY + file.filename;
     fs.createWriteStream(file.path).write(file.buffer);
@@ -29,12 +29,12 @@ class FilesUploader {
   /**
    * @description Upload files
    * @param {[object]} files array of file
-   * @param {String} directory directory to save file
+   * @param {string} directory directory to save file
    * @returns {[Object]} array of file
    */
   uploadFiles(files: any[]) {
     files = files.map((file: any) => {
-      const fileExtension = mime.getExtension(file.mimetype);
+      const fileExtension = mime.extension(file.mimetype);
       file.filename = v4() + "." + fileExtension;
       file.path = PUBLIC_DIRECTORY + file.filename;
       fs.createWriteStream(file.path).write(file.buffer);

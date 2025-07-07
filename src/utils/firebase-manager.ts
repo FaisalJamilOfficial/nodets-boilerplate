@@ -19,8 +19,8 @@ class FirebaseManager {
   /**
    * @description Send firebase notification
    * @param {[String]} fcm firebase cloud messaging user token
-   * @param {String} title notification title
-   * @param {String} body notification body
+   * @param {string} title notification title
+   * @param {string} body notification body
    * @param {Object} data notification data
    */
   async send(params: any): Promise<void> {
@@ -49,19 +49,21 @@ class FirebaseManager {
   /**
    * Send multicast firebase notification
    * @param {[string]} fcms firebase cloud messaging user token
-   * @param {String} fcm firebase cloud messaging user token
+   * @param {string} fcm firebase cloud messaging user token
    * @param {string} title notification title
    * @param {string} body notification body
    * @param {object} data notification data
-   * @param {String} topicName notification topic
-   * @param {String} imageUrl notification image url
+   * @param {string} topicName notification topic
+   * @param {string} imageUrl notification image url
    * @returns {null}
    */
   async multicast(parameters: any): Promise<void> {
     const { topicName, title, body, imageUrl } = parameters;
     let { fcm, fcms, data } = parameters;
     fcms = fcms?.length > 0 ? fcms : fcm ? [fcm] : ["null"];
-    data = data ?? {};
+    const stringifiedData = JSON.stringify(data || {}, null, 2);
+    const jsonData = { title, body };
+    data = data ? { stringifiedData } : jsonData;
     const message = {
       tokens: fcms,
       notification: {

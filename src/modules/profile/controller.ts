@@ -17,7 +17,7 @@ export const addProfile = async (profileObj: Profile) => {
 /**
  * @description Check profile existence
  * @param {Object} query profile data
- * @returns {Boolean} profile existence status
+ * @returns {boolean} profile existence status
  */
 export const checkProfileExistence = async (query: Partial<Profile>) => {
   if (!query || Object.keys(query).length === 0)

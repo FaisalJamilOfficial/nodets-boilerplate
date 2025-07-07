@@ -32,7 +32,7 @@ class BraintreeManager {
 
   /**
    * @description Generate a client token
-   * @param {String} customerId OPTIONAL braintree customer id
+   * @param {string} customerId OPTIONAL braintree customer id
    * @returns {Object} client token
    */
   async generateClientToken(customerId: string) {
@@ -41,12 +41,12 @@ class BraintreeManager {
 
   /**
    * @description Create a braintree customer account
-   * @param {String} firstName first name
-   * @param {String} lastName last name
-   * @param {String} email email address
-   * @param {String} phone phone number
+   * @param {string} firstName first name
+   * @param {string} lastName last name
+   * @param {string} email email address
+   * @param {string} phone phone number
    * @param {Object} creditCard credit card data
-   * @param {String} paymentMethodNonce nonce token
+   * @param {string} paymentMethodNonce nonce token
    * @returns {Object} paymentAccount
    */
   async createCustomer(params: any) {
@@ -71,7 +71,7 @@ class BraintreeManager {
 
   /**
    * @description Delete a customer
-   * @param {String} customerId braintree customer id
+   * @param {string} customerId braintree customer id
    * @returns {Object} customer data
    */
   async deleteCustomer(customerId: string) {
@@ -81,7 +81,7 @@ class BraintreeManager {
   /**
    * @description Create a braintree payment method
    * @param {Object} customerId braintree customer id
-   * @param {String} paymentMethodNonce nonce token
+   * @param {string} paymentMethodNonce nonce token
    * @returns {Object} paymentMethod
    */
   async createPaymentMethod(params: any) {
@@ -92,7 +92,7 @@ class BraintreeManager {
 
   /**
    * @description Remove a payment method
-   * @param {String} token payment method token
+   * @param {string} token payment method token
    * @returns {Object} payment method data
    */
   async removePaymentMethod(token: string) {
@@ -101,11 +101,11 @@ class BraintreeManager {
 
   /**
    * @description Create a transaction
-   * @param {Number} amount transaction amount in smaller units of currency
-   * @param {String} customerId braintree customer id
-   * @param {String} paymentMethodNonce nonce token
-   * @param {String} paymentMethodToken method token
-   * @param {String} deviceData OPTIONAL device data
+   * @param {number} amount transaction amount in smaller units of currency
+   * @param {string} customerId braintree customer id
+   * @param {string} paymentMethodNonce nonce token
+   * @param {string} paymentMethodToken method token
+   * @param {string} deviceData OPTIONAL device data
    * @returns {Object} transaction
    */
   async saleTransaction(params: any) {
@@ -132,8 +132,8 @@ class BraintreeManager {
 
   /**
    * @description Submit transaction for settlement
-   * @param {String} transactionId braintree transaction id
-   * @param {Number} amount transaction amount in smaller units of currency
+   * @param {string} transactionId braintree transaction id
+   * @param {number} amount transaction amount in smaller units of currency
    * @returns {Object} transaction
    */
   async adjustTransaction(params: any) {
@@ -145,7 +145,7 @@ class BraintreeManager {
 
   /**
    * @description Adjust authorized transaction
-   * @param {String} transactionId braintree transaction id
+   * @param {string} transactionId braintree transaction id
    * @returns {Object} transaction
    */
   async submitTransaction(transactionId: string) {
@@ -154,7 +154,7 @@ class BraintreeManager {
 
   /**
    * @description Void a transaction
-   * @param {String} transactionId braintree transaction id
+   * @param {string} transactionId braintree transaction id
    * @returns {Object} transaction
    */
   async voidTransaction(transactionId: string) {
@@ -163,7 +163,7 @@ class BraintreeManager {
 
   /**
    * @description Hold a transaction
-   * @param {String} transactionId braintree transaction id
+   * @param {string} transactionId braintree transaction id
    * @returns {Object} transaction hold data
    */
   async holdTransaction(transactionId: string) {
@@ -172,7 +172,7 @@ class BraintreeManager {
 
   /**
    * @description Refund a transaction
-   * @param {String} transactionId braintree transaction id
+   * @param {string} transactionId braintree transaction id
    * @returns {Object} transaction refund data
    */
   async refundTransaction(transactionId: string) {
@@ -181,7 +181,7 @@ class BraintreeManager {
 
   /**
    * @description Release a transaction
-   * @param {String} transactionId braintree transaction id
+   * @param {string} transactionId braintree transaction id
    * @returns {Object} transaction refund data
    */
   async releaseTransaction(transactionId: string) {

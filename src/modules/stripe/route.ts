@@ -26,7 +26,7 @@ router.post(
     const args = { amount, destination: user, description };
     const response = await stripeManager.createTransfer(args);
     res.json(response);
-  })
+  }),
 );
 
 router.post(
@@ -39,7 +39,7 @@ router.post(
     const args = { account, email, user };
     const response = await stripeManager.createAccountLink(args);
     res.json(response);
-  })
+  }),
 );
 
 router.post(
@@ -55,7 +55,7 @@ router.post(
       message: "Done",
       event,
     });
-  })
+  }),
 );
 
 export default router;

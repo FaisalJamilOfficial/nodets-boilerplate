@@ -14,7 +14,7 @@ const customerSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default model("customers", customerSchema);

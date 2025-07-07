@@ -23,8 +23,8 @@ class SocketManager {
 
   /**
    * @description Emit event
-   * @param {String} to event listener
-   * @param {String} event event title
+   * @param {string} to event listener
+   * @param {string} event event title
    * @param {Object} data event data
    * @returns {Object} socket response
    */
@@ -50,7 +50,7 @@ class SocketManager {
 
   /**
    * @description Emit event
-   * @param {String} event event title
+   * @param {string} event event title
    * @param {Object} data event data
    * @returns {Object} socket response
    */

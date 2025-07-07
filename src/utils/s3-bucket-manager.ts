@@ -47,7 +47,7 @@ class S3BucketManager {
 
   /**
    * @description delete s3 bucket object
-   * @param {String} filePath path to file
+   * @param {string} filePath path to file
    * @returns {Object} data of deleted object
    */
   async delete(path: string) {
@@ -61,7 +61,7 @@ class S3BucketManager {
 
   /**
    * @description copy s3 bucket object
-   * @param {String} sourceFile path to source file
+   * @param {string} sourceFile path to source file
    * @returns {Object} data of copied object
    */
   async copy(sourceFile: string) {

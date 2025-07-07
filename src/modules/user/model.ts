@@ -13,11 +13,6 @@ const { POINT } = GEO_JSON_TYPES;
 
 // variable initializations
 
-const fcm = {
-  device: { type: String, required: [true, "Please enter FCM device id!"] },
-  token: { type: String, required: [true, "Please enter FCM token!"] },
-};
-
 const userSchema = new Schema(
   {
     email: {
@@ -61,7 +56,14 @@ const userSchema = new Schema(
       type: String,
       trim: true,
     },
-    fcms: [fcm],
+    fcm: {
+      type: String,
+      trim: true,
+    },
+    device: {
+      type: String,
+      trim: true,
+    },
     location: {
       type: {
         type: String,
@@ -136,13 +138,13 @@ const userSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 userSchema.methods.getSignedjwtToken = function () {
   return jwt.sign(
     { _id: this._id, type: this.type },
-    process.env.JWT_SECRET || ""
+    process.env.JWT_SECRET || "",
   );
 };
 

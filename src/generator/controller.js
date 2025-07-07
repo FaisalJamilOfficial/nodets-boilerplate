@@ -41,7 +41,7 @@ export const add${pluralPascalCaseModuleName} = async (${pluralCamelCaseModuleNa
 
 /**
  * @description Update ${camelCaseModuleName} data
- * @param {String} ${camelCaseModuleName} ${camelCaseModuleName} id
+ * @param {string} ${camelCaseModuleName} ${camelCaseModuleName} id
  * @param {Object} ${camelCaseModuleName}Obj ${camelCaseModuleName} data
  * @returns {Object} ${camelCaseModuleName} data
  */
@@ -97,7 +97,7 @@ export const update${pluralPascalCaseModuleName} = async (
 
 /**
  * @description Delete ${camelCaseModuleName}
- * @param {String} ${camelCaseModuleName} ${camelCaseModuleName} id
+ * @param {string} ${camelCaseModuleName} ${camelCaseModuleName} id
  * @returns {Object} ${camelCaseModuleName} data
  */
 export const delete${pascalCaseModuleName}ById = async (${camelCaseModuleName}: MongoID) => {
@@ -111,7 +111,7 @@ export const delete${pascalCaseModuleName}ById = async (${camelCaseModuleName}: 
 
 /**
  * @description Delete ${camelCaseModuleName}
- * @param {String} query ${camelCaseModuleName} data
+ * @param {string} query ${camelCaseModuleName} data
  * @returns {Object} ${camelCaseModuleName} data
  */
 export const delete${pascalCaseModuleName} = async (query: Partial<${pascalCaseModuleName}>) => {
@@ -124,7 +124,7 @@ export const delete${pascalCaseModuleName} = async (query: Partial<${pascalCaseM
 
 /**
  * @description Delete ${pluralCamelCaseModuleName}
- * @param {String} query ${camelCaseModuleName} data
+ * @param {string} query ${camelCaseModuleName} data
  * @returns {Object} deletion data
  */
 export const delete${pluralPascalCaseModuleName} = async (query: Partial<${pascalCaseModuleName}>) => {
@@ -135,7 +135,7 @@ export const delete${pluralPascalCaseModuleName} = async (query: Partial<${pasca
 
 /**
  * @description Get ${camelCaseModuleName}
- * @param {String} ${camelCaseModuleName} ${camelCaseModuleName} id
+ * @param {string} ${camelCaseModuleName} ${camelCaseModuleName} id
  * @returns {Object} ${camelCaseModuleName} data
  */
 export const get${pascalCaseModuleName}ById = async (${camelCaseModuleName}: MongoID) => {
@@ -199,7 +199,7 @@ export const get${pluralPascalCaseModuleName} = async (params: Get${pluralPascal
 /**
  * @description Check ${camelCaseModuleName} existence
  * @param {Object} query ${camelCaseModuleName} data
- * @returns {Boolean} ${camelCaseModuleName} existence status
+ * @returns {boolean} ${camelCaseModuleName} existence status
  */
 export const check${pascalCaseModuleName}Existence = async (query: Partial<${pascalCaseModuleName}>) => {
   if (!query || Object.keys(query).length === 0)
@@ -210,7 +210,7 @@ export const check${pascalCaseModuleName}Existence = async (query: Partial<${pas
 /**
  * @description Count ${pluralCamelCaseModuleName}
  * @param {Object} query ${camelCaseModuleName} data
- * @returns {Number} ${pluralCamelCaseModuleName} count
+ * @returns {number} ${pluralCamelCaseModuleName} count
  */
 export const count${pluralPascalCaseModuleName} = async (query: Partial<${pascalCaseModuleName}>) => {
   if (!query || Object.keys(query).length === 0)

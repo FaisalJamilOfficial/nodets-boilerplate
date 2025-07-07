@@ -33,7 +33,7 @@ export const addUser = async (userObj: User) => {
 
 /**
  * @description Update user data
- * @param {String} user user id
+ * @param {string} user user id
  * @param {Object} userObj user data
  * @returns {Object} user data
  */
@@ -49,8 +49,8 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
     profile,
     coordinates,
     fcm,
-    shallRemoveFCM,
     device,
+    shallRemoveFCM,
   } = userObj;
 
   if (!user) throw new ErrorHandler("Please enter user id!", 400);
@@ -65,25 +65,14 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
     delete userObj.password;
   }
   if (fcm) {
-    if (fcm?.token && fcm?.device) {
-      let alreadyExists = false;
-      userExists.fcms.forEach((user: any) => {
-        if (user.device === fcm.device) {
-          alreadyExists = true;
-          user.token = fcm.token;
-        }
-      });
-      if (!alreadyExists)
-        userExists.fcms.push({ device: fcm.device, token: fcm.token });
-      userObj.fcms = userExists.fcms;
-    } else
-      throw new ErrorHandler("Please enter FCM token and device both!", 400);
+    userExists.fcm = fcm;
+    await UserModel.updateOne({ fcm }, { fcm: "" });
   }
-  if (shallRemoveFCM)
-    if (device)
-      userObj.fcms = userExists.fcms.filter(
-        (user: any) => user?.device !== device
-      );
+  if (device) {
+    userExists.device = device;
+    await UserModel.updateOne({ device }, { device: "" });
+  }
+  if (shallRemoveFCM) userExists.fcm = "";
   if (firstName || lastName)
     userObj.name = (firstName || "") + " " + (lastName || "");
   if (image) {
@@ -97,7 +86,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
     } else
       throw new ErrorHandler(
         "Please enter location longitude and latitude both!",
-        400
+        400,
       );
   }
   if (profile)
@@ -118,7 +107,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
  */
 export const updateUser = async (
   query: Partial<User>,
-  userObj: Partial<User>
+  userObj: Partial<User>,
 ) => {
   if (!query || Object.keys(query).length === 0)
     throw new ErrorHandler("Please enter query!", 400);
@@ -131,7 +120,7 @@ export const updateUser = async (
 
 /**
  * @description Delete user
- * @param {String} user user id
+ * @param {string} user user id
  * @returns {Object} user data
  */
 export const deleteUserById = async (user: MongoID) => {
@@ -145,7 +134,7 @@ export const deleteUserById = async (user: MongoID) => {
 
 /**
  * @description Get user
- * @param {String} user user id
+ * @param {string} user user id
  * @returns {Object} user data
  */
 export const getUserById = async (user: MongoID) => {
@@ -153,7 +142,7 @@ export const getUserById = async (user: MongoID) => {
   if (!isValidObjectId(user))
     throw new ErrorHandler("Please enter valid user id!", 400);
   const userExists = await UserModel.findById(user).select(
-    "-createdAt -updatedAt -__v"
+    "-createdAt -updatedAt -__v",
   );
   if (!userExists) throw new ErrorHandler("user not found!", 404);
   return userExists;
@@ -175,7 +164,7 @@ export const getUser = async (params: getUserDTO) => {
   if (Object.keys(query).length === 0) query._id = null;
 
   let userExists = await UserModel.findOne(query).select(
-    "-createdAt -updatedAt -__v -fcms"
+    "-createdAt -updatedAt -__v -fcm",
   );
   if (userExists)
     if (userExists?.profile)
@@ -231,7 +220,7 @@ export const getUsers = async (params: GetUsersDTO) => {
 /**
  * @description Check user existence
  * @param {Object} query user data
- * @returns {Boolean} user existence status
+ * @returns {boolean} user existence status
  */
 export const checkUserExistence = async (query: Partial<User>) => {
   if (!query || Object.keys(query).length === 0)
@@ -245,13 +234,6 @@ export const checkUserExistence = async (query: Partial<User>) => {
  * @returns {Object} user data
  */
 export const getUserProfile = async (params: getUserProfileDTO) => {
-  const { user, device } = params;
-  const userExists: any = await UserModel.findById(user).select(
-    "-createdAt -updatedAt -__v"
-  );
-  userExists.fcms.forEach((user: any) => {
-    if (user?.device === device) userExists._doc.fcm = user?.token;
-  });
-  delete userExists._doc.fcms;
-  return userExists;
+  const { user } = params;
+  return await UserModel.findById(user).select("-createdAt -updatedAt -__v");
 };

@@ -24,6 +24,7 @@ export type NotifyUsersDTO = {
   useFirebase?: boolean;
   useDatabase?: boolean;
   useSocket?: boolean;
+  fcmArray?: string[];
 };
 
 export type sendNotificationsDTO = {

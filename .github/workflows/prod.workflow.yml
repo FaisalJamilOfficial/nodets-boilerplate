@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "22"
           # cache: "npm"
       - run: npm i -g yarn
       - run: yarn install --frozen-lockfile
@@ -23,7 +23,7 @@ jobs:
       # - run: npm ci --legacy-peers-deps
       # - run: npm run build
       - name: Upload build folder
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist
@@ -48,7 +48,7 @@ jobs:
             script.sh
           sparse-checkout-cone-mode: false
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         name: Download artifacts
         with:
           name: dist
@@ -62,7 +62,7 @@ jobs:
       - name: install node modules and restart server
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "22"
           # node-version: ${{ matrix.node-version }}
           # cache: "yarn"
 

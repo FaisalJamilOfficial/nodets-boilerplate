@@ -12,7 +12,8 @@ export interface User extends Element {
   lastName?: string;
   name?: string;
   image?: string;
-  fcms?: { token: string; device: string }[];
+  fcm?: string;
+  device?: string;
   location?: { type?: string; coordinates?: number[] };
   type: USER_TYPES;
   status?: USER_STATUSES;

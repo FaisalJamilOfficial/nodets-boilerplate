@@ -99,6 +99,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
     useFirebase,
     useDatabase,
     useSocket,
+    fcmArray,
   } = params;
 
   const fcms: any = [];
@@ -106,21 +107,27 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
 
   if (isGrouped) {
     if (useFirebase) {
-      const queryObj: any = query ?? {};
-      queryObj.limit = Math.pow(2, 32);
-      const { data } = await userController.getUsers(queryObj);
-      usersExist = data;
-      usersExist.forEach(async (notification: any) => {
-        notification.fcms.forEach((e: any) => fcms.push(e.token));
-      });
+      if (fcmArray && Array.isArray(fcmArray)) fcms.push(...fcmArray);
+      else {
+        const queryObj: any = query ?? {};
+        queryObj.limit = Math.pow(2, 32);
+        const { data } = await userController.getUsers(queryObj);
+        usersExist = data;
+        usersExist.forEach(async (user: any) => {
+          if (user?.fcm) fcms.push(user.fcm);
+        });
+      }
     }
     if (useSocket)
       // socket event emission
       await new SocketManager().emitGroupEvent({ event, data: socketData });
   } else {
     if (useFirebase) {
-      const userExists = await userController.getUserById(user || "");
-      userExists?.fcms.forEach((e: any) => fcms.push(e.token));
+      if (fcmArray && Array.isArray(fcmArray)) fcms.push(...fcmArray);
+      else {
+        const userExists = await userController.getUserById(user || "");
+        fcms.push(userExists?.fcm);
+      }
     }
     if (useSocket)
       // socket event emission
@@ -154,7 +161,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
 
 /**
  * @description read all notifications
- * @param {String} user user id
+ * @param {string} user user id
  */
 export const readNotifications = async (user: MongoID): Promise<void> => {
   const notificationObj = { status: READ };
@@ -169,7 +176,7 @@ export const readNotifications = async (user: MongoID): Promise<void> => {
  * @param {Object} params notification parameters
  */
 export const sendNewMessageNotification = async (
-  params: sendNotificationsDTO
+  params: sendNotificationsDTO,
 ): Promise<void> => {
   const { username, notificationData, conversationData, messageData } = params;
   await notifyUsers({

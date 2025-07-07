@@ -32,13 +32,13 @@ export const addElements = async (elementsArray: Element[]) => {
 
 /**
  * @description Update element data
- * @param {String} element element id
+ * @param {string} element element id
  * @param {Object} elementObj element data
  * @returns {Object} element data
  */
 export const updateElementById = async (
   element: MongoID,
-  elementObj: Partial<Element>
+  elementObj: Partial<Element>,
 ) => {
   if (!element) throw new ErrorHandler("Please enter element id!", 400);
   if (!isValidObjectId(element))
@@ -46,7 +46,7 @@ export const updateElementById = async (
   const elementExists = await ElementModel.findByIdAndUpdate(
     element,
     elementObj,
-    { new: true }
+    { new: true },
   );
   if (!elementExists) throw new ErrorHandler("element not found!", 404);
   return elementExists;
@@ -60,7 +60,7 @@ export const updateElementById = async (
  */
 export const updateElement = async (
   query: Partial<Element>,
-  elementObj: Partial<Element>
+  elementObj: Partial<Element>,
 ) => {
   if (!query || Object.keys(query).length === 0)
     throw new ErrorHandler("Please enter query!", 400);
@@ -79,7 +79,7 @@ export const updateElement = async (
  */
 export const updateElements = async (
   query: Partial<Element>,
-  elementObj: Partial<Element>
+  elementObj: Partial<Element>,
 ) => {
   if (!query || Object.keys(query).length === 0)
     throw new ErrorHandler("Please enter query!", 400);
@@ -88,7 +88,7 @@ export const updateElements = async (
 
 /**
  * @description Delete element
- * @param {String} element element id
+ * @param {string} element element id
  * @returns {Object} element data
  */
 export const deleteElementById = async (element: MongoID) => {
@@ -102,7 +102,7 @@ export const deleteElementById = async (element: MongoID) => {
 
 /**
  * @description Delete element
- * @param {String} query element data
+ * @param {string} query element data
  * @returns {Object} element data
  */
 export const deleteElement = async (query: Partial<Element>) => {
@@ -115,7 +115,7 @@ export const deleteElement = async (query: Partial<Element>) => {
 
 /**
  * @description Delete elements
- * @param {String} query element data
+ * @param {string} query element data
  * @returns {Object} deletion data
  */
 export const deleteElements = async (query: Partial<Element>) => {
@@ -126,7 +126,7 @@ export const deleteElements = async (query: Partial<Element>) => {
 
 /**
  * @description Get element
- * @param {String} element element id
+ * @param {string} element element id
  * @returns {Object} element data
  */
 export const getElementById = async (element: MongoID) => {
@@ -134,7 +134,7 @@ export const getElementById = async (element: MongoID) => {
   if (!isValidObjectId(element))
     throw new ErrorHandler("Please enter valid element id!", 400);
   const elementExists = await ElementModel.findById(element).select(
-    "-createdAt -updatedAt -__v"
+    "-createdAt -updatedAt -__v",
   );
   if (!elementExists) throw new ErrorHandler("element not found!", 404);
   return elementExists;
@@ -149,7 +149,7 @@ export const getElement = async (query: Partial<Element>) => {
   if (!query || Object.keys(query).length === 0)
     throw new ErrorHandler("Please enter query!", 400);
   const elementExists = await ElementModel.findOne(query).select(
-    "-createdAt -updatedAt -__v"
+    "-createdAt -updatedAt -__v",
   );
   if (!elementExists) throw new ErrorHandler("element not found!", 404);
   return elementExists;
@@ -201,7 +201,7 @@ export const checkElementExistence = async (query: Partial<Element>) => {
 /**
  * @description Count elements
  * @param {Object} query element data
- * @returns {Number} elements count
+ * @returns {number} elements count
  */
 export const countElements = async (query: Partial<Element>) => {
   if (!query || Object.keys(query).length === 0)

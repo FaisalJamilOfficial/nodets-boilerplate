@@ -6,8 +6,8 @@ class AxiosManager {
 
   /**
    * @description Send axios request
-   * @param {String} method request method
-   * @param {String} url request url
+   * @param {string} method request method
+   * @param {string} url request url
    * @param {Object} data request data
    * @param {Object} query request query params
    * @param {Object} headers request headers

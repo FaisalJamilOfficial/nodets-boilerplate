@@ -8,7 +8,6 @@ export interface GetUsersDTO extends GetElementsDTO {
   user: MongoID;
 }
 export interface updateUserDTO extends Partial<User> {
-  fcm?: { token: string; device: string };
   coordinates?: number[];
   device?: string;
   shallRemoveFCM?: boolean;

@@ -42,7 +42,7 @@ const serverFunction = async () => {
       },
       (err) => {
         console.log(err);
-      }
+      },
     );
     app.use((req, res, next) => {
       if (req.originalUrl.toString().includes("webhook")) {
@@ -53,7 +53,7 @@ const serverFunction = async () => {
     app.use(express.urlencoded({ extended: false }));
     app.use("/public/", express.static(path.join("dist/public/")));
 
-    app.use("/api/v1", indexRouter);
+    app.use("/api", indexRouter);
 
     app.get("/reset-password", (_req, res) => {
       res.sendFile(path.join(__dirname, "public/reset-password.html"));
@@ -77,5 +77,5 @@ const serverFunction = async () => {
 
 serverFunction();
 console.log(
-  chalk.hex("#607070")(chalk.underline(NODE_ENV || "".toUpperCase()))
+  chalk.hex("#607070")(chalk.underline(NODE_ENV || "".toUpperCase())),
 );
