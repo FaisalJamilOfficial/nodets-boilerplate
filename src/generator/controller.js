@@ -1,6 +1,13 @@
 // file imports
 const { pluralize, toCamelCase, toPascalCase } = require("./helper.js");
 
+/**
+ * Generates the content for a controller file for a given module.
+ * It constructs CRUD operations and other utility functions using the module name.
+ *
+ * @param {string} moduleName - The name of the module for which controller content is generated.
+ * @returns {string} The generated controller content as a string with template placeholders.
+ */
 module.exports = function getControllerContent(moduleName) {
   const camelCaseModuleName = toCamelCase(moduleName);
   const pascalCaseModuleName = toPascalCase(moduleName);

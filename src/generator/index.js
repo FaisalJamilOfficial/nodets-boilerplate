@@ -6,6 +6,7 @@ const chalk = require("chalk");
 // file imports
 const DTOGenerator = require("./dto.js");
 const RouteGenerator = require("./route.js");
+const SwaggerGenerator = require("./swagger.js");
 const ModelGenerator = require("./model.js");
 const InterfaceGenerator = require("./interface.js");
 const ControllerGenerator = require("./controller.js");
@@ -65,6 +66,12 @@ const _dirname = `${process.cwd()}/src/modules/`;
       fs.appendFileSync(
         path.join(modulePath, "route.ts"),
         RouteGenerator(moduleName),
+      );
+      
+      // make swagger file
+      fs.appendFileSync(
+        path.join(modulePath, "swagger.ts"),
+        SwaggerGenerator(moduleName),
       );
 
       console.log(
