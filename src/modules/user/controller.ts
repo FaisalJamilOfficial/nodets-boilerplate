@@ -7,7 +7,6 @@ import FilesRemover from "../../utils/files-remover";
 import * as profileController from "../profile/controller";
 import { User } from "./interface";
 import { MongoID } from "../../configs/types";
-import { USER_TYPES } from "../../configs/enum";
 import { ErrorHandler } from "../../middlewares/error-handler";
 import {
   GetUsersDTO,
@@ -15,9 +14,6 @@ import {
   getUserProfileDTO,
   updateUserDTO,
 } from "./dto";
-
-// destructuring assignments
-const { ADMIN } = USER_TYPES;
 
 /**
  * @description Add user
@@ -86,7 +82,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
     } else
       throw new ErrorHandler(
         "Please enter location longitude and latitude both!",
-        400,
+        400
       );
   }
   if (profile)
@@ -107,7 +103,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
  */
 export const updateUser = async (
   query: Partial<User>,
-  userObj: Partial<User>,
+  userObj: Partial<User>
 ) => {
   if (!query || Object.keys(query).length === 0)
     throw new ErrorHandler("Please enter query!", 400);
@@ -142,7 +138,7 @@ export const getUserById = async (user: MongoID) => {
   if (!isValidObjectId(user))
     throw new ErrorHandler("Please enter valid user id!", 400);
   const userExists = await UserModel.findById(user).select(
-    "-createdAt -updatedAt -__v",
+    "-createdAt -updatedAt -__v"
   );
   if (!userExists) throw new ErrorHandler("user not found!", 404);
   return userExists;
@@ -154,17 +150,19 @@ export const getUserById = async (user: MongoID) => {
  * @returns {Object} user data
  */
 export const getUser = async (params: getUserDTO) => {
-  const { user, email, phone, googleId, facebookId } = params;
+  const { user, email, phone, googleId, facebookId, appleId, selection } =
+    params;
   const query: any = {};
   if (user) query._id = user;
   if (email) query.email = email;
-  if (googleId) query.googleId = googleId;
-  if (facebookId) query.facebookId = facebookId;
+  if (googleId) query.$and = [{ googleId }, { email }];
+  if (facebookId) query.$and = [{ facebookId }, { email }];
+  if (appleId) query.$and = [{ appleId }, { email }];
   if (phone) query.phone = phone;
   if (Object.keys(query).length === 0) query._id = null;
 
   let userExists = await UserModel.findOne(query).select(
-    "-createdAt -updatedAt -__v -fcm",
+    selection || "-createdAt -updatedAt -__v -fcm"
   );
   if (userExists)
     if (userExists?.profile)
@@ -185,7 +183,6 @@ export const getUsers = async (params: GetUsersDTO) => {
   const query: any = {};
 
   if (type) query.type = type;
-  else query.type = { $ne: ADMIN };
   if (user) query._id = { $ne: user };
   if (keyword) {
     keyword = keyword.trim();
@@ -236,4 +233,23 @@ export const checkUserExistence = async (query: Partial<User>) => {
 export const getUserProfile = async (params: getUserProfileDTO) => {
   const { user } = params;
   return await UserModel.findById(user).select("-createdAt -updatedAt -__v");
+};
+
+/**
+ * Generates a random password of a specified length.
+ * @param {number} [length=12] The length of the password to generate.
+ * @returns {string} A randomly generated password.
+ */
+export const generateRandomPassword = (length = 12) => {
+  const lowercase = "abcdefghijklmnopqrstuvwxyz";
+  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numbers = "0123456789";
+  const symbols = "!@#$%^&*()_+[]{}<>?";
+  const allChars = lowercase + uppercase + numbers + symbols;
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomChar = allChars[Math.floor(Math.random() * allChars.length)];
+    password += randomChar;
+  }
+  return password;
 };

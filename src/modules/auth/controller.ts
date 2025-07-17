@@ -1,10 +1,12 @@
 // file imports
 import NodeMailer from "../../utils/node-mailer";
+import * as adminController from "../admin/controller";
 import * as userController from "../user/controller";
 import * as userTokenController from "../user-token/controller";
 import * as profileController from "../profile/controller";
 import { User } from "../user/interface";
-import { USER_TYPES, USER_STATUSES } from "../../configs/enum";
+import { Admin } from "../admin/interface";
+import { USER_TYPES, ACCOUNT_STATUSES } from "../../configs/enum";
 import { ErrorHandler } from "../../middlewares/error-handler";
 import {
   LoginDTO,
@@ -15,8 +17,8 @@ import {
 } from "./dto";
 
 // destructuring assignments
-const { CUSTOMER, ADMIN } = USER_TYPES;
-const { ACTIVE } = USER_STATUSES;
+const { STANDARD } = USER_TYPES;
+const { ACTIVE } = ACCOUNT_STATUSES;
 const {
   sendEmail,
   getEmailVerificationEmailTemplate,
@@ -29,21 +31,30 @@ const {
  * @param {Object} params user registration data
  * @returns {string} user token
  */
-export const register = async (params: User) => {
+export const registerUser = async (params: User) => {
   const { type } = params;
   const user = await userController.addUser(params);
 
   const profileObj = { user: user._id };
-  const userObj: any = {};
+  const userObj: Partial<User> = {};
   userObj.type = type;
 
-  if (type === CUSTOMER)
+  if (type !== STANDARD)
     userObj.profile = (await profileController.addProfile(profileObj))._id;
-  else if (type === ADMIN) userObj.isAdmin = true;
 
-  await userController.updateUserById(user._id, userObj);
+  if (userObj?.profile) await userController.updateUserById(user._id, userObj);
 
-  return user.getSignedjwtToken();
+  return user;
+};
+
+/**
+ * @description Register admin
+ * @param {Object} params admin registration data
+ * @returns {string} admin token
+ */
+export const registerAdmin = async (params: Admin) => {
+  const admin = await adminController.addAdmin(params);
+  return admin.getSignedjwtToken();
 };
 
 /**
@@ -51,8 +62,8 @@ export const register = async (params: User) => {
  * @param {Object} params user login data
  * @returns {Object} user token
  */
-export const login = async (params: LoginDTO) => {
-  const { email, password, type } = params;
+export const loginUser = async (params: LoginDTO) => {
+  const { email, password } = params;
 
   const query: any = {};
 
@@ -60,22 +71,48 @@ export const login = async (params: LoginDTO) => {
   else throw new ErrorHandler("Please enter login credentials!", 400);
 
   const userExists: any = await userController.getUser(query);
-  if (!userExists) throw new ErrorHandler("User not registered!", 404);
-
-  if (userExists.type !== type) throw new ErrorHandler("User not found!", 404);
+  if (!userExists) throw new ErrorHandler("Account not registered!", 404);
 
   if (!(await userExists.validatePassword(password)))
     throw new ErrorHandler("Invalid password!", 401);
 
   if (userExists.status !== ACTIVE)
-    throw new ErrorHandler(`User ${userExists.status}!`, 403);
+    throw new ErrorHandler(`Account ${userExists.status}!`, 403);
 
-  await userController.updateUser(
-    { _id: userExists._id },
-    { lastLogin: new Date() },
-  );
+  await userController.updateUserById(userExists._id, {
+    lastLogin: new Date(),
+  });
 
   return userExists.getSignedjwtToken();
+};
+
+/**
+ * @description Login admin
+ * @param {Object} params admin login data
+ * @returns {Object} admin token
+ */
+export const loginAdmin = async (params: LoginDTO) => {
+  const { email, password } = params;
+
+  const query: any = {};
+
+  if (email && password) query.email = email;
+  else throw new ErrorHandler("Please enter login credentials!", 400);
+
+  const adminExists: any = await adminController.getAdmin(query);
+  if (!adminExists) throw new ErrorHandler("Account not registered!", 404);
+
+  if (!(await adminExists.validatePassword(password)))
+    throw new ErrorHandler("Invalid password!", 401);
+
+  if (adminExists.status !== ACTIVE)
+    throw new ErrorHandler(`Account ${adminExists.status}!`, 403);
+
+  await adminController.updateAdminById(adminExists._id, {
+    lastLogin: new Date(),
+  });
+
+  return adminExists.getSignedjwtToken();
 };
 
 /**
@@ -161,7 +198,7 @@ export const generateEmailToken = async (params: GenerateEmailTokenDTO) => {
  * @param {Object} params user password reset data
  */
 export const resetPassword = async (
-  params: ResetPasswordDTO,
+  params: ResetPasswordDTO
 ): Promise<void> => {
   const { password, user, token } = params;
 
@@ -183,7 +220,7 @@ export const resetPassword = async (
  * @param {Object} params user email verification data
  */
 export const verifyUserEmail = async (
-  params: VerifyUserEmailDTO,
+  params: VerifyUserEmailDTO
 ): Promise<void> => {
   const { user, token } = params;
 

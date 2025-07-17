@@ -10,7 +10,7 @@ const { UNREAD } = MESSAGE_STATUSES;
 // variable initializations
 
 const attachmentSchema = new Schema({
-  path: { type: String, required: true },
+  key: { type: String, required: true },
   type: { type: String, required: true },
 });
 
@@ -47,7 +47,7 @@ const messageSchema = new Schema(
       index: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default model("messages", messageSchema);

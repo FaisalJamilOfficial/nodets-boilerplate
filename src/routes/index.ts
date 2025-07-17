@@ -10,8 +10,9 @@ import message from "../modules/message/route";
 import user from "../modules/user/route";
 import { upload } from "../middlewares/uploader";
 import { exceptionHandler } from "../middlewares/exception-handler";
-import { verifyToken } from "../middlewares/authenticator";
+import { verifyAPIKey, verifyUserToken } from "../middlewares/authenticator";
 import { swaggerSpec } from "../configs/swagger";
+import { basicAuth } from "../middlewares/authenticator";
 
 // destructuring assignments
 const { POSTMAN_URL } = process.env;
@@ -26,29 +27,34 @@ router.use("/message", message);
 router.use("/user", user);
 
 // Swagger UI setup
-router.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-router.use("/docs", (_req: Request, res: Response) =>
-  res.redirect(POSTMAN_URL || ""),
+router.use("/docs", basicAuth, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+router.use("/docs", basicAuth, (_req: Request, res: Response) =>
+  res.redirect(POSTMAN_URL || "")
 );
 
 router.use("/ping", (_req: Request, res: any) => res.send("OK"));
 
 router.use(
   "/upload/file",
-  verifyToken,
+  verifyUserToken,
+  verifyAPIKey,
   upload().single("file"),
   exceptionHandler((req: Request, res: Response) => {
+    // file?.filename || file?.key
     res.json(req.file);
-  }),
+  })
 );
 
 router.use(
   "/upload/files",
-  verifyToken,
+  verifyUserToken,
+  verifyAPIKey,
   upload().array("files"),
   exceptionHandler((req: Request, res: Response) => {
+    // key: file?.filename || file?.key
+    // type: file?.mimetype,
     res.json(req.files);
-  }),
+  })
 );
 
 export default router;

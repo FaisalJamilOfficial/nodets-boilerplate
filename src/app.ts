@@ -13,6 +13,7 @@ import urls from "./configs/urls";
 import indexRouter from "./routes";
 import SocketManager from "./utils/socket-manager";
 import errorHandler, { ErrorHandler } from "./middlewares/error-handler";
+import requestPicker from "./middlewares/request-picker";
 
 // destructuring assignments
 const { NODE_ENV, MONGO_URI, PORT } = process.env;
@@ -42,7 +43,7 @@ const serverFunction = async () => {
       },
       (err) => {
         console.log(err);
-      },
+      }
     );
     app.use((req, res, next) => {
       if (req.originalUrl.toString().includes("webhook")) {
@@ -53,7 +54,7 @@ const serverFunction = async () => {
     app.use(express.urlencoded({ extended: false }));
     app.use("/public/", express.static(path.join("dist/public/")));
 
-    app.use("/api", indexRouter);
+    app.use("/api", requestPicker, indexRouter);
 
     app.get("/reset-password", (_req, res) => {
       res.sendFile(path.join(__dirname, "public/reset-password.html"));
@@ -77,5 +78,5 @@ const serverFunction = async () => {
 
 serverFunction();
 console.log(
-  chalk.hex("#607070")(chalk.underline(NODE_ENV || "".toUpperCase())),
+  chalk.hex("#607070")(chalk.underline(NODE_ENV || "".toUpperCase()))
 );

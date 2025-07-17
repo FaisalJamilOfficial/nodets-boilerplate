@@ -1,38 +1,50 @@
+// file imports
+const {
+  pluralize,
+  toPascalCase,
+  toCamelCase,
+  getIndefiniteArticle,
+} = require("./helper.js");
+
 /**
+ * Returns OpenAPI specification for a given module name.
+ * @param {string} moduleName Name of the module
+ * @returns {string} OpenAPI specification as a string
+ */
+module.exports = function getSwaggerContent(moduleName) {
+  const indefiniteArticle = getIndefiniteArticle(moduleName);
+  const camelCaseModuleName = toCamelCase(moduleName);
+  const pascalCaseModuleName = toPascalCase(moduleName);
+  const pluralPascalCaseModuleName = pluralize(pascalCaseModuleName);
+  const pluralCamelCaseModuleName = pluralize(camelCaseModuleName);
+  return `
+  /**
  * @swagger
  * tags:
- *   name: Elements
- *   description: Element management endpoints
+ *   name: ${pluralPascalCaseModuleName}
+ *   description: ${pascalCaseModuleName} management endpoints
  */
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     Element:
+ *     ${pascalCaseModuleName}:
  *       type: object
- *       required:
- *         - title
  *       properties:
  *         _id:
  *           type: string
- *           description: Element ID
- *         title:
- *           type: string
- *           description: Element title
- *         description:
- *           type: string
- *           description: Element description (optional)
- *     ElementResponse:
+ *           description: ${pascalCaseModuleName} ID
+ *     ${pascalCaseModuleName}Response:
  *       type: object
  *       properties:
  *         data:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/Element'
+ *             $ref: '#/components/schemas/${pascalCaseModuleName}'
  *         totalCount:
  *           type: integer
- *           description: Total number of elements
+ *           description: Total number of ${pluralCamelCaseModuleName}
  *         totalPages:
  *           type: integer
  *           description: Total number of pages
@@ -40,10 +52,10 @@
 
 /**
  * @swagger
- * /api/element:
+ * /api/${camelCaseModuleName}:
  *   get:
- *     summary: Get all elements
- *     tags: [Elements]
+ *     summary: Get all ${pluralCamelCaseModuleName}
+ *     tags: [${pluralPascalCaseModuleName}]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -64,11 +76,11 @@
  *         description: Search keyword
  *     responses:
  *       200:
- *         description: List of elements
+ *         description: List of ${pluralCamelCaseModuleName}
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ElementResponse'
+ *               $ref: '#/components/schemas/${pascalCaseModuleName}Response'
  *       401:
  *         description: Unauthorized
  *       403:
@@ -77,10 +89,10 @@
 
 /**
  * @swagger
- * /api/element/admin:
+ * /api/${camelCaseModuleName}/admin:
  *   post:
- *     summary: Create a new element
- *     tags: [Elements]
+ *     summary: Create a new ${camelCaseModuleName}
+ *     tags: [${pluralPascalCaseModuleName}]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -88,52 +100,52 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Element'
+ *             $ref: '#/components/schemas/${pascalCaseModuleName}'
  *     responses:
  *       200:
- *         description: Element created successfully
+ *         description: ${pascalCaseModuleName} created successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Element'
+ *               $ref: '#/components/schemas/${pascalCaseModuleName}'
  *       401:
  *         description: Unauthorized
  *       403:
  *         description: Forbidden
  *   put:
- *     summary: Update an element
- *     tags: [Elements]
+ *     summary: Update ${indefiniteArticle} ${camelCaseModuleName}
+ *     tags: [${pluralPascalCaseModuleName}]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: element
+ *         name: ${camelCaseModuleName}
  *         required: true
  *         schema:
  *           type: string
- *         description: Element ID
+ *         description: ${pascalCaseModuleName} ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Element'
+ *             $ref: '#/components/schemas/${pascalCaseModuleName}'
  *     responses:
  *       200:
- *         description: Element updated successfully
+ *         description: ${pascalCaseModuleName} updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Element'
+ *               $ref: '#/components/schemas/${pascalCaseModuleName}'
  *       401:
  *         description: Unauthorized
  *       403:
  *         description: Forbidden
  *       404:
- *         description: Element not found
+ *         description: ${pascalCaseModuleName} not found
  *   get:
- *     summary: Get all elements (admin)
- *     tags: [Elements]
+ *     summary: Get all ${pluralCamelCaseModuleName} (admin)
+ *     tags: [${pluralPascalCaseModuleName}]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -154,68 +166,70 @@
  *         description: Search keyword
  *     responses:
  *       200:
- *         description: List of elements
+ *         description: List of ${pluralCamelCaseModuleName}
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ElementResponse'
+ *               $ref: '#/components/schemas/${pascalCaseModuleName}Response'
  *       401:
  *         description: Unauthorized
  *       403:
  *         description: Forbidden
  *   delete:
- *     summary: Delete an element
- *     tags: [Elements]
+ *     summary: Delete ${indefiniteArticle} ${camelCaseModuleName}
+ *     tags: [${pluralPascalCaseModuleName}]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: element
+ *         name: ${camelCaseModuleName}
  *         required: true
  *         schema:
  *           type: string
- *         description: Element ID
+ *         description: ${pascalCaseModuleName} ID
  *     responses:
  *       200:
- *         description: Element deleted successfully
+ *         description: ${pascalCaseModuleName} deleted successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Element'
+ *               $ref: '#/components/schemas/${pascalCaseModuleName}'
  *       401:
  *         description: Unauthorized
  *       403:
  *         description: Forbidden
  *       404:
- *         description: Element not found
+ *         description: ${pascalCaseModuleName} not found
  */
 
 /**
  * @swagger
- * /api/element/{elementId}:
+ * /api/${camelCaseModuleName}/${camelCaseModuleName}Id:
  *   get:
- *     summary: Get element by ID
- *     tags: [Elements]
+ *     summary: Get ${camelCaseModuleName} by ID
+ *     tags: [${pluralPascalCaseModuleName}]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: elementId
+ *         name: ${camelCaseModuleName}Id
  *         required: true
  *         schema:
  *           type: string
- *         description: Element ID
+ *         description: ${pascalCaseModuleName} ID
  *     responses:
  *       200:
- *         description: Element details
+ *         description: ${pascalCaseModuleName} details
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Element'
+ *               $ref: '#/components/schemas/${pascalCaseModuleName}'
  *       401:
  *         description: Unauthorized
  *       403:
  *         description: Forbidden
  *       404:
- *         description: Element not found
+ *         description: ${pascalCaseModuleName} not found
  */
+`;
+};

@@ -1,81 +1,80 @@
 // module imports
-import { Request, Response, Router } from "express";
+import { Response, Router } from "express";
 
 // file imports
 import * as authController from "./controller";
 import * as userController from "../user/controller";
-import { USER_TYPES } from "../../configs/enum";
+import { Admin } from "../admin/interface";
+import { User } from "../user/interface";
+import { LoginDTO, ResetPasswordDTO, SendEmailDTO } from "./dto";
 import { exceptionHandler } from "../../middlewares/exception-handler";
+import { IRequest } from "../../configs/types";
+import { USER_TYPES } from "../../configs/enum";
 import {
   verifyOTP,
-  verifyKey,
-  verifyToken,
-  verifyUser,
+  verifyAPIKey,
   verifyUserToken,
 } from "../../middlewares/authenticator";
-import { IRequest } from "../../configs/types";
+import GoogleAuthenticator from "../../utils/google-authenticator";
+import FacebookAuthenticator from "../../utils/facebook-authenticator";
+import AppleAuthenticator from "../../utils/apple-authenticator";
 
 // destructuring assignments
-const { ADMIN, CUSTOMER } = USER_TYPES;
+const { STANDARD } = USER_TYPES;
 
 // variable initializations
 const router = Router();
 
 router.post(
-  "/register/customer",
-  exceptionHandler(async (req: Request, res: Response) => {
-    const { email, password, name } = req.body;
-    const args = { email, password, name, type: CUSTOMER };
-    const response = await authController.register(args);
-    res.json({ token: response });
-  }),
+  "/register",
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const args = req.pick(["email", "password", "name"]);
+    args.type = STANDARD;
+    const user: any = await authController.registerUser(args as User);
+    res.json({ token: user.getSignedjwtToken() });
+  })
 );
 
 router.post(
-  "/login/customer",
-  exceptionHandler(async (req: Request, res: Response) => {
-    const { email, password } = req.body;
-    const args = { email, password, type: CUSTOMER };
-    const response = await authController.login(args);
+  "/login",
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const args = req.pick(["email", "password"]);
+    const response = await authController.loginUser(args as LoginDTO);
     res.json({ token: response });
-  }),
+  })
 );
 
 router.post(
   "/logout",
-  verifyToken,
-  verifyUser,
+  verifyUserToken,
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req.user;
-    const { device } = req.body;
-    const args = { user, device, shallRemoveFCM: true };
+    const args = { ...req.pick(["device"]), user, shallRemoveFCM: true };
     await userController.updateUserById(user, args);
     res.json({ message: "Operation completed successfully!" });
-  }),
+  })
 );
 
 router
   .route("/password/email")
   .post(
-    exceptionHandler(async (req: Request, res: Response) => {
-      const { email } = req.body;
-      const args = { email };
-      await authController.emailResetPassword(args);
+    exceptionHandler(async (req: IRequest, res: Response) => {
+      const args = req.pick(["email"]);
+      await authController.emailResetPassword(args as SendEmailDTO);
       res.json({ message: "Operation completed successfully!" });
-    }),
+    })
   )
   .put(
-    exceptionHandler(async (req: Request, res: Response) => {
-      const { password, user, token } = req.body;
-      const args = { password, user, token };
-      await authController.resetPassword(args);
+    exceptionHandler(async (req: IRequest, res: Response) => {
+      const args = req.pick(["password", "user", "token"]);
+      await authController.resetPassword(args as ResetPasswordDTO);
       res.json({ message: "Operation completed successfully!" });
-    }),
+    })
   );
 
 router.post(
   "/login/phone",
-  verifyToken,
+  verifyUserToken,
   verifyOTP,
   verifyUserToken,
   exceptionHandler(async (req: IRequest, res: Response) => {
@@ -83,48 +82,103 @@ router.post(
     const args = { user };
     const response: any = await userController.getUser(args);
     res.json({ token: response.getSignedjwtToken() });
-  }),
+  })
 );
 
 router.post(
   "/login/google",
-  exceptionHandler(async (req: Request, res: Response) => {
-    const { googleId } = req.body;
-    const args = { googleId };
-    const response: any = await userController.getUser(args);
-    res.json({ token: response.getSignedjwtToken() });
-  }),
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const { token, googleId } = req.body;
+    const googleUser = await new GoogleAuthenticator().authenticate(
+      token,
+      googleId
+    );
+    const args = { googleId, email: googleUser?.email };
+    let user: any = await userController.getUser(args);
+    if (!user) {
+      const userObj = {
+        googleId,
+        email: googleUser?.email,
+        firstName: googleUser?.given_name,
+        lastName: googleUser?.family_name,
+        type: USER_TYPES.STANDARD,
+        password: userController.generateRandomPassword(),
+        isPasswordSet: false,
+      };
+      user = await authController.registerUser(userObj);
+    }
+    res.json({ token: user.getSignedjwtToken() });
+  })
 );
 
 router.post(
   "/login/facebook",
-  exceptionHandler(async (req: Request, res: Response) => {
-    const { facebookId } = req.body;
-    const args = { facebookId };
-    const response: any = await userController.getUser(args);
-    res.json({ token: response.getSignedjwtToken() });
-  }),
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const { token, facebookId } = req.body;
+    const facebookUser = await new FacebookAuthenticator().authenticate(
+      token,
+      facebookId
+    );
+    const args = { facebookId, email: facebookUser?.email };
+    let user: any = await userController.getUser(args);
+    if (!user) {
+      const userObj = {
+        facebookId,
+        email: facebookUser?.email,
+        firstName: facebookUser?.first_name,
+        lastName: facebookUser?.last_name,
+        type: USER_TYPES.STANDARD,
+        password: userController.generateRandomPassword(),
+        isPasswordSet: false,
+      };
+      user = await authController.registerUser(userObj);
+    }
+    res.json({ token: user.getSignedjwtToken() });
+  })
+);
+
+router.post(
+  "/login/apple",
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const { token, appleId } = req.body;
+    const appleUser = await new AppleAuthenticator().authenticate(
+      token,
+      appleId
+    );
+    const args = { appleId, email: appleUser?.email };
+    let user: any = await userController.getUser(args);
+    if (!user) {
+      const userObj = {
+        appleId,
+        email: appleUser?.email,
+        type: USER_TYPES.STANDARD,
+        password: userController.generateRandomPassword(),
+        isPasswordSet: false,
+      };
+      user = await authController.registerUser(userObj);
+    }
+    res.json({ token: user.getSignedjwtToken() });
+  })
 );
 
 router.post(
   "/login/admin",
-  exceptionHandler(async (req: Request, res: Response) => {
-    const { email, password } = req.body;
-    const args = { email, password, type: ADMIN };
-    const response = await authController.login(args);
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const args = req.pick(["email", "password"]);
+    const response = await authController.loginAdmin(args as LoginDTO);
     res.json({ token: response });
-  }),
+  })
 );
 
 router.post(
   "/register/admin",
-  verifyKey,
-  exceptionHandler(async (req: Request, res: Response) => {
-    const { email, password, type } = req.body;
-    const args = { email, password, type: type ?? ADMIN, name: type };
-    const response = await authController.register(args);
+  verifyAPIKey,
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const args = req.pick(["email", "password", "type"]);
+    if (!args.type) args.type = STANDARD;
+    const response = await authController.registerAdmin(args as Admin);
     res.json({ token: response });
-  }),
+  })
 );
 
 export default router;

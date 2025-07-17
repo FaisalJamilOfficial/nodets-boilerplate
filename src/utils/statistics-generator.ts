@@ -26,7 +26,7 @@ class StatisticsGenerator {
     if (!week) {
       const initialDate: any = new Date(date.getFullYear(), 0, 1);
       week = Math.ceil(
-        Math.floor((date - initialDate) / (24 * 60 * 60 * 1000)) / 7,
+        Math.floor((date - initialDate) / (24 * 60 * 60 * 1000)) / 7
       );
     }
     const queryTime = [

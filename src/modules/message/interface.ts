@@ -9,5 +9,5 @@ export interface Message extends Element {
   userFrom: MongoID;
   text?: string;
   status?: MESSAGE_STATUSES;
-  attachments?: { path: string; type: string }[];
+  attachments?: { key: string; type: string }[];
 }

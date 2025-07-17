@@ -4,12 +4,11 @@ import jwt from "jsonwebtoken";
 import { model, Schema } from "mongoose";
 
 // file imports
-import { USER_STATUSES, USER_TYPES, GEO_JSON_TYPES } from "../../configs/enum";
-
-// destructuring assignments
-const { ACTIVE } = USER_STATUSES;
-const { SUPER_ADMIN } = USER_TYPES;
-const { POINT } = GEO_JSON_TYPES;
+import {
+  ACCOUNT_STATUSES,
+  USER_TYPES,
+  GEO_JSON_TYPES,
+} from "../../configs/enum";
 
 // variable initializations
 
@@ -69,7 +68,7 @@ const userSchema = new Schema(
         type: String,
 
         enum: Object.values(GEO_JSON_TYPES),
-        default: POINT,
+        default: GEO_JSON_TYPES.POINT,
         required: true,
       },
       coordinates: {
@@ -87,8 +86,8 @@ const userSchema = new Schema(
     },
     status: {
       type: String,
-      enum: Object.values(USER_STATUSES),
-      default: ACTIVE,
+      enum: Object.values(ACCOUNT_STATUSES),
+      default: ACCOUNT_STATUSES.ACTIVE,
       index: true,
     },
     isOnline: {
@@ -118,11 +117,6 @@ const userSchema = new Schema(
       select: false,
       index: true,
     },
-    isAdmin: {
-      type: Boolean,
-      select: false,
-      default: false,
-    },
     googleId: {
       type: String,
       trim: true,
@@ -138,18 +132,17 @@ const userSchema = new Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 userSchema.methods.getSignedjwtToken = function () {
   return jwt.sign(
     { _id: this._id, type: this.type },
-    process.env.JWT_SECRET || "",
+    process.env.JWT_SECRET || ""
   );
 };
 
 userSchema.methods.populate = async function (field: string) {
-  if (field === SUPER_ADMIN || this.type === SUPER_ADMIN) field = "";
   return await model("users", userSchema)
     .findById(this._id)
     .populate(field ?? this.type);

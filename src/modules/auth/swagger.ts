@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   name: Authentication
- *   description: User authentication and authorization endpoints
+ *   description: User and admin authentication and authorization endpoints
  */
 
 /**
@@ -41,6 +41,65 @@
  *         name:
  *           type: string
  *           description: User's full name
+ *     AdminRegisterRequest:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Admin's email address
+ *         password:
+ *           type: string
+ *           format: password
+ *           description: Admin's password
+ *         type:
+ *           type: string
+ *           enum: [standard, super_admin]
+ *           description: Admin type (defaults to standard)
+ *     SocialLoginRequest:
+ *       type: object
+ *       properties:
+ *         googleId:
+ *           type: string
+ *           description: Google ID for Google login
+ *         facebookId:
+ *           type: string
+ *           description: Facebook ID for Facebook login
+ *     PasswordResetRequest:
+ *       type: object
+ *       required:
+ *         - email
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: User's email address
+ *     PasswordResetConfirm:
+ *       type: object
+ *       required:
+ *         - password
+ *         - user
+ *         - token
+ *       properties:
+ *         password:
+ *           type: string
+ *           format: password
+ *           description: New password
+ *         user:
+ *           type: string
+ *           description: User ID
+ *         token:
+ *           type: string
+ *           description: Reset token
+ *     LogoutRequest:
+ *       type: object
+ *       properties:
+ *         device:
+ *           type: string
+ *           description: Device identifier to logout from
  *     TokenResponse:
  *       type: object
  *       properties:
@@ -53,13 +112,14 @@
  *         message:
  *           type: string
  *           description: Operation status message
+ *           example: Operation completed successfully!
  */
 
 /**
  * @swagger
- * /api/auth/register/customer:
+ * /api/auth/register:
  *   post:
- *     summary: Register a new customer
+ *     summary: Register a new user
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -75,14 +135,16 @@
  *             schema:
  *               $ref: '#/components/schemas/TokenResponse'
  *       400:
- *         description: Invalid input data
+ *         description: Invalid input data or user already exists
+ *       500:
+ *         description: Internal server error
  */
 
 /**
  * @swagger
- * /api/auth/login/customer:
+ * /api/auth/login:
  *   post:
- *     summary: Login as customer
+ *     summary: Login as user
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -97,8 +159,14 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/TokenResponse'
+ *       400:
+ *         description: Missing login credentials
  *       401:
- *         description: Invalid credentials
+ *         description: Invalid password
+ *       403:
+ *         description: Account is not active
+ *       404:
+ *         description: Account not registered
  */
 
 /**
@@ -114,11 +182,7 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               device:
- *                 type: string
- *                 description: Device identifier to logout from
+ *             $ref: '#/components/schemas/LogoutRequest'
  *     responses:
  *       200:
  *         description: Logout successful
@@ -127,7 +191,7 @@
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized - Invalid or missing token
  */
 
 /**
@@ -141,11 +205,7 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
+ *             $ref: '#/components/schemas/PasswordResetRequest'
  *     responses:
  *       200:
  *         description: Reset email sent successfully
@@ -153,29 +213,17 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
+ *       404:
+ *         description: User with given email doesn't exist
  *   put:
- *     summary: Reset password
+ *     summary: Reset password with token
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - password
- *               - user
- *               - token
- *             properties:
- *               password:
- *                 type: string
- *                 format: password
- *               user:
- *                 type: string
- *                 description: User ID
- *               token:
- *                 type: string
- *                 description: Reset token
+ *             $ref: '#/components/schemas/PasswordResetConfirm'
  *     responses:
  *       200:
  *         description: Password reset successful
@@ -184,33 +232,35 @@
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  *       400:
- *         description: Invalid token or user ID
+ *         description: Invalid link, token, or user ID
  */
 
 /**
  * @swagger
  * /api/auth/login/phone:
  *   post:
- *     summary: Login with phone number
+ *     summary: Login with phone number (requires OTP verification)
  *     tags: [Authentication]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: Phone login successful
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/TokenResponse'
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized - Invalid token or OTP
+ *       404:
+ *         description: User not found
  */
 
 /**
  * @swagger
  * /api/auth/login/google:
  *   post:
- *     summary: Login with Google
+ *     summary: Login with Google ID
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -218,26 +268,28 @@
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - googleId
  *             properties:
  *               googleId:
  *                 type: string
- *                 description: Google user ID
+ *                 description: Google ID for authentication
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: Google login successful
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/TokenResponse'
- *       401:
- *         description: Invalid Google ID
+ *       404:
+ *         description: User with Google ID not found
  */
 
 /**
  * @swagger
  * /api/auth/login/facebook:
  *   post:
- *     summary: Login with Facebook
+ *     summary: Login with Facebook ID
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -245,19 +297,21 @@
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - facebookId
  *             properties:
  *               facebookId:
  *                 type: string
- *                 description: Facebook user ID
+ *                 description: Facebook ID for authentication
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: Facebook login successful
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/TokenResponse'
- *       401:
- *         description: Invalid Facebook ID
+ *       404:
+ *         description: User with Facebook ID not found
  */
 
 /**
@@ -274,20 +328,26 @@
  *             $ref: '#/components/schemas/LoginRequest'
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: Admin login successful
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/TokenResponse'
+ *       400:
+ *         description: Missing login credentials
  *       401:
- *         description: Invalid credentials
+ *         description: Invalid password
+ *       403:
+ *         description: Account is not active
+ *       404:
+ *         description: Admin account not registered
  */
 
 /**
  * @swagger
  * /api/auth/register/admin:
  *   post:
- *     summary: Register a new admin
+ *     summary: Register a new admin (requires API key)
  *     tags: [Authentication]
  *     security:
  *       - apiKey: []
@@ -296,30 +356,18 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *                 format: password
- *               type:
- *                 type: string
- *                 enum: [ADMIN, SUPER_ADMIN]
- *                 description: Admin type
+ *             $ref: '#/components/schemas/AdminRegisterRequest'
  *     responses:
  *       200:
- *         description: Registration successful
+ *         description: Admin registration successful
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/TokenResponse'
  *       400:
- *         description: Invalid input data
+ *         description: Invalid input data or admin already exists
  *       401:
- *         description: Invalid API key
+ *         description: Unauthorized - Invalid or missing API key
+ *       500:
+ *         description: Internal server error
  */

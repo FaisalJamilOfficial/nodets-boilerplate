@@ -5,9 +5,8 @@ import { Request, Response, Router } from "express";
 
 import { exceptionHandler } from "../../middlewares/exception-handler";
 import {
-  verifyToken,
-  verifyAdmin,
-  verifyKey,
+  verifyAdminToken,
+  verifyAPIKey,
 } from "../../middlewares/authenticator";
 
 // destructuring assignments
@@ -17,12 +16,11 @@ const router = Router();
 
 router.delete(
   "/clean/DB",
-  verifyToken,
-  verifyAdmin,
-  verifyKey,
+  verifyAdminToken,
+  verifyAPIKey,
   exceptionHandler(async (_req: Request, res: Response) => {
     res.json({ message: "Operation completed successfully!" });
-  }),
+  })
 );
 
 export default router;

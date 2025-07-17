@@ -29,7 +29,7 @@ const paymentAccountSchema = new Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export default model("payment_accounts", paymentAccountSchema);

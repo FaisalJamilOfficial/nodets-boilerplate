@@ -12,12 +12,12 @@
  *     Attachment:
  *       type: object
  *       required:
- *         - path
+ *         - key
  *         - type
  *       properties:
- *         path:
+ *         key:
  *           type: string
- *           description: Path to the attachment file
+ *           description: key of the attachment file
  *         type:
  *           type: string
  *           description: Type of the attachment (e.g., image, video, document)
@@ -87,19 +87,27 @@
  *           schema:
  *             type: object
  *             required:
- *               - conversation
+ *               - user
  *               - text
  *             properties:
- *               conversation:
+ *               user:
  *                 type: string
- *                 description: ID of the conversation
+ *                 description: ID of the recipient user
  *               text:
  *                 type: string
  *                 description: Message text content
  *               attachments:
  *                 type: array
  *                 items:
- *                   $ref: '#/components/schemas/Attachment'
+ *                   type: object
+ *                   properties:
+ *                     key:
+ *                       type: string
+ *                       description: Attachment key (filename or storage key)
+ *                     type:
+ *                       type: string
+ *                       description: MIME type of the attachment
+ *                 description: Message attachments (array of objects)
  *     responses:
  *       200:
  *         description: Message sent successfully

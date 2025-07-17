@@ -61,7 +61,7 @@
 
 /**
  * @swagger
- * /api/notification:
+ * /api/user/notification:
  *   get:
  *     summary: Get user's notifications
  *     tags: [Notifications]
@@ -93,99 +93,7 @@
  *               $ref: '#/components/schemas/NotificationResponse'
  *       401:
  *         description: Unauthorized
- */
-
-/**
- * @swagger
- * /api/notification/{notificationId}:
- *   get:
- *     summary: Get notification by ID
- *     tags: [Notifications]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: notificationId
- *         required: true
- *         schema:
- *           type: string
- *         description: Notification ID
- *     responses:
- *       200:
- *         description: Notification details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Notification'
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: Notification not found
- *   put:
- *     summary: Update notification status
- *     tags: [Notifications]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: notificationId
- *         required: true
- *         schema:
- *           type: string
- *         description: Notification ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - status
- *             properties:
- *               status:
- *                 type: string
- *                 enum: [read]
- *                 description: New notification status
- *     responses:
- *       200:
- *         description: Notification status updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Notification'
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: Notification not found
- *   delete:
- *     summary: Delete a notification
- *     tags: [Notifications]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: notificationId
- *         required: true
- *         schema:
- *           type: string
- *         description: Notification ID
- *     responses:
- *       200:
- *         description: Notification deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Notification'
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: Notification not found
- */
-
-/**
- * @swagger
- * /api/notification/read-all:
- *   put:
+ *   patch:
  *     summary: Mark all notifications as read
  *     tags: [Notifications]
  *     security:
@@ -200,7 +108,7 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: All notifications marked as read
+ *                   example: Operation completed successfully!
  *       401:
  *         description: Unauthorized
  */

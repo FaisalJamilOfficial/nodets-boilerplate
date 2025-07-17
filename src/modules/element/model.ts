@@ -5,7 +5,7 @@ import { model, Schema } from "mongoose";
 
 const elementSchema = new Schema(
   { title: { type: String } },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default model("elements", elementSchema);

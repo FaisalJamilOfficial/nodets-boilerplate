@@ -4,10 +4,10 @@ import { Request, Response, Router } from "express";
 // file imports
 import * as messageController from "./controller";
 import * as conversationController from "../conversation/controller";
-import { verifyToken, verifyUser } from "../../middlewares/authenticator";
+import { verifyUserToken } from "../../middlewares/authenticator";
 import { exceptionHandler } from "../../middlewares/exception-handler";
-import { upload } from "../../middlewares/uploader";
 import { IRequest } from "../../configs/types";
+import { SendMessageDTO } from "./dto";
 
 // destructuring assignments
 
@@ -16,25 +16,19 @@ const router = Router();
 
 router
   .route("/")
-  .all(verifyToken, verifyUser)
+  .all(verifyUserToken)
   .post(
-    upload().array("attachments", 8),
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: userFrom, name: username } = req.user;
-      const { user: userTo, text } = req.body;
-      const attachments = req.files || [];
-      const args: any = { userFrom, username, userTo, text, attachments: [] };
-      if (attachments)
-        attachments.forEach((attachment: any) =>
-          args.attachments.push({
-            // path: attachment?.key,
-            path: attachment?.filename,
-            type: attachment?.mimetype,
-          }),
-        );
+      const args: any = {
+        ...req.pick(["user", "text", "attachments"]), // {attachments: {key: string, type: string}[]}
+        userFrom,
+        username,
+      };
+      args.userTo = args.user;
       const response = await messageController.send(args);
       res.json(response);
-    }),
+    })
   )
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
@@ -52,32 +46,29 @@ router
       };
       const response = await messageController.getMessages(args);
       res.json(response);
-    }),
+    })
   )
   .put(
-    exceptionHandler(async (req: Request, res: Response) => {
+    exceptionHandler(async (req: IRequest, res: Response) => {
       let { message } = req.query;
-      const { text, status } = req.body;
-      const args = { text, status };
+      const args = req.pick(["text", "status"]);
       message = message?.toString() || "";
       const response = await messageController.updateMessageById(message, args);
       res.json(response);
-    }),
+    })
   )
   .patch(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id } = req.user;
-      const { conversation } = req.body;
-      const args = { conversation, userTo: _id };
+      const { _id: userTo } = req.user;
+      const args = { ...req.pick(["conversation"]), userTo };
       await messageController.readMessages(args);
       res.json({ message: "Operation completed successfully!" });
-    }),
+    })
   );
 
 router.get(
   "/conversation",
-  verifyToken,
-  verifyUser,
+  verifyUserToken,
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req.user;
     const { limit, page } = req.query;
@@ -91,7 +82,7 @@ router.get(
     };
     const response = await conversationController.getConversations(args);
     res.json(response);
-  }),
+  })
 );
 
 export default router;

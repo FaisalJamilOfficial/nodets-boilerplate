@@ -23,13 +23,22 @@ class AxiosManager {
       });
       urlParams = urlParams.slice(0, urlParams.length - 1);
     }
-    // const response = await axios({
-    //   method, // Required, HTTP method, a string, e.g. POST, GET, PUT, PATCH, DELETE
-    //   url: url + urlParams, // Required, HTTP url, a string, e.g. http://localhost:5003
-    //   data, // Optional, HTTP Request Body, an object, e.g. { "text": "test" }
-    //   headers, // Optional, HTTP headers, an object, e.g. { "Content-Type": "application/json" }
-    // });
-    // return response.data;
+    try {
+      // const response = await axios({
+      //   method, // Required, HTTP method, a string, e.g. POST, GET, PUT, PATCH, DELETE
+      //   url: url + urlParams, // Required, HTTP url, a string, e.g. http://localhost:5003
+      //   data, // Optional, HTTP Request Body, an object, e.g. { "text": "test" }
+      //   headers, // Optional, HTTP headers, an object, e.g. { "Content-Type": "application/json" }
+      // });
+      // return response.data;
+    } catch (error: any) {
+      console.error("Axios Error:", error);
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "An unknown error occurred";
+      throw new Error(errorMessage);
+    }
   }
 }
 

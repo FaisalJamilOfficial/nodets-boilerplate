@@ -1,6 +1,13 @@
 // file imports
 const { pluralize, toCamelCase, toPascalCase } = require("./helper.js");
 
+/**
+ * Generates the content for a route file for a given module.
+ * It constructs the route endpoints and exports it using the module name.
+ *
+ * @param {string} moduleName - The name of the module for which route content is generated.
+ * @returns {string} The generated route content as a string with template placeholders.
+ */
 module.exports = function getRouteContent(moduleName) {
   const camelCaseModuleName = toCamelCase(moduleName);
   const pascalCaseModuleName = toPascalCase(moduleName);

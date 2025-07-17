@@ -4,10 +4,18 @@ export enum ENVIRONMENTS {
 }
 
 export enum USER_TYPES {
-  CUSTOMER = "customer",
-  ADMIN = "admin",
+  STANDARD = "standard",
+  GUEST = "guest",
+}
+
+export enum ADMIN_TYPES {
+  STANDARD = "standard",
   SUPER_ADMIN = "super_admin",
-  MULTI = "multi",
+}
+
+export enum ACCOUNT_TYPES {
+  USER = "user",
+  ADMIN = "admin",
 }
 
 export enum GEO_JSON_TYPES {
@@ -29,7 +37,7 @@ export enum NOTIFICATION_TYPES {
   NEW_MESSAGE = "new_message",
 }
 
-export enum USER_STATUSES {
+export enum ACCOUNT_STATUSES {
   ACTIVE = "active",
   DELETED = "deleted",
 }
