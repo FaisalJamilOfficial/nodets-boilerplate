@@ -6,9 +6,8 @@ import StripeManager from "../../utils/stripe-manager";
 import { exceptionHandler } from "../../middlewares/exception-handler";
 import { IRequest } from "../../configs/types";
 import {
-  verifyToken,
-  verifyAdmin,
-  verifyUser,
+  verifyUserToken,
+  verifyAdminToken,
 } from "../../middlewares/authenticator";
 
 // destructuring assignments
@@ -19,27 +18,23 @@ const router = Router();
 
 router.post(
   "/transfers",
-  verifyToken,
-  verifyAdmin,
-  exceptionHandler(async (req: Request, res: Response) => {
-    const { user, amount, description } = req.body;
-    const args = { amount, destination: user, description };
+  verifyAdminToken,
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const args = req.pick(["user", "amount", "description"]);
     const response = await stripeManager.createTransfer(args);
     res.json(response);
-  }),
+  })
 );
 
 router.post(
   "/account-link",
-  verifyToken,
-  verifyUser,
+  verifyUserToken,
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user, email } = req.user;
-    const { account } = req.body;
-    const args = { account, email, user };
+    const args = { ...req.pick(["account"]), user, email };
     const response = await stripeManager.createAccountLink(args);
     res.json(response);
-  }),
+  })
 );
 
 router.post(
@@ -55,7 +50,7 @@ router.post(
       message: "Done",
       event,
     });
-  }),
+  })
 );
 
 export default router;

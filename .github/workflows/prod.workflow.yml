@@ -67,6 +67,6 @@ jobs:
           # cache: "yarn"
 
       - run: bash script.sh
-      - run: yarn install --frozen-lockfile
+      - run: NODE_OPTIONS="--max-old-space-size=384" yarn install --frozen-lockfile
       # - run: yarn build
       - run: pm2 restart app-backend

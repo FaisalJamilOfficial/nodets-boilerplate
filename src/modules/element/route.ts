@@ -4,10 +4,10 @@ import { Request, Response, Router } from "express";
 // file imports
 import * as elementController from "./controller";
 import { exceptionHandler } from "../../middlewares/exception-handler";
+import { IRequest } from "../../configs/types";
 import {
-  verifyToken,
-  verifyAdmin,
-  verifyUser,
+  verifyUserToken,
+  verifyAdminToken,
 } from "../../middlewares/authenticator";
 
 // destructuring assignments
@@ -17,8 +17,7 @@ const router = Router();
 
 router.get(
   "/",
-  verifyToken,
-  verifyUser,
+  verifyUserToken,
   exceptionHandler(async (req: Request, res: Response) => {
     const { page, limit } = req.query;
     let { keyword } = req.query;
@@ -30,29 +29,27 @@ router.get(
     };
     const response = await elementController.getElements(args);
     res.json(response);
-  }),
+  })
 );
 
 router
   .route("/admin")
-  .all(verifyToken, verifyAdmin)
+  .all(verifyAdminToken)
   .post(
-    exceptionHandler(async (req: Request, res: Response) => {
-      const {} = req.body;
-      const args = {};
+    exceptionHandler(async (req: IRequest, res: Response) => {
+      const args = req.pick(["title", "description"]);
       const response = await elementController.addElement(args);
       res.json(response);
-    }),
+    })
   )
   .put(
-    exceptionHandler(async (req: Request, res: Response) => {
+    exceptionHandler(async (req: IRequest, res: Response) => {
       let { element } = req.query;
-      const {} = req.body;
-      const args = {};
+      const args = req.pick(["title", "description"]);
       element = element?.toString() || "";
       const response = await elementController.updateElementById(element, args);
       res.json(response);
-    }),
+    })
   )
   .get(
     exceptionHandler(async (req: Request, res: Response) => {
@@ -66,7 +63,7 @@ router
       };
       const response = await elementController.getElements(args);
       res.json(response);
-    }),
+    })
   )
   .delete(
     exceptionHandler(async (req: Request, res: Response) => {
@@ -74,18 +71,17 @@ router
       element = element?.toString() || "";
       const response = await elementController.deleteElementById(element);
       res.json(response);
-    }),
+    })
   );
 
 router.get(
   "/:element",
-  verifyToken,
-  verifyAdmin,
+  verifyAdminToken,
   exceptionHandler(async (req: Request, res: Response) => {
     const { element } = req.params;
     const response = await elementController.getElementById(element);
     res.json(response);
-  }),
+  })
 );
 
 export default router;

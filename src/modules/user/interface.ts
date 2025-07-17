@@ -1,7 +1,7 @@
 // file imports
 import { MongoID } from "../../configs/types";
 import { Element } from "../element/interface";
-import { USER_STATUSES, USER_TYPES } from "../../configs/enum";
+import { ACCOUNT_STATUSES, USER_TYPES } from "../../configs/enum";
 
 export interface User extends Element {
   _id?: MongoID;
@@ -16,11 +16,15 @@ export interface User extends Element {
   device?: string;
   location?: { type?: string; coordinates?: number[] };
   type: USER_TYPES;
-  status?: USER_STATUSES;
+  status?: ACCOUNT_STATUSES;
   isOnline?: boolean;
   profile?: MongoID;
   googleId?: string;
   facebookId?: string;
   lastLogin?: Date;
   otp?: string;
+  getSignedjwtToken?: () => string;
+  setPassword?: (password: string) => null;
+  validatePassword?: (password: string) => Promise<boolean>;
+  populate?: (field: string) => Promise<User>;
 }

@@ -3,17 +3,15 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
 // file imports
-import UserModel from "../modules/user/model";
-import { User } from "../modules/user/interface";
+import * as userController from "../modules/user/controller";
+import * as adminController from "../modules/admin/controller";
 import { IRequest } from "../configs/types";
 import { exceptionHandler } from "./exception-handler";
 import { ErrorHandler } from "./error-handler";
-import { USER_STATUSES, USER_TYPES } from "../configs/enum";
+import { ACCOUNT_STATUSES, ADMIN_TYPES, USER_TYPES } from "../configs/enum";
 
 // destructuring assignments
-const { JWT_SECRET, API_KEY } = process.env;
-const { ACTIVE, DELETED } = USER_STATUSES;
-const { CUSTOMER, ADMIN, SUPER_ADMIN } = USER_TYPES;
+const { JWT_SECRET, API_KEY, DOCS_USERNAME, DOCS_PASSWORD } = process.env;
 
 /**
  * @description Get JWT token
@@ -28,11 +26,14 @@ export const getToken = function (params: object): string {
   return jwt.sign(params, JWT_SECRET || "");
 };
 
-export const verifyToken = async (
+/**
+ * @description Verify user token
+ */
+export const verifyUserToken = async (
   req: any,
   _res: Response,
   next: NextFunction,
-  shouldReturnUserOnFailure = false,
+  shouldReturnUserOnFailure = false
 ) => {
   try {
     const token =
@@ -43,19 +44,17 @@ export const verifyToken = async (
     if (token) {
       const verificationObject: any = jwt.verify(
         token.trim(),
-        JWT_SECRET || "",
+        JWT_SECRET || ""
       );
 
       if (verificationObject.shouldValidateOTP) {
         req.user = verificationObject;
         return next();
       }
-      const user = await UserModel.findOne({
-        _id: verificationObject._id,
-      }).select("-createdAt -updatedAt -__v -fcm");
+      const user = await userController.getUserById(verificationObject?._id);
       if (user) {
-        if (user.status === DELETED)
-          next(new ErrorHandler("User account deleted!", 403));
+        if (user.status !== ACCOUNT_STATUSES.ACTIVE)
+          next(new ErrorHandler(`Account ${user.status}!`, 403));
         req.user = user;
         return next();
       }
@@ -64,7 +63,7 @@ export const verifyToken = async (
       req.user = null;
       return next();
     }
-    next(new ErrorHandler("Invalid token!", 403));
+    next(new ErrorHandler("Invalid Token!", 403));
   } catch (error) {
     if (shouldReturnUserOnFailure) {
       req.user = null;
@@ -74,73 +73,157 @@ export const verifyToken = async (
   }
 };
 
+/**
+ * @description Verify admin token
+ */
+export const verifyAdminToken = async (
+  req: any,
+  _res: Response,
+  next: NextFunction
+) => {
+  try {
+    const token =
+      (req.headers.authorization &&
+        req.headers.authorization.split("Bearer")[1]) ||
+      (req.signedCookies && req.signedCookies.jwt) ||
+      (req.cookies && req.cookies.jwt);
+    if (token) {
+      const verificationObject: any = jwt.verify(
+        token.trim(),
+        JWT_SECRET || ""
+      );
+      const admin = await adminController.getAdminById(verificationObject?._id);
+      if (admin) {
+        if (admin.status !== ACCOUNT_STATUSES.ACTIVE)
+          next(new ErrorHandler(`Account ${admin.status}!`, 403));
+        req.admin = admin;
+        return next();
+      }
+    }
+    next(new ErrorHandler("Invalid Token!", 403));
+  } catch (error) {
+    return next(new ErrorHandler("Unauthorized!", 401));
+  }
+};
+
+/**
+ * @description Verify OTP code
+ */
 export const verifyOTP = exceptionHandler(
   async (req: IRequest, _res: Response, next: NextFunction): Promise<void> => {
     const { otp } = req.user;
     const { code } = req.body;
-    const query: any = {};
-    if (req.user?._id) query._id = req.user._id;
+    const query: any = { selection: "+otp" };
+    if (req?.user?._id) query._id = req.user._id;
     else if (req.user?.phone) query.phone = req.user.phone;
     else query._id = null;
-    const userExists: any = await UserModel.findOne(query).select("+otp");
+    const userExists: any = await userController.getUser(query);
 
     if (userExists && code === userExists?.otp) next();
     else if (code === otp) next();
     else return next(new ErrorHandler("Invalid Code!", 400));
-  },
+  }
 );
 
-export const verifyAdmin = (req: IRequest, _res: object, next: any): void => {
+/**
+ * @description Verify if the admin is a standard or super admin
+ */
+export const verifyStandardAdmin = (
+  req: IRequest,
+  _res: object,
+  next: any
+): void => {
   if (
-    (req.user?.type === ADMIN || req.user?.type === SUPER_ADMIN) &&
-    req.user?.status === ACTIVE
+    req?.admin?.type === ADMIN_TYPES.STANDARD ||
+    req?.admin?.type === ADMIN_TYPES.SUPER_ADMIN
   )
     next();
   else next(new ErrorHandler("Unauthorized as admin!", 403));
 };
 
+/**
+ * @description Verify if the admin is a super admin
+ */
 export const verifySuperAdmin = (
   req: IRequest,
   _res: object,
-  next: any,
+  next: any
 ): void => {
-  if (req.user?.type === SUPER_ADMIN && req.user?.status === ACTIVE) next();
+  if (req?.admin?.type === ADMIN_TYPES.SUPER_ADMIN) next();
   else next(new ErrorHandler("Unauthorized as super-admin!", 403));
 };
 
-export const verifyCustomer = (
+/**
+ * @description Verify if the user is a standard user
+ */
+export const verifyStandardUser = (
   req: IRequest,
   _res: object,
-  next: any,
+  next: any
 ): void => {
-  if (req.user?.type === CUSTOMER && req.user?.status === ACTIVE) next();
-  else next(new ErrorHandler("Unauthorized as customer!", 403));
+  if (req?.user?.type === USER_TYPES.STANDARD) next();
+  else next(new ErrorHandler("Unauthorized as standard user!", 403));
 };
 
-export const verifyUser = (req: IRequest, _res: object, next: any): void => {
-  if (req.user && req.user?.status === ACTIVE) next();
-  else next(new ErrorHandler("Unauthorized as user!", 403));
-};
-
-export const verifyUserToken = (
+/**
+ * @description Verify if the user has a valid token
+ */
+export const verifyValidUserToken = (
   req: IRequest,
   _res: object,
-  next: any,
+  next: any
 ): void => {
-  if (req.user?._id) next();
-  else next(new ErrorHandler("Invalid user token!", 400));
+  if (req?.user?._id) next();
+  else next(new ErrorHandler("Invalid Token!", 400));
 };
 
+/**
+ * @description Verify if the admin has a valid token
+ */
+export const verifyValidAdminToken = (
+  req: IRequest,
+  _res: object,
+  next: any
+): void => {
+  if (req?.admin?._id) next();
+  else next(new ErrorHandler("Invalid Token!", 400));
+};
+
+/**
+ * @description Middleware to check if the user exists
+ */
 export const checkUserPhoneExists = exceptionHandler(
   async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
-    const userExists = await UserModel.exists({ phone: req.body.phone });
+    const userExists = await userController.checkUserExistence({
+      phone: req.body.phone,
+    });
     if (userExists) next();
     else next(new ErrorHandler("User not found!", 404));
-  },
+  }
 );
 
-export const verifyKey = (req: IRequest, _res: object, next: any): void => {
+/**
+ * @description Middleware to verify the API key from request headers.
+ * @throws {ErrorHandler} Throws an error if the API key is invalid.
+ */
+export const verifyAPIKey = (req: IRequest, _res: object, next: any): void => {
   const { api_key } = req.headers;
   if (api_key === API_KEY) next();
   else throw new ErrorHandler("Invalid API key!", 400);
 };
+
+export function basicAuth(req: Request, res: Response, next: NextFunction) {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith("Basic ")) {
+    res.set("WWW-Authenticate", 'Basic realm="Swagger Docs"');
+    res.status(401).send("Authentication required.");
+    return;
+  }
+  const base64 = auth.split(" ")[1];
+  const [user, pass] = Buffer.from(base64, "base64").toString().split(":");
+  if (user === DOCS_USERNAME && pass === DOCS_PASSWORD) {
+    return next();
+  }
+  res.set("WWW-Authenticate", 'Basic realm="Swagger Docs"');
+  res.status(401).send("Authentication failed.");
+}

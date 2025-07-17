@@ -3,7 +3,7 @@
 // import { google } from "googleapis";
 
 // destructuring assignments
-const { BASE_URL, EMAIL_USER, PASS_APP, APP_TITLE } = process.env;
+const { BASE_URL, GOOGLE_EMAIL, GOOGLE_APP_PASSWORD, APP_TITLE } = process.env;
 
 // variable initializations
 // const transporter = nodemailer.createTransport({
@@ -11,8 +11,8 @@ const { BASE_URL, EMAIL_USER, PASS_APP, APP_TITLE } = process.env;
 //   port: 587,
 //   secure: false, // true for 465, false for other ports
 //   auth: {
-//     user: EMAIL_USER,
-//     pass: PASS_APP,
+//     user: GOOGLE_EMAIL,
+//     pass: GOOGLE_APP_PASSWORD,
 //   },
 // });
 
@@ -33,7 +33,7 @@ class NodeMailer {
   async sendEmail(params: any) {
     const { to, subject, text, html } = params;
     // return await transporter.sendMail({
-    //   from: `BACKEND BOILERPLATE <${EMAIL_USER}>`,
+    //   from: `BACKEND BOILERPLATE <${GOOGLE_EMAIL}>`,
     //   to,
     //   subject,
     //   text,
@@ -55,7 +55,7 @@ Please click on the link below to reset your password,
 ${link}
 Please note that this link will expire after 10 minutes.
 
-If you didn't do this, contact us here ${EMAIL_USER}`;
+If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
   }
 
   /**
@@ -72,7 +72,7 @@ Please click on the link below to verify your email address,
 ${link}
 Please note that this link will expire after 10 minutes.
 
-If you didn't do this, contact us here ${EMAIL_USER}`;
+If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
   }
 
   /**
@@ -103,7 +103,7 @@ If you didn't do this, contact us here ${EMAIL_USER}`;
 Your One Time Password (OTP) is ${otp}. Please do not share this password with anyone.
 Please note that this password will expire after 10 minutes.
   
-If you didn't do this, contact us here ${EMAIL_USER}`;
+If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
   }
 }
 
@@ -116,19 +116,19 @@ export default NodeMailer;
 
 // destructuring assignments
 // const {
-//   CLIENT_ID,
+//  GOOGLE_CLIENT_ID,
 //   CLIENT_SECRET,
-//   REFRESH_TOKEN,
+//   GOOGLE_REFRESH_TOKEN,
 // } = process.env;
 
 // variable initializations
 // const OAuth2 = google.auth.OAuth2;
 // const oauth2Client = new OAuth2(
-//   CLIENT_ID, // ClientID
+//  GOOGLE_CLIENT_ID, // ClientID
 //   CLIENT_SECRET, // Client Secret
 //   "https://developers.google.com/oauthplayground" // Redirect URL
 // ).setCredentials({
-//   refresh_token: process.env.REFRESH_TOKEN,
+//   refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
 // });
 // const accessToken = oauth2Client.getAccessToken();
 // const transporter = nodemailer.createTransport({
@@ -137,10 +137,10 @@ export default NodeMailer;
 //   secure: true,
 //   auth: {
 //     type: "OAuth2",
-//     user: EMAIL_USER,
-//     clientId: CLIENT_ID,
+//     user: GOOGLE_EMAIL,
+//     clientId:GOOGLE_CLIENT_ID,
 //     clientSecret: CLIENT_SECRET,
-//     refreshToken: REFRESH_TOKEN,
+//     refreshToken: GOOGLE_REFRESH_TOKEN,
 //     accessToken,
 //   },
 //   tls: {
