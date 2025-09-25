@@ -1,6 +1,9 @@
 // module imports
 import { model, Schema } from "mongoose";
 
+// file imports
+import { MODEL_NAMES } from "../../configs/enum";
+
 // variable initializations
 
 const elementSchema = new Schema(
@@ -8,4 +11,4 @@ const elementSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("elements", elementSchema);
+export default model(MODEL_NAMES.ELEMENTS, elementSchema);

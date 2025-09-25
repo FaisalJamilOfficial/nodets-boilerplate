@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { model, Schema } from "mongoose";
 
 // file imports
-import { ADMIN_TYPES, ACCOUNT_STATUSES } from "../../configs/enum";
+import { ADMIN_TYPES, ACCOUNT_STATUSES, MODEL_NAMES } from "../../configs/enum";
 
 // variable initializations
 
@@ -47,9 +47,7 @@ const adminSchema = new Schema(
       select: false,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 adminSchema.methods.getSignedjwtToken = function () {
@@ -68,10 +66,10 @@ adminSchema.methods.setPassword = async function (newPassword: string) {
 adminSchema.methods.validatePassword = async function (
   enteredPassword: string
 ) {
-  const adminExists = await model("admins", adminSchema)
+  const adminExists = await model(MODEL_NAMES.ADMINS, adminSchema)
     .findById(this._id, { password: 1 })
     .select("+password");
   return await bcrypt.compare(enteredPassword, adminExists?.password || "");
 };
 
-export default model("admins", adminSchema);
+export default model(MODEL_NAMES.ADMINS, adminSchema);

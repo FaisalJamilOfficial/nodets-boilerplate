@@ -3,6 +3,18 @@ export enum ENVIRONMENTS {
   DEVELOPMENT = "development",
 }
 
+export enum MODEL_NAMES {
+  ADMINS = "admins",
+  CONVERSATIONS = "conversations",
+  ELEMENTS = "elements",
+  MESSAGES = "messages",
+  NOTIFICATIONS = "notifications",
+  PAYMENT_ACCOUNTS = "payment_accounts",
+  PROFILES = "profiles",
+  USERS = "users",
+  USER_TOKENS = "user_tokens",
+}
+
 export enum USER_TYPES {
   STANDARD = "standard",
   GUEST = "guest",

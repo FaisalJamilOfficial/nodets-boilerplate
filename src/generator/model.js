@@ -12,9 +12,13 @@ module.exports = function getModelContent(moduleName) {
   const camelCaseModuleName = toCamelCase(moduleName);
   const snakeCaseModuleName = toSnakeCase(moduleName);
   const pluralSnakeCaseModuleName = pluralize(snakeCaseModuleName);
+  const pluralUpperCaseModuleName = pluralSnakeCaseModuleName.toUpperCase();
   return `
 // module imports
 import { model, Schema } from "mongoose";
+
+// file imports
+import { MODEL_NAMES } from "../../configs/enum";
 
 // variable initializations
 
@@ -23,6 +27,6 @@ const ${camelCaseModuleName}Schema = new Schema(
   { timestamps: true }
 );
 
-export default model("${pluralSnakeCaseModuleName}", ${camelCaseModuleName}Schema);
+export default model(MODEL_NAMES.${pluralUpperCaseModuleName}, ${camelCaseModuleName}Schema);
 `;
 };

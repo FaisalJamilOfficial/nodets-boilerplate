@@ -2,10 +2,9 @@
 import { model, Schema } from "mongoose";
 
 // file imports
-import { CONVERSATION_STATUSES } from "../../configs/enum";
+import { CONVERSATION_STATUSES, MODEL_NAMES } from "../../configs/enum";
 
 // destructuring assignments
-const { PENDING } = CONVERSATION_STATUSES;
 
 // variable initializations
 
@@ -13,25 +12,25 @@ const conversationSchema = new Schema(
   {
     userTo: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: MODEL_NAMES.USERS,
       required: true,
       index: true,
     },
     userFrom: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: MODEL_NAMES.USERS,
       required: true,
       index: true,
     },
     lastMessage: {
       type: Schema.Types.ObjectId,
-      ref: "messages",
+      ref: MODEL_NAMES.MESSAGES,
       index: true,
     },
     status: {
       type: String,
       enum: Object.values(CONVERSATION_STATUSES),
-      default: PENDING,
+      default: CONVERSATION_STATUSES.PENDING,
       required: true,
       index: true,
     },
@@ -39,4 +38,4 @@ const conversationSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("conversations", conversationSchema);
+export default model(MODEL_NAMES.CONVERSATIONS, conversationSchema);

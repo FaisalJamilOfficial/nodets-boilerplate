@@ -8,6 +8,7 @@ import {
   ACCOUNT_STATUSES,
   USER_TYPES,
   GEO_JSON_TYPES,
+  MODEL_NAMES,
 } from "../../configs/enum";
 
 // variable initializations
@@ -66,7 +67,6 @@ const userSchema = new Schema(
     location: {
       type: {
         type: String,
-
         enum: Object.values(GEO_JSON_TYPES),
         default: GEO_JSON_TYPES.POINT,
         required: true,
@@ -113,7 +113,7 @@ const userSchema = new Schema(
     },
     profile: {
       type: Schema.Types.ObjectId,
-      ref: "profiles",
+      ref: MODEL_NAMES.PROFILES,
       select: false,
       index: true,
     },
@@ -130,9 +130,7 @@ const userSchema = new Schema(
       select: false,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 userSchema.methods.getSignedjwtToken = function () {
@@ -143,7 +141,7 @@ userSchema.methods.getSignedjwtToken = function () {
 };
 
 userSchema.methods.populate = async function (field: string) {
-  return await model("users", userSchema)
+  return await model(MODEL_NAMES.USERS, userSchema)
     .findById(this._id)
     .populate(field ?? this.type);
 };
@@ -155,10 +153,10 @@ userSchema.methods.setPassword = async function (newPassword: string) {
 };
 
 userSchema.methods.validatePassword = async function (enteredPassword: string) {
-  const userExists = await model("users", userSchema)
+  const userExists = await model(MODEL_NAMES.USERS, userSchema)
     .findById(this._id, { password: 1 })
     .select("+password");
   return await bcrypt.compare(enteredPassword, userExists?.password || "");
 };
 
-export default model("users", userSchema);
+export default model(MODEL_NAMES.USERS, userSchema);

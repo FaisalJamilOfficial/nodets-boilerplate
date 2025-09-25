@@ -1,20 +1,21 @@
 // module imports
 import { model, Schema } from "mongoose";
 
+// file imports
+import { MODEL_NAMES } from "../../configs/enum";
+
 // variable initializations
 
-const customerSchema = new Schema(
+const profileSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: MODEL_NAMES.USERS,
       required: true,
       index: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-export default model("customers", customerSchema);
+export default model(MODEL_NAMES.PROFILES, profileSchema);

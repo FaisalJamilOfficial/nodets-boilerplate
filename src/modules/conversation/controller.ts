@@ -6,7 +6,7 @@ import ConversationModel from "./model";
 import { Conversation } from "./interface";
 import { GetConversationsDTO } from "./dto";
 import { MongoID } from "../../configs/types";
-import { CONVERSATION_STATUSES } from "../../configs/enum";
+import { CONVERSATION_STATUSES, MODEL_NAMES } from "../../configs/enum";
 import { ErrorHandler } from "../../middlewares/error-handler";
 
 // destructuring assignments
@@ -89,7 +89,7 @@ export const getConversations = async (params: GetConversationsDTO) => {
     { $match: query },
     {
       $lookup: {
-        from: "messages",
+        from: MODEL_NAMES.MESSAGES,
         localField: "lastMessage",
         foreignField: "_id",
         as: "lastMessage",
@@ -121,7 +121,7 @@ export const getConversations = async (params: GetConversationsDTO) => {
     },
     {
       $lookup: {
-        from: "users",
+        from: MODEL_NAMES.USERS,
         localField: "user",
         foreignField: "_id",
         as: "user",
