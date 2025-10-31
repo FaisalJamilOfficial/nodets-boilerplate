@@ -21,19 +21,20 @@ import {
 const router = Router();
 
 router
-  .route("/")
+  .route("/admin")
   .all(verifyAdminToken)
   .post(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const args = req.pick(["email", "password", "phone", "type"]);
-      const user = await authController.registerUser(args as User);
-      res.json({ token: user.getSignedjwtToken() });
+      const args = req.pick(["email", "name", "phone"]);
+      const response = await userController.addUser(args as User);
+      res.json(response);
     })
   )
   .put(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id: user } = req.user;
-      const args = req.pick(["firstName", "lastName", "image"]);
+      const args = req.pick(["name", "phone", "status"]);
+      let { user } = req.query;
+      user = user?.toString() || "";
       const response = await userController.updateUserById(user, args);
       res.json(response);
     })
@@ -151,7 +152,7 @@ router.put(
 );
 
 router.get(
-  "/:user",
+  "/:user/admin",
   verifyAdminToken,
   exceptionHandler(async (req: Request, res: Response) => {
     const { user } = req.params;

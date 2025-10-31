@@ -31,7 +31,6 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      // required: [true, "Please enter password!"],
       required: true,
       select: false,
     },
@@ -80,7 +79,7 @@ const userSchema = new Schema(
     type: {
       type: String,
       enum: Object.values(USER_TYPES),
-      // required: [true, "Please enter user type!"],
+      default: USER_TYPES.STANDARD,
       required: true,
       index: true,
     },

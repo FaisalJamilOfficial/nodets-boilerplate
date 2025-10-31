@@ -107,9 +107,9 @@
  */
 /**
  * @swagger
- * /api/user:
+ * /api/user/admin:
  *   get:
- *     summary: Get users list
+ *     summary: Get users list (admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -125,17 +125,10 @@
  *           type: integer
  *         description: Number of items per page
  *       - in: query
- *         name: type
+ *         name: keyword
  *         schema:
  *           type: string
- *           enum: [customer, admin, super_admin, multi]
- *         description: Filter by user type
- *       - in: query
- *         name: status
- *         schema:
- *           type: string
- *           enum: [active, deleted]
- *         description: Filter by user status
+ *         description: Search keyword
  *     responses:
  *       200:
  *         description: List of users
@@ -143,10 +136,14 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
  *   post:
- *     summary: Create a new user
+ *     summary: Create a new user (admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -158,24 +155,14 @@
  *             type: object
  *             required:
  *               - email
- *               - password
- *               - type
  *             properties:
  *               email:
  *                 type: string
  *                 format: email
- *               password:
+ *               name:
  *                 type: string
- *                 format: password
  *               phone:
  *                 type: string
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               type:
- *                 type: string
- *                 enum: [customer, admin, super_admin, multi]
  *     responses:
  *       200:
  *         description: User created successfully
@@ -187,42 +174,16 @@
  *         description: Invalid input data
  *       401:
  *         description: Unauthorized
- */
-
-/**
- * @swagger
- * /api/user/{userId}:
- *   get:
- *     summary: Get user by ID
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
- *         description: User ID
- *     responses:
- *       200:
- *         description: User details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: User not found
+ *       403:
+ *         description: Forbidden
  *   put:
- *     summary: Update user
+ *     summary: Update a user (admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: userId
+ *       - in: query
+ *         name: user
  *         required: true
  *         schema:
  *           type: string
@@ -234,17 +195,12 @@
  *           schema:
  *             type: object
  *             properties:
+ *               name:
+ *                 type: string
  *               phone:
- *                 type: string
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               image:
  *                 type: string
  *               status:
  *                 type: string
- *                 enum: [active, deleted]
  *     responses:
  *       200:
  *         description: User updated successfully
@@ -252,18 +208,22 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
  *       404:
  *         description: User not found
  *   delete:
- *     summary: Delete a user
+ *     summary: Delete a user (admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: userId
+ *       - in: query
+ *         name: user
  *         required: true
  *         schema:
  *           type: string
@@ -275,28 +235,177 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
  *       404:
  *         description: User not found
  */
 
 /**
  * @swagger
- * /api/user/me:
- *   get:
- *     summary: Get current user's profile
+ * /api/user/phone:
+ *   put:
+ *     summary: Update user phone (requires OTP verification)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
- *     description: Authenticated user only
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phone:
+ *                 type: string
+ *                 description: New phone number
  *     responses:
  *       200:
- *         description: Current user's details
+ *         description: Phone updated successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /api/user/password:
+ *   put:
+ *     summary: Change current user's password
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *               - newPassword
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: Current password
+ *               newPassword:
+ *                 type: string
+ *                 format: password
+ *                 description: New password
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /api/user/otp:
+ *   post:
+ *     summary: Send OTP to current user's phone
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phone:
+ *                 type: string
+ *                 description: Phone number to send OTP
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *   put:
+ *     summary: Send OTP to a phone number (no auth)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phone:
+ *                 type: string
+ *                 description: Phone number to send OTP
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       400:
+ *         description: Bad request
+ */
+
+/**
+ * @swagger
+ * /api/user/notification:
+ *   get:
+ *     summary: Get current user's notifications
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: Notifications list
+ *       401:
+ *         description: Unauthorized
+ *   patch:
+ *     summary: Mark current user's notifications as read
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Operation completed successfully
  *       401:
  *         description: Unauthorized
  */
@@ -322,7 +431,6 @@
  *                 type: string
  *               image:
  *                 type: string
- *                 description: Image URL or filename
  *     responses:
  *       200:
  *         description: Profile updated successfully
@@ -330,214 +438,8 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Unauthorized
- */
-/**
- * @swagger
- * /api/user/:user:
- *   get:
- *     summary: Get user by ID (admin only)
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: user
- *         schema:
- *           type: string
- *         required: true
- *         description: User ID
- *     responses:
- *       200:
- *         description: User details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Unauthorized
- */
-
-/**
- * @swagger
- * /api/user/phone:
- *   put:
- *     summary: Update current user's phone number
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     description: Authenticated user only, requires OTP verification
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               phone:
- *                 type: string
- *                 description: New phone number
- *     responses:
- *       200:
- *         description: Phone number updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Unauthorized
- */
-
-/**
- * @swagger
- * /api/user/password:
- *   put:
- *     summary: Change current user's password
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     description: Authenticated user only
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - password
- *               - newPassword
- *             properties:
- *               password:
- *                 type: string
- *                 format: password
- *                 description: Current password
- *               newPassword:
- *                 type: string
- *                 format: password
- *                 description: New password
- *     responses:
- *       200:
- *         description: Password changed successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Unauthorized
- */
-
-/**
- * @swagger
- * /api/user/otp:
- *   post:
- *     summary: Send OTP to current user's phone
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     description: Authenticated user only
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               phone:
- *                 type: string
- *                 description: Phone number to send OTP to
- *     responses:
- *       200:
- *         description: OTP sent successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *       401:
- *         description: Unauthorized
- *   put:
- *     summary: Send OTP to a phone number (no auth required)
- *     tags: [Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               phone:
- *                 type: string
- *                 description: Phone number to send OTP to
- *     responses:
- *       200:
- *         description: OTP sent successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- */
-
-/**
- * @swagger
- * /api/user/notification:
- *   get:
- *     summary: Get current user's notifications
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     description: Authenticated user only
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *         description: Page number
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *         description: Number of items per page
- *     responses:
- *       200:
- *         description: List of notifications
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                 totalCount:
- *                   type: integer
- *                 totalPages:
- *                   type: integer
- *       401:
- *         description: Unauthorized
- *   patch:
- *     summary: Mark all notifications as read
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     description: Authenticated user only
- *     responses:
- *       200:
- *         description: All notifications marked as read
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Operation completed successfully!
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
  */
@@ -546,11 +448,10 @@
  * @swagger
  * /api/user/fcm:
  *   put:
- *     summary: Update current user's FCM token
+ *     summary: Update current user's FCM token and device info
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
- *     description: Authenticated user only
  *     requestBody:
  *       required: true
  *       content:
@@ -560,17 +461,49 @@
  *             properties:
  *               fcm:
  *                 type: string
- *                 description: New FCM token
  *               device:
  *                 type: string
- *                 description: Device identifier
  *     responses:
  *       200:
- *         description: FCM token updated successfully
+ *         description: FCM updated successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /api/user/{user}:
+ *   get:
+ *     summary: Get user by ID
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: user
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: User details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: User not found
  */
