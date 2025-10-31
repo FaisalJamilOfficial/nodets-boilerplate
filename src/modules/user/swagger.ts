@@ -299,12 +299,16 @@
  *               $ref: '#/components/schemas/User'
  *       401:
  *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /api/user/profile:
  *   put:
  *     summary: Update current user's profile
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
- *     description: Authenticated user only
  *     requestBody:
  *       required: true
  *       content:
@@ -322,6 +326,31 @@
  *     responses:
  *       200:
  *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized
+ */
+/**
+ * @swagger
+ * /api/user/:user:
+ *   get:
+ *     summary: Get user by ID (admin only)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: user
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: User details
  *         content:
  *           application/json:
  *             schema:

@@ -107,6 +107,10 @@ const userSchema = new Schema(
       select: false,
       required: true,
     },
+    lastUsed: {
+      type: Date,
+      select: false,
+    },
     lastLogin: {
       type: Date,
       select: false,

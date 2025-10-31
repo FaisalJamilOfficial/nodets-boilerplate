@@ -371,3 +371,47 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /api/auth/profile/user:
+ *   get:
+ *     summary: Get current user's profile
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: device
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: The device identifier
+ *     responses:
+ *       200:
+ *         description: Current user's profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized
+ */
+/**
+ * @swagger
+ * /api/auth/profile/admin:
+ *   get:
+ *     summary: Get current admin's profile
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current admin's details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Admin'
+ *       401:
+ *         description: Unauthorized
+ */

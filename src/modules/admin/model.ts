@@ -42,6 +42,10 @@ const adminSchema = new Schema(
       default: ACCOUNT_STATUSES.ACTIVE,
       index: true,
     },
+    lastUsed: {
+      type: Date,
+      select: false,
+    },
     lastLogin: {
       type: Date,
       select: false,

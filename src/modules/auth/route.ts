@@ -4,6 +4,7 @@ import { Response, Router } from "express";
 // file imports
 import * as authController from "./controller";
 import * as userController from "../user/controller";
+import * as adminController from "../admin/controller";
 import { Admin } from "../admin/interface";
 import { User } from "../user/interface";
 import { LoginDTO, ResetPasswordDTO, SendEmailDTO } from "./dto";
@@ -14,6 +15,7 @@ import {
   verifyOTP,
   verifyAPIKey,
   verifyUserToken,
+  verifyAdminToken,
 } from "../../middlewares/authenticator";
 import GoogleAuthenticator from "../../utils/google-authenticator";
 import FacebookAuthenticator from "../../utils/facebook-authenticator";
@@ -178,6 +180,28 @@ router.post(
     if (!args.type) args.type = STANDARD;
     const response = await authController.registerAdmin(args as Admin);
     res.json({ token: response });
+  })
+);
+
+router.get(
+  "/profile/user",
+  verifyUserToken,
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const { _id: user } = req.user;
+    const { device } = req.query;
+    const args = { user, device: device?.toString() || "" };
+    const response = await userController.getUserProfile(args);
+    res.json(response);
+  })
+);
+
+router.get(
+  "/profile/admin",
+  verifyAdminToken,
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const { _id: admin } = req.admin;
+    const adminExists = await adminController.getAdminById(admin);
+    res.json(adminExists);
   })
 );
 

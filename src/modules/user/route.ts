@@ -128,14 +128,13 @@ router
     })
   );
 
-router.get(
-  "/me",
+router.put(
+  "/profile",
   verifyUserToken,
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req.user;
-    const { device } = req.query;
-    const args = { user, device: device?.toString() || "" };
-    const response = await userController.getUserProfile(args);
+    const args = req.pick(["firstName", "lastName", "image"]);
+    const response = await userController.updateUserById(user, args);
     res.json(response);
   })
 );
