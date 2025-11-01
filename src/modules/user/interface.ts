@@ -18,6 +18,7 @@ export interface User extends Element {
   type: USER_TYPES;
   status?: ACCOUNT_STATUSES;
   isOnline?: boolean;
+  isDeleted?: boolean;
   profile?: MongoID;
   googleId?: string;
   facebookId?: string;

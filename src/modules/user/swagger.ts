@@ -72,6 +72,9 @@
  *         isOnline:
  *           type: boolean
  *           description: User's online status
+ *         isDeleted:
+ *           type: boolean
+ *           description: Soft delete flag
  *         profile:
  *           type: string
  *           description: Reference to user's profile
@@ -129,6 +132,11 @@
  *         schema:
  *           type: string
  *         description: Search keyword
+ *       - in: query
+ *         name: isDeleted
+ *         schema:
+ *           type: boolean
+ *         description: Filter by deleted status
  *     responses:
  *       200:
  *         description: List of users
@@ -204,6 +212,45 @@
  *     responses:
  *       200:
  *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: User not found
+ *   patch:
+ *     summary: Update user's deleted status (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: user
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - isDeleted
+ *             properties:
+ *               isDeleted:
+ *                 type: boolean
+ *                 description: Soft delete status
+ *     responses:
+ *       200:
+ *         description: User status updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -396,6 +443,21 @@
  *     responses:
  *       200:
  *         description: Notifications list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                 totalCount:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
  *   patch:
@@ -406,6 +468,14 @@
  *     responses:
  *       200:
  *         description: Operation completed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Operation completed successfully!
  *       401:
  *         description: Unauthorized
  */
@@ -478,9 +548,9 @@
 
 /**
  * @swagger
- * /api/user/{user}:
+ * /api/user/{user}/admin:
  *   get:
- *     summary: Get user by ID
+ *     summary: Get user by ID (admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []

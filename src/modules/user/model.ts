@@ -100,6 +100,12 @@ const userSchema = new Schema(
       select: false,
       required: true,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      select: false,
+      required: true,
+    },
     isEmailVerified: {
       type: Boolean,
       default: true,

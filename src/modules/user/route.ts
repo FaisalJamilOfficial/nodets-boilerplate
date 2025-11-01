@@ -39,10 +39,19 @@ router
       res.json(response);
     })
   )
+  .patch(
+    exceptionHandler(async (req: IRequest, res: Response) => {
+      const { isDeleted } = req.body;
+      let { user } = req.query;
+      user = user?.toString() || "";
+      const response = await userController.updateUserById(user, { isDeleted });
+      res.json(response);
+    })
+  )
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user } = req.user;
-      const { page, limit } = req.query;
+      const { page, limit, isDeleted } = req.query;
       let { keyword } = req.query;
       keyword = keyword?.toString() || "";
       const args = {
@@ -50,6 +59,7 @@ router
         keyword,
         limit: Number(limit),
         page: Number(page),
+        isDeleted: JSON.parse(String(isDeleted) || "null"),
       };
       const response = await userController.getUsers(args);
       res.json(response);
