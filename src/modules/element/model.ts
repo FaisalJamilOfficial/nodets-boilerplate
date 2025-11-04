@@ -7,7 +7,7 @@ import { MODEL_NAMES } from "../../configs/enum";
 // variable initializations
 
 const elementSchema = new Schema(
-  { title: { type: String } },
+  { isDeleted: { type: Boolean } },
   { timestamps: true }
 );
 

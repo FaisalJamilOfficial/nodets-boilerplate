@@ -7,7 +7,6 @@ import * as conversationController from "../conversation/controller";
 import { verifyUserToken } from "../../middlewares/authenticator";
 import { exceptionHandler } from "../../middlewares/exception-handler";
 import { IRequest } from "../../configs/types";
-import { SendMessageDTO } from "./dto";
 
 // destructuring assignments
 
@@ -33,7 +32,7 @@ router
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user1 } = req.user;
-      const { limit, page, user } = req.query;
+      const { limit, page, user, isDeleted } = req.query;
       let { conversation } = req.query;
       conversation = conversation?.toString() || "";
       const user2 = user?.toString() || "";
@@ -43,6 +42,7 @@ router
         user2,
         limit: Number(limit),
         page: Number(page),
+        isDeleted: JSON.parse(String(isDeleted) || "null"),
       };
       const response = await messageController.getMessages(args);
       res.json(response);

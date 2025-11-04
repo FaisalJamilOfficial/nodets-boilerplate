@@ -56,6 +56,8 @@ export const verifyUserToken = async (
         if (user.status !== ACCOUNT_STATUSES.ACTIVE)
           next(new ErrorHandler(`Account ${user.status}!`, 403));
         req.user = user;
+        user.lastUsed = new Date();
+        await user.save();
         return next();
       }
     }
@@ -97,6 +99,8 @@ export const verifyAdminToken = async (
         if (admin.status !== ACCOUNT_STATUSES.ACTIVE)
           next(new ErrorHandler(`Account ${admin.status}!`, 403));
         req.admin = admin;
+        admin.lastUsed = new Date();
+        await admin.save();
         return next();
       }
     }

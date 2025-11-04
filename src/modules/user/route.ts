@@ -40,7 +40,7 @@ router
     })
   )
   .patch(
-    exceptionHandler(async (req: IRequest, res: Response) => {
+    exceptionHandler(async (req: Request, res: Response) => {
       const { isDeleted } = req.body;
       let { user } = req.query;
       user = user?.toString() || "";
@@ -50,7 +50,7 @@ router
   )
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id: user } = req.user;
+      const { _id: user } = req.admin;
       const { page, limit, isDeleted } = req.query;
       let { keyword } = req.query;
       keyword = keyword?.toString() || "";

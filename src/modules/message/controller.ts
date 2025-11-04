@@ -53,11 +53,12 @@ export const updateMessageById = async (
  * @returns {Object[]} messages data
  */
 export const getMessages = async (params: GetMessagesDTO) => {
-  const { conversation } = params;
+  const { conversation, isDeleted } = params;
   let { page, limit, user1, user2 } = params;
   page = page - 1 || 0;
   limit = limit || 10;
   const query: any = {};
+  if (typeof isDeleted === "boolean") query.isDeleted = isDeleted;
   if (conversation)
     query.conversation =
       typeof conversation === "string"

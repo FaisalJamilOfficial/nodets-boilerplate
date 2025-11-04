@@ -1,4 +1,8 @@
+// module imports
 import swaggerJsdoc from "swagger-jsdoc";
+
+// destructuring assignments
+const { BASE_URL } = process.env;
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -10,7 +14,7 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:5000",
+        url: BASE_URL || "http://localhost:5000",
         description: "Development server",
       },
     ],
@@ -29,7 +33,7 @@ const options: swaggerJsdoc.Options = {
       },
     ],
   },
-  apis: ["./src/**/**/*.ts"], // Path to the API docs
+  apis: ["./src/**/**/*.ts", "./dist/**/**/*.js"], // Path to the API docs
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

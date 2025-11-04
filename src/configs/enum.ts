@@ -51,7 +51,7 @@ export enum NOTIFICATION_TYPES {
 
 export enum ACCOUNT_STATUSES {
   ACTIVE = "active",
-  DELETED = "deleted",
+  INACTIVE = "inactive",
 }
 
 export enum CONVERSATION_STATUSES {
@@ -63,7 +63,6 @@ export enum CONVERSATION_STATUSES {
 export enum MESSAGE_STATUSES {
   UNREAD = "unread",
   READ = "read",
-  DELETED = "deleted",
 }
 
 export enum NOTIFICATION_STATUSES {

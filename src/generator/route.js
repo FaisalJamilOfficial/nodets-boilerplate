@@ -20,9 +20,8 @@ import { Request, Response, Router } from "express";
 import * as ${camelCaseModuleName}Controller from "./controller";
 import { exceptionHandler } from "../../middlewares/exception-handler";
 import {
-  verifyToken,
-  verifyAdmin,
-  verifyUser,
+  verifyUserToken,
+  verifyAdminToken,
 } from "../../middlewares/authenticator";
 
 // destructuring assignments
@@ -32,8 +31,7 @@ const router = Router();
 
 router.get(
   "/",
-  verifyToken,
-  verifyUser,
+  verifyUserToken,
   exceptionHandler(async (req: Request, res: Response) => {
     const { page, limit } = req.query;
     let { keyword } = req.query;
@@ -50,7 +48,7 @@ router.get(
 
 router
   .route("/admin")
-  .all(verifyToken, verifyAdmin)
+  .all(verifyAdminToken)
   .post(
     exceptionHandler(async (req: Request, res: Response) => {
       const {} = req.body;
@@ -66,6 +64,15 @@ router
       const args = {};
       ${camelCaseModuleName} = ${camelCaseModuleName}?.toString() || "";
       const response = await ${camelCaseModuleName}Controller.update${pascalCaseModuleName}ById(${camelCaseModuleName}, args);
+      res.json(response);
+    })
+  ) 
+  .patch(
+    exceptionHandler(async (req: Request, res: Response) => {
+      let { ${camelCaseModuleName} } = req.query;
+      const { isDeleted } = req.body;
+      ${camelCaseModuleName} = ${camelCaseModuleName}?.toString() || "";
+      const response = await ${camelCaseModuleName}Controller.update${pascalCaseModuleName}ById(${camelCaseModuleName}, { isDeleted });
       res.json(response);
     })
   )
@@ -94,8 +101,7 @@ router
 
 router.get(
   "/:${camelCaseModuleName}",
-  verifyToken,
-  verifyAdmin,
+  verifyAdminToken,
   exceptionHandler(async (req: Request, res: Response) => {
     const { ${camelCaseModuleName} } = req.params;
     const response = await ${camelCaseModuleName}Controller.get${pascalCaseModuleName}ById(${camelCaseModuleName});

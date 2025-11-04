@@ -49,7 +49,7 @@ class NodeMailer {
    */
   getResetPasswordEmailTemplate(params: any): string {
     const { user, token } = params;
-    const link = `${BASE_URL}reset-password/?user=${user}&token=${token}`;
+    const link = `${BASE_URL}/reset-password/?user=${user}&token=${token}`;
     return `
 Please click on the link below to reset your password, 
 ${link}
@@ -66,7 +66,7 @@ If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
    */
   getEmailVerificationEmailTemplate(params: any): string {
     const { user, token } = params;
-    const link = `${BASE_URL}api/v1/users/emails?user=${user}&token=${token}`;
+    const link = `${BASE_URL}/api/users/emails?user=${user}&token=${token}`;
     return `
 Please click on the link below to verify your email address, 
 ${link}
