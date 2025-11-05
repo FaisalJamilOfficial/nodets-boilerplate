@@ -59,14 +59,14 @@ class FacebookAuthenticator {
     // App access token: {app-id}|{app-secret}
     const appAccessToken = `${this.clientId}|${this.clientSecret}`;
     const debugUrl = `https://graph.facebook.com/debug_token?input_token=${encodeURIComponent(
-      accessToken
+      accessToken,
     )}&access_token=${encodeURIComponent(appAccessToken)}`;
 
     const response = await fetch(debugUrl, { method: "GET" });
     if (!response.ok) {
       const error = await response.text();
       throw new Error(
-        `Failed to verify Facebook access token: ${response.status} ${error}`
+        `Failed to verify Facebook access token: ${response.status} ${error}`,
       );
     }
     const data = await response.json();
@@ -88,12 +88,12 @@ class FacebookAuthenticator {
       "https://graph.facebook.com/me?fields=id,name,email,picture";
     const response = await fetch(
       `${profileUrl}&access_token=${encodeURIComponent(accessToken)}`,
-      { method: "GET" }
+      { method: "GET" },
     );
     if (!response.ok) {
       const error = await response.text();
       throw new Error(
-        `Failed to get user profile: ${response.status} ${error}`
+        `Failed to get user profile: ${response.status} ${error}`,
       );
     }
     return response.json();

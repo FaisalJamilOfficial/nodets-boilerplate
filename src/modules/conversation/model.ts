@@ -35,7 +35,7 @@ const conversationSchema = new Schema(
       index: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model(MODEL_NAMES.CONVERSATIONS, conversationSchema);

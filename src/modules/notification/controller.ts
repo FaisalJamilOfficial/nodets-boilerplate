@@ -176,7 +176,7 @@ export const readNotifications = async (user: MongoID): Promise<void> => {
  * @param {Object} params notification parameters
  */
 export const sendNewMessageNotification = async (
-  params: sendNotificationsDTO
+  params: sendNotificationsDTO,
 ): Promise<void> => {
   const { username, notificationData, conversationData, messageData } = params;
   await notifyUsers({

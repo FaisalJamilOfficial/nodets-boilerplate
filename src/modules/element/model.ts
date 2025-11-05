@@ -8,7 +8,7 @@ import { MODEL_NAMES } from "../../configs/enum";
 
 const elementSchema = new Schema(
   { isDeleted: { type: Boolean } },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default model(MODEL_NAMES.ELEMENTS, elementSchema);

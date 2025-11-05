@@ -198,7 +198,7 @@ export const generateEmailToken = async (params: GenerateEmailTokenDTO) => {
  * @param {Object} params user password reset data
  */
 export const resetPassword = async (
-  params: ResetPasswordDTO
+  params: ResetPasswordDTO,
 ): Promise<void> => {
   const { password, user, token } = params;
 
@@ -220,7 +220,7 @@ export const resetPassword = async (
  * @param {Object} params user email verification data
  */
 export const verifyUserEmail = async (
-  params: VerifyUserEmailDTO
+  params: VerifyUserEmailDTO,
 ): Promise<void> => {
   const { user, token } = params;
 

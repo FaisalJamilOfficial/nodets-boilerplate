@@ -28,7 +28,7 @@ router
       const args = req.pick(["email", "name", "phone"]);
       const response = await userController.addUser(args as User);
       res.json(response);
-    })
+    }),
   )
   .put(
     exceptionHandler(async (req: IRequest, res: Response) => {
@@ -37,7 +37,7 @@ router
       user = user?.toString() || "";
       const response = await userController.updateUserById(user, args);
       res.json(response);
-    })
+    }),
   )
   .patch(
     exceptionHandler(async (req: Request, res: Response) => {
@@ -46,7 +46,7 @@ router
       user = user?.toString() || "";
       const response = await userController.updateUserById(user, { isDeleted });
       res.json(response);
-    })
+    }),
   )
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
@@ -63,7 +63,7 @@ router
       };
       const response = await userController.getUsers(args);
       res.json(response);
-    })
+    }),
   )
   .delete(
     exceptionHandler(async (req: IRequest, res: Response) => {
@@ -71,7 +71,7 @@ router
       user = user?.toString() || "";
       const response = await userController.deleteUserById(user);
       res.json(response);
-    })
+    }),
   );
 
 router.put(
@@ -84,7 +84,7 @@ router.put(
     const args = { phone };
     const response = await userController.updateUserById(user, args);
     res.json(response);
-  })
+  }),
 );
 router.put(
   "/password",
@@ -97,7 +97,7 @@ router.put(
     args.password = newPassword;
     const response = await userController.updateUserById(user, args);
     res.json(response);
-  })
+  }),
 );
 
 router
@@ -109,14 +109,14 @@ router
       const args = { ...req.pick(["phone"]), user };
       const response = await new TwilioManager().sendOTP(args);
       res.json({ token: response });
-    })
+    }),
   )
   .put(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const args = req.pick(["phone"]);
       const response = await new TwilioManager().sendOTP(args);
       res.json({ token: response });
-    })
+    }),
   );
 
 router
@@ -129,14 +129,14 @@ router
       const args = { user, limit: Number(limit), page: Number(page) };
       const response = await notificationController.getNotifications(args);
       res.json(response);
-    })
+    }),
   )
   .patch(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const { _id: user } = req.user;
       await notificationController.readNotifications(user);
       res.json({ message: "Operation completed successfully!" });
-    })
+    }),
   );
 
 router.put(
@@ -147,7 +147,7 @@ router.put(
     const args = req.pick(["firstName", "lastName", "image"]);
     const response = await userController.updateUserById(user, args);
     res.json(response);
-  })
+  }),
 );
 
 router.put(
@@ -158,7 +158,7 @@ router.put(
     const args = req.pick(["fcm", "device"]);
     const response = await userController.updateUserById(user, args);
     res.json(response);
-  })
+  }),
 );
 
 router.get(
@@ -168,7 +168,7 @@ router.get(
     const { user } = req.params;
     const response = await userController.getUserById(user);
     res.json(response);
-  })
+  }),
 );
 
 export default router;
