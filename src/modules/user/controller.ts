@@ -58,6 +58,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
 
   if (password) {
     await userExists.setPassword(password);
+    userObj.isPasswordSet = true;
     delete userObj.password;
   }
   if (fcm) {
@@ -162,7 +163,7 @@ export const getUser = async (params: getUserDTO) => {
   if (Object.keys(query).length === 0) query._id = null;
 
   let userExists = await UserModel.findOne(query).select(
-    selection || "-createdAt -updatedAt -__v -fcm",
+    selection || "-createdAt -updatedAt -__v -fcm"
   );
   if (userExists)
     if (userExists?.profile)

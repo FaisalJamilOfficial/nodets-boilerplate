@@ -26,9 +26,10 @@ router
   .post(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const args = req.pick(["email", "name", "phone"]);
+      args.password = userController.generateRandomPassword();
       const response = await userController.addUser(args as User);
       res.json(response);
-    }),
+    })
   )
   .put(
     exceptionHandler(async (req: IRequest, res: Response) => {
@@ -46,7 +47,7 @@ router
       user = user?.toString() || "";
       const response = await userController.updateUserById(user, { isDeleted });
       res.json(response);
-    }),
+    })
   )
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
@@ -59,7 +60,7 @@ router
         keyword,
         limit: Number(limit),
         page: Number(page),
-        isDeleted: JSON.parse(String(isDeleted) || "null"),
+        isDeleted: JSON.parse(String(isDeleted || "null")),
       };
       const response = await userController.getUsers(args);
       res.json(response);

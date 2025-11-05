@@ -19,6 +19,7 @@ export interface User extends Element {
   status?: ACCOUNT_STATUSES;
   isOnline?: boolean;
   isDeleted?: boolean;
+  isPasswordSet?: boolean;
   profile?: MongoID;
   googleId?: string;
   facebookId?: string;
