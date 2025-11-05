@@ -177,10 +177,12 @@ export const get${pascalCaseModuleName} = async (query: Partial<${pascalCaseModu
  * @returns {Object[]} ${pluralCamelCaseModuleName} data
  */
 export const get${pluralPascalCaseModuleName} = async (params: Get${pluralPascalCaseModuleName}DTO) => {
+  const { isDeleted } = params;
   let { limit, page } = params;
   page = page - 1 || 0;
   limit = limit || 10;
   const query: any = {};
+  if (typeof isDeleted === "boolean") query.isDeleted = isDeleted;
   const [result] = await ${pascalCaseModuleName}Model.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },

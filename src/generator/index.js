@@ -74,12 +74,18 @@ const _dirname = `${process.cwd()}/src/modules/`;
         SwaggerGenerator(moduleName),
       );
 
+      // make swagger file
+      fs.appendFileSync(
+        path.join(modulePath, "swagger.ts"),
+        SwaggerGenerator(moduleName),
+      );
+
       console.log(
         chalk.green(
           `
 Success: Module created successfully -> ${moduleName}
-Folder(1): src/modules
-Files(5): controller.ts, model.ts, route.ts interface.ts dto.ts
+Folder(1): src/modules/${moduleName}
+Files(6): controller.ts, dto.ts, interface.ts, model.ts, route.ts, swagger.ts  
 `,
         ),
       );

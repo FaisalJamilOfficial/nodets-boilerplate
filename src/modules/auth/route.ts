@@ -4,6 +4,7 @@ import { Response, Router } from "express";
 // file imports
 import * as authController from "./controller";
 import * as userController from "../user/controller";
+import * as adminController from "../admin/controller";
 import { Admin } from "../admin/interface";
 import { User } from "../user/interface";
 import { LoginDTO, ResetPasswordDTO, SendEmailDTO } from "./dto";
@@ -14,6 +15,7 @@ import {
   verifyOTP,
   verifyAPIKey,
   verifyUserToken,
+  verifyAdminToken,
 } from "../../middlewares/authenticator";
 import GoogleAuthenticator from "../../utils/google-authenticator";
 import FacebookAuthenticator from "../../utils/facebook-authenticator";
@@ -32,7 +34,7 @@ router.post(
     args.type = STANDARD;
     const user: any = await authController.registerUser(args as User);
     res.json({ token: user.getSignedjwtToken() });
-  })
+  }),
 );
 
 router.post(
@@ -91,7 +93,7 @@ router.post(
     const { token, googleId } = req.body;
     const googleUser = await new GoogleAuthenticator().authenticate(
       token,
-      googleId
+      googleId,
     );
     const args = { googleId, email: googleUser?.email };
     let user: any = await userController.getUser(args);
@@ -108,7 +110,7 @@ router.post(
       user = await authController.registerUser(userObj);
     }
     res.json({ token: user.getSignedjwtToken() });
-  })
+  }),
 );
 
 router.post(
@@ -117,7 +119,7 @@ router.post(
     const { token, facebookId } = req.body;
     const facebookUser = await new FacebookAuthenticator().authenticate(
       token,
-      facebookId
+      facebookId,
     );
     const args = { facebookId, email: facebookUser?.email };
     let user: any = await userController.getUser(args);
@@ -134,7 +136,7 @@ router.post(
       user = await authController.registerUser(userObj);
     }
     res.json({ token: user.getSignedjwtToken() });
-  })
+  }),
 );
 
 router.post(
@@ -143,7 +145,7 @@ router.post(
     const { token, appleId } = req.body;
     const appleUser = await new AppleAuthenticator().authenticate(
       token,
-      appleId
+      appleId,
     );
     const args = { appleId, email: appleUser?.email };
     let user: any = await userController.getUser(args);
@@ -158,7 +160,7 @@ router.post(
       user = await authController.registerUser(userObj);
     }
     res.json({ token: user.getSignedjwtToken() });
-  })
+  }),
 );
 
 router.post(
@@ -179,6 +181,28 @@ router.post(
     const response = await authController.registerAdmin(args as Admin);
     res.json({ token: response });
   })
+);
+
+router.get(
+  "/profile/user",
+  verifyUserToken,
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const { _id: user } = req.user;
+    const { device } = req.query;
+    const args = { user, device: device?.toString() || "" };
+    const response = await userController.getUserProfile(args);
+    res.json(response);
+  }),
+);
+
+router.get(
+  "/profile/admin",
+  verifyAdminToken,
+  exceptionHandler(async (req: IRequest, res: Response) => {
+    const { _id: admin } = req.admin;
+    const adminExists = await adminController.getAdminById(admin);
+    res.json(adminExists);
+  }),
 );
 
 export default router;

@@ -29,7 +29,7 @@ router.use("/user", user);
 // Swagger UI setup
 router.use("/docs", basicAuth, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 router.use("/docs", basicAuth, (_req: Request, res: Response) =>
-  res.redirect(POSTMAN_URL || "")
+  res.redirect(POSTMAN_URL || ""),
 );
 
 router.use("/ping", (_req: Request, res: any) => res.send("OK"));

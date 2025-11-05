@@ -39,3 +39,31 @@
  *           type: string
  *           format: date-time
  */
+
+/**
+ * @swagger
+ * /api/admin/profile:
+ *   put:
+ *     summary: Update current admin's profile
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated admin profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Admin'
+ *       401:
+ *         description: Unauthorized
+ */

@@ -66,6 +66,15 @@ router
       const response = await ${camelCaseModuleName}Controller.update${pascalCaseModuleName}ById(${camelCaseModuleName}, args);
       res.json(response);
     })
+  ) 
+  .patch(
+    exceptionHandler(async (req: Request, res: Response) => {
+      let { ${camelCaseModuleName} } = req.query;
+      const { isDeleted } = req.body;
+      ${camelCaseModuleName} = ${camelCaseModuleName}?.toString() || "";
+      const response = await ${camelCaseModuleName}Controller.update${pascalCaseModuleName}ById(${camelCaseModuleName}, { isDeleted });
+      res.json(response);
+    })
   )
   .get(
     exceptionHandler(async (req: Request, res: Response) => {

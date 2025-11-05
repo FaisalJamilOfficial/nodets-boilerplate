@@ -2,7 +2,7 @@
 import { model, Schema } from "mongoose";
 
 // file imports
-import { PAYMENT_ACCOUNT_TYPES } from "../../configs/enum";
+import { PAYMENT_ACCOUNT_TYPES, MODEL_NAMES } from "../../configs/enum";
 
 // destructuring assignments
 
@@ -12,7 +12,7 @@ const paymentAccountSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: MODEL_NAMES.USERS,
       required: true,
       index: true,
     },
@@ -27,9 +27,7 @@ const paymentAccountSchema = new Schema(
       index: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true },
 );
 
-export default model("payment_accounts", paymentAccountSchema);
+export default model(MODEL_NAMES.PAYMENT_ACCOUNTS, paymentAccountSchema);

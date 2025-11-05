@@ -162,7 +162,7 @@ export const getUser = async (params: getUserDTO) => {
   if (Object.keys(query).length === 0) query._id = null;
 
   let userExists = await UserModel.findOne(query).select(
-    selection || "-createdAt -updatedAt -__v -fcm"
+    selection || "-createdAt -updatedAt -__v -fcm",
   );
   if (userExists)
     if (userExists?.profile)
@@ -176,7 +176,7 @@ export const getUser = async (params: getUserDTO) => {
  * @returns {Object[]} users data
  */
 export const getUsers = async (params: GetUsersDTO) => {
-  const { type, user } = params;
+  const { type, user, isDeleted } = params;
   let { page, limit, keyword } = params;
   page = page - 1 || 0;
   limit = limit || 10;
@@ -184,6 +184,7 @@ export const getUsers = async (params: GetUsersDTO) => {
 
   if (type) query.type = type;
   if (user) query._id = { $ne: user };
+  if (typeof isDeleted === "boolean") query.isDeleted = isDeleted;
   if (keyword) {
     keyword = keyword.trim();
     if (keyword !== "")

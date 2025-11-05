@@ -16,6 +16,7 @@ import { MongoID } from "../../configs/types";
 
 export interface ${pascalCaseModuleName} {
   _id?: MongoID;
+  isDeleted?: boolean;
 }
 `;
 };

@@ -3,4 +3,5 @@ import { MongoID } from "../../configs/types";
 
 export interface Element {
   _id?: MongoID;
+  isDeleted?: boolean;
 }

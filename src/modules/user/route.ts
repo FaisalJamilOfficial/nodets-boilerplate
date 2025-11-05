@@ -21,27 +21,37 @@ import {
 const router = Router();
 
 router
-  .route("/")
+  .route("/admin")
   .all(verifyAdminToken)
   .post(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const args = req.pick(["email", "password", "phone", "type"]);
-      const user = await authController.registerUser(args as User);
-      res.json({ token: user.getSignedjwtToken() });
-    })
+      const args = req.pick(["email", "name", "phone"]);
+      const response = await userController.addUser(args as User);
+      res.json(response);
+    }),
   )
   .put(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id: user } = req.user;
-      const args = req.pick(["firstName", "lastName", "image"]);
+      const args = req.pick(["name", "phone", "status"]);
+      let { user } = req.query;
+      user = user?.toString() || "";
       const response = await userController.updateUserById(user, args);
       res.json(response);
     })
   )
+  .patch(
+    exceptionHandler(async (req: Request, res: Response) => {
+      const { isDeleted } = req.body;
+      let { user } = req.query;
+      user = user?.toString() || "";
+      const response = await userController.updateUserById(user, { isDeleted });
+      res.json(response);
+    }),
+  )
   .get(
     exceptionHandler(async (req: IRequest, res: Response) => {
-      const { _id: user } = req.user;
-      const { page, limit } = req.query;
+      const { _id: user } = req.admin;
+      const { page, limit, isDeleted } = req.query;
       let { keyword } = req.query;
       keyword = keyword?.toString() || "";
       const args = {
@@ -49,6 +59,7 @@ router
         keyword,
         limit: Number(limit),
         page: Number(page),
+        isDeleted: JSON.parse(String(isDeleted) || "null"),
       };
       const response = await userController.getUsers(args);
       res.json(response);
@@ -128,14 +139,13 @@ router
     })
   );
 
-router.get(
-  "/me",
+router.put(
+  "/profile",
   verifyUserToken,
   exceptionHandler(async (req: IRequest, res: Response) => {
     const { _id: user } = req.user;
-    const { device } = req.query;
-    const args = { user, device: device?.toString() || "" };
-    const response = await userController.getUserProfile(args);
+    const args = req.pick(["firstName", "lastName", "image"]);
+    const response = await userController.updateUserById(user, args);
     res.json(response);
   })
 );
@@ -152,7 +162,7 @@ router.put(
 );
 
 router.get(
-  "/:user",
+  "/:user/admin",
   verifyAdminToken,
   exceptionHandler(async (req: Request, res: Response) => {
     const { user } = req.params;

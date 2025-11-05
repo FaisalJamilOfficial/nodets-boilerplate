@@ -3,6 +3,18 @@ export enum ENVIRONMENTS {
   DEVELOPMENT = "development",
 }
 
+export enum MODEL_NAMES {
+  ADMINS = "admins",
+  CONVERSATIONS = "conversations",
+  ELEMENTS = "elements",
+  MESSAGES = "messages",
+  NOTIFICATIONS = "notifications",
+  PAYMENT_ACCOUNTS = "payment_accounts",
+  PROFILES = "profiles",
+  USERS = "users",
+  USER_TOKENS = "user_tokens",
+}
+
 export enum USER_TYPES {
   STANDARD = "standard",
   GUEST = "guest",
@@ -39,7 +51,7 @@ export enum NOTIFICATION_TYPES {
 
 export enum ACCOUNT_STATUSES {
   ACTIVE = "active",
-  DELETED = "deleted",
+  INACTIVE = "inactive",
 }
 
 export enum CONVERSATION_STATUSES {
@@ -51,7 +63,6 @@ export enum CONVERSATION_STATUSES {
 export enum MESSAGE_STATUSES {
   UNREAD = "unread",
   READ = "read",
-  DELETED = "deleted",
 }
 
 export enum NOTIFICATION_STATUSES {

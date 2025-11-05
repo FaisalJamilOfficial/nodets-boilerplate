@@ -143,6 +143,57 @@ module.exports = function getSwaggerContent(moduleName) {
  *         description: Forbidden
  *       404:
  *         description: ${pascalCaseModuleName} not found
+ *   patch:
+ *     summary: Update ${camelCaseModuleName} status (soft delete)
+ *     description: Update the soft delete status of an ${camelCaseModuleName}. This endpoint is used to mark ${pluralCamelCaseModuleName} as deleted or restore them.
+ *     tags: [${pluralPascalCaseModuleName}]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: ${camelCaseModuleName}
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ${pluralCamelCaseModuleName} ID to update
+ *         example: "507f1f77bcf86cd799439011"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/${pascalCaseModuleName}'
+ *           examples:
+ *             markDeleted:
+ *               summary: Mark ${camelCaseModuleName} as deleted
+ *               value:
+ *                 isDeleted: true
+ *             restore${pascalCaseModuleName}:
+ *               summary: Restore deleted ${camelCaseModuleName}
+ *               value:
+ *                 isDeleted: false
+ *     responses:
+ *       200:
+ *         description: ${pluralCamelCaseModuleName} status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/${pluralCamelCaseModuleName}'
+ *             example:
+ *               _id: "507f1f77bcf86cd799439011"
+ *               title: "Sample ${pluralCamelCaseModuleName}"
+ *               description: "This is a sample ${camelCaseModuleName} description"
+ *               isDeleted: true
+ *               createdAt: "2024-01-01T00:00:00.000Z"
+ *               updatedAt: "2024-01-01T12:00:00.000Z"
+ *       400:
+ *         description: Invalid input data or ${camelCaseModuleName} ID
+ *       401:
+ *         description: Unauthorized - Invalid or missing authentication token
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       404:
+ *         description: ${pluralCamelCaseModuleName} not found
  *   get:
  *     summary: Get all ${pluralCamelCaseModuleName} (admin)
  *     tags: [${pluralPascalCaseModuleName}]
@@ -164,6 +215,12 @@ module.exports = function getSwaggerContent(moduleName) {
  *         schema:
  *           type: string
  *         description: Search keyword
+ *       - in: query
+ *         name: isDeleted
+ *         schema:
+ *           type: boolean
+ *         description: Filter ${pluralCamelCaseModuleName} by deletion status (true for deleted, false for active, omit for all)
+ *         example: false
  *     responses:
  *       200:
  *         description: List of ${pluralCamelCaseModuleName}

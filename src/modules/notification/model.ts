@@ -2,10 +2,13 @@
 import { model, Schema } from "mongoose";
 
 // file imports
-import { NOTIFICATION_TYPES, NOTIFICATION_STATUSES } from "../../configs/enum";
+import {
+  NOTIFICATION_TYPES,
+  NOTIFICATION_STATUSES,
+  MODEL_NAMES,
+} from "../../configs/enum";
 
 // destructuring assignments
-const { UNREAD } = NOTIFICATION_STATUSES;
 
 // variable initializations
 
@@ -23,29 +26,27 @@ const notificationSchema = new Schema(
     },
     message: {
       type: Schema.Types.ObjectId,
-      ref: "messages",
+      ref: MODEL_NAMES.MESSAGES,
       index: true,
     },
     messenger: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: MODEL_NAMES.USERS,
       index: true,
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: MODEL_NAMES.USERS,
       required: true,
       index: true,
     },
     status: {
       type: String,
       enum: Object.values(NOTIFICATION_STATUSES),
-      default: UNREAD,
+      default: NOTIFICATION_STATUSES.UNREAD,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true },
 );
 
-export default model("notifications", notificationSchema);
+export default model(MODEL_NAMES.NOTIFICATIONS, notificationSchema);

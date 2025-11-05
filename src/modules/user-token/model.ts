@@ -1,6 +1,9 @@
 // module imports
 import { model, Schema } from "mongoose";
 
+// file imports
+import { MODEL_NAMES } from "../../configs/enum";
+
 // variable initializations
 
 const userTokenSchema = new Schema({
@@ -8,7 +11,7 @@ const userTokenSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
     index: true,
-    ref: "users",
+    ref: MODEL_NAMES.USERS,
   },
   token: {
     type: String,
@@ -22,4 +25,4 @@ const userTokenSchema = new Schema({
 
 userTokenSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
-export default model("user_tokens", userTokenSchema);
+export default model(MODEL_NAMES.USER_TOKENS, userTokenSchema);

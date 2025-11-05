@@ -161,10 +161,12 @@ export const getElement = async (query: Partial<Element>) => {
  * @returns {Object[]} elements data
  */
 export const getElements = async (params: GetElementsDTO) => {
+  const { isDeleted } = params;
   let { limit, page } = params;
   page = page - 1 || 0;
   limit = limit || 10;
   const query: any = {};
+  if (typeof isDeleted === "boolean") query.isDeleted = isDeleted;
   const [result] = await ElementModel.aggregate([
     { $match: query },
     { $sort: { createdAt: -1 } },

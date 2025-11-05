@@ -56,6 +56,8 @@ export const verifyUserToken = async (
         if (user.status !== ACCOUNT_STATUSES.ACTIVE)
           next(new ErrorHandler(`Account ${user.status}!`, 403));
         req.user = user;
+        user.lastUsed = new Date();
+        await user.save();
         return next();
       }
     }
@@ -79,7 +81,7 @@ export const verifyUserToken = async (
 export const verifyAdminToken = async (
   req: any,
   _res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const token =
@@ -90,13 +92,15 @@ export const verifyAdminToken = async (
     if (token) {
       const verificationObject: any = jwt.verify(
         token.trim(),
-        JWT_SECRET || ""
+        JWT_SECRET || "",
       );
       const admin = await adminController.getAdminById(verificationObject?._id);
       if (admin) {
         if (admin.status !== ACCOUNT_STATUSES.ACTIVE)
           next(new ErrorHandler(`Account ${admin.status}!`, 403));
         req.admin = admin;
+        admin.lastUsed = new Date();
+        await admin.save();
         return next();
       }
     }
@@ -131,7 +135,7 @@ export const verifyOTP = exceptionHandler(
 export const verifyStandardAdmin = (
   req: IRequest,
   _res: object,
-  next: any
+  next: any,
 ): void => {
   if (
     req?.admin?.type === ADMIN_TYPES.STANDARD ||
@@ -171,7 +175,7 @@ export const verifyStandardUser = (
 export const verifyValidUserToken = (
   req: IRequest,
   _res: object,
-  next: any
+  next: any,
 ): void => {
   if (req?.user?._id) next();
   else next(new ErrorHandler("Invalid Token!", 400));

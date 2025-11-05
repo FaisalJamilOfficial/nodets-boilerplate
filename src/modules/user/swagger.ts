@@ -72,6 +72,9 @@
  *         isOnline:
  *           type: boolean
  *           description: User's online status
+ *         isDeleted:
+ *           type: boolean
+ *           description: Soft delete flag
  *         profile:
  *           type: string
  *           description: Reference to user's profile
@@ -107,9 +110,9 @@
  */
 /**
  * @swagger
- * /api/user:
+ * /api/user/admin:
  *   get:
- *     summary: Get users list
+ *     summary: Get users list (admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -125,17 +128,15 @@
  *           type: integer
  *         description: Number of items per page
  *       - in: query
- *         name: type
+ *         name: keyword
  *         schema:
  *           type: string
- *           enum: [customer, admin, super_admin, multi]
- *         description: Filter by user type
+ *         description: Search keyword
  *       - in: query
- *         name: status
+ *         name: isDeleted
  *         schema:
- *           type: string
- *           enum: [active, deleted]
- *         description: Filter by user status
+ *           type: boolean
+ *         description: Filter by deleted status
  *     responses:
  *       200:
  *         description: List of users
@@ -143,10 +144,14 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
  *   post:
- *     summary: Create a new user
+ *     summary: Create a new user (admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -158,24 +163,14 @@
  *             type: object
  *             required:
  *               - email
- *               - password
- *               - type
  *             properties:
  *               email:
  *                 type: string
  *                 format: email
- *               password:
+ *               name:
  *                 type: string
- *                 format: password
  *               phone:
  *                 type: string
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               type:
- *                 type: string
- *                 enum: [customer, admin, super_admin, multi]
  *     responses:
  *       200:
  *         description: User created successfully
@@ -187,42 +182,16 @@
  *         description: Invalid input data
  *       401:
  *         description: Unauthorized
- */
-
-/**
- * @swagger
- * /api/user/{userId}:
- *   get:
- *     summary: Get user by ID
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
- *         description: User ID
- *     responses:
- *       200:
- *         description: User details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: User not found
+ *       403:
+ *         description: Forbidden
  *   put:
- *     summary: Update user
+ *     summary: Update a user (admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: userId
+ *       - in: query
+ *         name: user
  *         required: true
  *         schema:
  *           type: string
@@ -234,17 +203,12 @@
  *           schema:
  *             type: object
  *             properties:
+ *               name:
+ *                 type: string
  *               phone:
- *                 type: string
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               image:
  *                 type: string
  *               status:
  *                 type: string
- *                 enum: [active, deleted]
  *     responses:
  *       200:
  *         description: User updated successfully
@@ -252,18 +216,61 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
  *       404:
  *         description: User not found
- *   delete:
- *     summary: Delete a user
+ *   patch:
+ *     summary: Update user's deleted status (admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: userId
+ *       - in: query
+ *         name: user
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - isDeleted
+ *             properties:
+ *               isDeleted:
+ *                 type: boolean
+ *                 description: Soft delete status
+ *     responses:
+ *       200:
+ *         description: User status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: User not found
+ *   delete:
+ *     summary: Delete a user (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: user
  *         required: true
  *         schema:
  *           type: string
@@ -275,72 +282,26 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
  *       404:
  *         description: User not found
  */
 
 /**
  * @swagger
- * /api/user/me:
- *   get:
- *     summary: Get current user's profile
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     description: Authenticated user only
- *     responses:
- *       200:
- *         description: Current user's details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Unauthorized
- *   put:
- *     summary: Update current user's profile
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     description: Authenticated user only
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               image:
- *                 type: string
- *                 description: Image URL or filename
- *     responses:
- *       200:
- *         description: Profile updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Unauthorized
- */
-
-/**
- * @swagger
  * /api/user/phone:
  *   put:
- *     summary: Update current user's phone number
+ *     summary: Update user phone (requires OTP verification)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
- *     description: Authenticated user only, requires OTP verification
  *     requestBody:
- *       required: true
+ *       required: false
  *       content:
  *         application/json:
  *           schema:
@@ -351,11 +312,13 @@
  *                 description: New phone number
  *     responses:
  *       200:
- *         description: Phone number updated successfully
+ *         description: Phone updated successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
  */
@@ -368,7 +331,6 @@
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
- *     description: Authenticated user only
  *     requestBody:
  *       required: true
  *       content:
@@ -389,11 +351,13 @@
  *                 description: New password
  *     responses:
  *       200:
- *         description: Password changed successfully
+ *         description: Password updated successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
  */
@@ -416,7 +380,7 @@
  *             properties:
  *               phone:
  *                 type: string
- *                 description: Phone number to send OTP to
+ *                 description: Phone number to send OTP
  *     responses:
  *       200:
  *         description: OTP sent successfully
@@ -427,10 +391,12 @@
  *               properties:
  *                 token:
  *                   type: string
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
  *   put:
- *     summary: Send OTP to a phone number (no auth required)
+ *     summary: Send OTP to a phone number (no auth)
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -441,7 +407,7 @@
  *             properties:
  *               phone:
  *                 type: string
- *                 description: Phone number to send OTP to
+ *                 description: Phone number to send OTP
  *     responses:
  *       200:
  *         description: OTP sent successfully
@@ -452,6 +418,8 @@
  *               properties:
  *                 token:
  *                   type: string
+ *       400:
+ *         description: Bad request
  */
 
 /**
@@ -462,7 +430,6 @@
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
- *     description: Authenticated user only
  *     parameters:
  *       - in: query
  *         name: page
@@ -476,7 +443,7 @@
  *         description: Number of items per page
  *     responses:
  *       200:
- *         description: List of notifications
+ *         description: Notifications list
  *         content:
  *           application/json:
  *             schema:
@@ -490,17 +457,18 @@
  *                   type: integer
  *                 totalPages:
  *                   type: integer
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
  *   patch:
- *     summary: Mark all notifications as read
+ *     summary: Mark current user's notifications as read
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
- *     description: Authenticated user only
  *     responses:
  *       200:
- *         description: All notifications marked as read
+ *         description: Operation completed successfully
  *         content:
  *           application/json:
  *             schema:
@@ -515,13 +483,47 @@
 
 /**
  * @swagger
- * /api/user/fcm:
+ * /api/user/profile:
  *   put:
- *     summary: Update current user's FCM token
+ *     summary: Update current user's profile
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
- *     description: Authenticated user only
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 description: Image URL or filename
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /api/user/fcm:
+ *   put:
+ *     summary: Update current user's FCM token and device info
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -531,17 +533,49 @@
  *             properties:
  *               fcm:
  *                 type: string
- *                 description: New FCM token
  *               device:
  *                 type: string
- *                 description: Device identifier
  *     responses:
  *       200:
- *         description: FCM token updated successfully
+ *         description: FCM updated successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
  *       401:
  *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /api/user/{user}/admin:
+ *   get:
+ *     summary: Get user by ID (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: user
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: User details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: User not found
  */
