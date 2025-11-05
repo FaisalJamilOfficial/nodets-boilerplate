@@ -21,7 +21,7 @@ router.delete(
   verifyAPIKey,
   exceptionHandler(async (_req: Request, res: Response) => {
     res.json({ message: "Operation completed successfully!" });
-  }),
+  })
 );
 
 router.put(

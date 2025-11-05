@@ -43,7 +43,7 @@ router.post(
     const args = req.pick(["email", "password"]);
     const response = await authController.loginUser(args as LoginDTO);
     res.json({ token: response });
-  }),
+  })
 );
 
 router.post(
@@ -54,7 +54,7 @@ router.post(
     const args = { ...req.pick(["device"]), user, shallRemoveFCM: true };
     await userController.updateUserById(user, args);
     res.json({ message: "Operation completed successfully!" });
-  }),
+  })
 );
 
 router
@@ -64,14 +64,14 @@ router
       const args = req.pick(["email"]);
       await authController.emailResetPassword(args as SendEmailDTO);
       res.json({ message: "Operation completed successfully!" });
-    }),
+    })
   )
   .put(
     exceptionHandler(async (req: IRequest, res: Response) => {
       const args = req.pick(["password", "user", "token"]);
       await authController.resetPassword(args as ResetPasswordDTO);
       res.json({ message: "Operation completed successfully!" });
-    }),
+    })
   );
 
 router.post(
@@ -84,7 +84,7 @@ router.post(
     const args = { user };
     const response: any = await userController.getUser(args);
     res.json({ token: response.getSignedjwtToken() });
-  }),
+  })
 );
 
 router.post(
@@ -169,7 +169,7 @@ router.post(
     const args = req.pick(["email", "password"]);
     const response = await authController.loginAdmin(args as LoginDTO);
     res.json({ token: response });
-  }),
+  })
 );
 
 router.post(
@@ -180,7 +180,7 @@ router.post(
     if (!args.type) args.type = STANDARD;
     const response = await authController.registerAdmin(args as Admin);
     res.json({ token: response });
-  }),
+  })
 );
 
 router.get(

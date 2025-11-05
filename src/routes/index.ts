@@ -42,7 +42,7 @@ router.use(
   exceptionHandler((req: Request, res: Response) => {
     // file?.filename || file?.key
     res.json(req.file);
-  }),
+  })
 );
 
 router.use(
@@ -54,7 +54,7 @@ router.use(
     // key: file?.filename || file?.key
     // type: file?.mimetype,
     res.json(req.files);
-  }),
+  })
 );
 
 export default router;
