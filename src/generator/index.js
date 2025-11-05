@@ -67,6 +67,12 @@ const _dirname = `${process.cwd()}/src/modules/`;
         path.join(modulePath, "route.ts"),
         RouteGenerator(moduleName),
       );
+      
+      // make swagger file
+      fs.appendFileSync(
+        path.join(modulePath, "swagger.ts"),
+        SwaggerGenerator(moduleName),
+      );
 
       // make swagger file
       fs.appendFileSync(

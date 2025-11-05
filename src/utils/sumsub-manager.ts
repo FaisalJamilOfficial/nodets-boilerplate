@@ -63,7 +63,7 @@ class SumsubManager {
   // https://developers.sumsub.com/api-reference/#creating-an-applicant
   async createApplicant(
     externalUserId = this.externalUserId,
-    levelName = this.levelName,
+    levelName = this.levelName
   ) {
     console.log("Creating an applicant...");
 
@@ -153,7 +153,7 @@ class SumsubManager {
   async createAccessToken(
     externalUserId = this.externalUserId,
     levelName = this.levelName,
-    ttlInSecs = 600,
+    ttlInSecs = 600
   ) {
     console.log("Creating an access token for initializng SDK...");
 

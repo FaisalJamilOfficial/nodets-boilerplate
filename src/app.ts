@@ -43,7 +43,7 @@ const serverFunction = async () => {
       },
       (err) => {
         console.log(err);
-      },
+      }
     );
     app.use((req, res, next) => {
       if (req.originalUrl.toString().includes("webhook")) {
@@ -78,5 +78,5 @@ const serverFunction = async () => {
 
 serverFunction();
 console.log(
-  chalk.hex("#607070")(chalk.underline(NODE_ENV || "".toUpperCase())),
+  chalk.hex("#607070")(chalk.underline(NODE_ENV || "".toUpperCase()))
 );
