@@ -44,6 +44,13 @@
  *     security:
  *       - bearerAuth: []
  *       - apiKey: []
+ *     parameters:
+ *       - in: header
+ *         name: api_key
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: API key for upload authorization
  *     requestBody:
  *       required: true
  *       content:
