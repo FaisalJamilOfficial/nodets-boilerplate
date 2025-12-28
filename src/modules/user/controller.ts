@@ -58,6 +58,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
 
   if (password) {
     await userExists.setPassword(password);
+    userObj.isPasswordSet = true;
     delete userObj.password;
   }
   if (fcm) {
