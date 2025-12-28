@@ -140,9 +140,9 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
   if (useFirebase)
     // firebase notification emission
     await new FirebaseManager().multicast({
-      fcms,
-      title,
-      body,
+      tokens: fcms,
+      title: title || "Notification",
+      body: body || "You have a new notification",
       data: firebaseData ? { ...firebaseData, type } : { type },
     });
   if (useDatabase)

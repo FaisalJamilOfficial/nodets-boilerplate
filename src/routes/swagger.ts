@@ -42,11 +42,10 @@
  *     summary: Upload a single file
  *     tags: [Upload]
  *     security:
- *       - bearerAuth: []
  *       - apiKey: []
  *     parameters:
  *       - in: header
- *         name: api_key
+ *         name: api-key
  *         required: true
  *         schema:
  *           type: string
@@ -92,8 +91,14 @@
  *     summary: Upload multiple files
  *     tags: [Upload]
  *     security:
- *       - bearerAuth: []
  *       - apiKey: []
+ *     parameters:
+ *       - in: header
+ *         name: api-key
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: API key for upload authorization
  *     requestBody:
  *       required: true
  *       content:

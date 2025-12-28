@@ -139,7 +139,7 @@ const userSchema = new Schema(
       select: false,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 userSchema.methods.getSignedjwtToken = function () {

@@ -51,13 +51,13 @@ const adminSchema = new Schema(
       select: false,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 adminSchema.methods.getSignedjwtToken = function () {
   return jwt.sign(
     { _id: this._id, type: this.type },
-    process.env.JWT_SECRET || "",
+    process.env.JWT_SECRET || ""
   );
 };
 
@@ -68,7 +68,7 @@ adminSchema.methods.setPassword = async function (newPassword: string) {
 };
 
 adminSchema.methods.validatePassword = async function (
-  enteredPassword: string,
+  enteredPassword: string
 ) {
   const adminExists = await model(MODEL_NAMES.ADMINS, adminSchema)
     .findById(this._id, { password: 1 })

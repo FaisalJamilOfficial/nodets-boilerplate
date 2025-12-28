@@ -47,6 +47,7 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
     fcm,
     device,
     shallRemoveFCM,
+    isDeleted,
   } = userObj;
 
   if (!user) throw new ErrorHandler("Please enter user id!", 400);
@@ -62,19 +63,19 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
     delete userObj.password;
   }
   if (fcm) {
-    userExists.fcm = fcm;
     await UserModel.updateOne({ fcm }, { fcm: "" });
   }
   if (device) {
-    userExists.device = device;
     await UserModel.updateOne({ device }, { device: "" });
   }
-  if (shallRemoveFCM) userExists.fcm = "";
-  if (firstName || lastName)
+  if (shallRemoveFCM) {
+    userObj.fcm = "";
+  }
+  if (firstName || lastName) {
     userObj.name = (firstName || "") + " " + (lastName || "");
+  }
   if (image) {
     if (userExists.image) new FilesRemover().remove([userExists.image]);
-    userObj.image = image;
   }
   if (coordinates) {
     if (coordinates?.length === 2) {
@@ -90,7 +91,11 @@ export const updateUserById = async (user: MongoID, userObj: updateUserDTO) => {
     if (await profileController.checkProfileExistence({ _id: profile })) {
       userObj.profile = profile;
     } else throw new ErrorHandler("Profile not found!", 404);
-
+  if (isDeleted) {
+    if (userExists?.email) {
+      userObj.email = `${userExists.email}_${userExists._id}`;
+    }
+  }
   return await UserModel.findByIdAndUpdate(userExists._id, userObj, {
     new: true,
   }).select("-createdAt -updatedAt -__v");
@@ -163,7 +168,7 @@ export const getUser = async (params: getUserDTO) => {
   if (Object.keys(query).length === 0) query._id = null;
 
   let userExists = await UserModel.findOne(query).select(
-    selection || "-createdAt -updatedAt -__v -fcm",
+    selection || "-createdAt -updatedAt -__v -fcm"
   );
   if (userExists)
     if (userExists?.profile)

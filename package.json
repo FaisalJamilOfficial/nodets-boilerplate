@@ -1,5 +1,5 @@
 {
-  "name": "backend-boilerplate",
+  "name": "nodets-boilerplate",
   "version": "1.2.3",
   "description": "NodeTS Backend Boilerplate",
   "main": "dist/app.js",

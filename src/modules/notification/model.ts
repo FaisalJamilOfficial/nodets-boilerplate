@@ -46,7 +46,7 @@ const notificationSchema = new Schema(
       default: NOTIFICATION_STATUSES.UNREAD,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default model(MODEL_NAMES.NOTIFICATIONS, notificationSchema);

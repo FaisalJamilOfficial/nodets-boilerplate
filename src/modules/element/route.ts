@@ -60,7 +60,7 @@ router
         isDeleted,
       });
       res.json(response);
-    }),
+    })
   )
   .get(
     exceptionHandler(async (req: Request, res: Response) => {
@@ -71,7 +71,7 @@ router
         keyword,
         limit: Number(limit),
         page: Number(page),
-        isDeleted: JSON.parse(String(isDeleted) || "null"),
+        isDeleted: JSON.parse(String(isDeleted || "null")),
       };
       const response = await elementController.getElements(args);
       res.json(response);

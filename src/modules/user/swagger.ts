@@ -370,7 +370,6 @@
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
- *     description: Authenticated user only
  *     requestBody:
  *       required: true
  *       content:
@@ -502,7 +501,6 @@
  *                 type: string
  *               image:
  *                 type: string
- *                 description: Image URL or filename
  *     responses:
  *       200:
  *         description: Profile updated successfully

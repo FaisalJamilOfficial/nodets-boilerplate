@@ -15,7 +15,7 @@ const profileSchema = new Schema(
       index: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default model(MODEL_NAMES.PROFILES, profileSchema);
