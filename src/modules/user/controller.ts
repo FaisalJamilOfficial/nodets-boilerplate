@@ -22,7 +22,7 @@ import {
  */
 export const addUser = async (userObj: User) => {
   const { password } = userObj;
-  const user: any = await UserModel.create(userObj);
+  const user: any = await UserModel.create(userObj as any);
   await user.setPassword(password);
   return user;
 };
