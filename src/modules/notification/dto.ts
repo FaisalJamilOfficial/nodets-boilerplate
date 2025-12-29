@@ -1,3 +1,6 @@
+// module imports
+import { Model } from "mongoose";
+
 // file imports
 import { MongoID } from "../../configs/types";
 import { NOTIFICATION_TYPES } from "../../configs/enum";
@@ -25,6 +28,7 @@ export type NotifyUsersDTO = {
   useDatabase?: boolean;
   useSocket?: boolean;
   fcmArray?: string[];
+  model?: Model<any>;
 };
 
 export type sendNotificationsDTO = {
