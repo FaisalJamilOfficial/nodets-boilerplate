@@ -7,7 +7,7 @@ import { MODEL_NAMES } from "../../configs/enum";
 // variable initializations
 
 const elementSchema = new Schema(
-  { isDeleted: { type: Boolean } },
+  { isDeleted: { type: Boolean, select: false, index: true } },
   { timestamps: true }
 );
 

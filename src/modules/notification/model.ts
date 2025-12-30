@@ -45,6 +45,7 @@ const notificationSchema = new Schema(
       enum: Object.values(NOTIFICATION_STATUSES),
       default: NOTIFICATION_STATUSES.UNREAD,
     },
+    isDeleted: { type: Boolean, select: false, index: true },
   },
   { timestamps: true }
 );

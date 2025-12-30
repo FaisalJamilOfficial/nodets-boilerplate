@@ -50,6 +50,7 @@ const adminSchema = new Schema(
       type: Date,
       select: false,
     },
+    isDeleted: { type: Boolean, select: false, index: true },
   },
   { timestamps: true }
 );

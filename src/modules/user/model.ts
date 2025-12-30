@@ -138,6 +138,7 @@ const userSchema = new Schema(
       type: String,
       select: false,
     },
+    isDeleted: { type: Boolean, index: true },
   },
   { timestamps: true }
 );
