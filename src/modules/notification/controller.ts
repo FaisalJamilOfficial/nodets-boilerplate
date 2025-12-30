@@ -100,6 +100,7 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
     useDatabase,
     useSocket,
     fcmArray,
+    model,
   } = params;
 
   const fcms: any = [];
@@ -109,13 +110,13 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
     if (useFirebase) {
       if (fcmArray && Array.isArray(fcmArray)) fcms.push(...fcmArray);
       else {
-        const queryObj: any = query ?? {};
-        queryObj.limit = Math.pow(2, 32);
-        const { data } = await userController.getUsers(queryObj);
-        usersExist = data;
-        usersExist.forEach(async (user: any) => {
-          if (user?.fcm) fcms.push(user.fcm);
-        });
+        if (model && query) {
+          const queryObj: any = query ?? {};
+          const usersExist = await model.find(queryObj);
+          usersExist.forEach(async (user: any) => {
+            if (user?.fcm) fcms.push(user.fcm);
+          });
+        }
       }
     }
     if (useSocket)
@@ -125,8 +126,10 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
     if (useFirebase) {
       if (fcmArray && Array.isArray(fcmArray)) fcms.push(...fcmArray);
       else {
-        const userExists = await userController.getUserById(user || "");
-        fcms.push(userExists?.fcm);
+        if (user && model) {
+          const userExists = await model.findById(user);
+          if (userExists?.fcm) fcms.push(userExists.fcm);
+        }
       }
     }
     if (useSocket)
@@ -140,9 +143,9 @@ export const notifyUsers = async (params: NotifyUsersDTO): Promise<void> => {
   if (useFirebase)
     // firebase notification emission
     await new FirebaseManager().multicast({
-      fcms,
-      title,
-      body,
+      tokens: fcms,
+      title: title || "Notification",
+      body: body || "You have a new notification",
       data: firebaseData ? { ...firebaseData, type } : { type },
     });
   if (useDatabase)

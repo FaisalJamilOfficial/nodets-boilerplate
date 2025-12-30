@@ -5,7 +5,7 @@
 import ServiceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
 
 // variable initializations
-const serviceAccount: any = ServiceAccount;
+const serviceAccount: any = ServiceAccount; /* as admin.ServiceAccount */
 // const connection = admin.initializeApp({
 //   credential: admin.credential.cert(serviceAccount),
 // });
@@ -17,91 +17,67 @@ class FirebaseManager {
   }
 
   /**
-   * @description Send firebase notification
-   * @param {[String]} fcm firebase cloud messaging user token
-   * @param {string} title notification title
-   * @param {string} body notification body
-   * @param {Object} data notification data
-   */
-  async send(params: any): Promise<void> {
-    const { title, body, imageUrl } = params;
-    let { data, fcm } = params;
-    data = data ?? {};
-    fcm = fcm ?? "null";
-    const payload = {
-      token: fcm,
-      notification: {
-        title,
-        body,
-        image: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
-      },
-      data,
-    };
-    // connection
-    //   .messaging()
-    //   .send(payload)
-    //   .then((response) => {
-    //     console.log("response", response);
-    //   })
-    //   .catch((error) => console.error(error));
-  }
-
-  /**
    * Send multicast firebase notification
-   * @param {[string]} fcms firebase cloud messaging user token
-   * @param {string} fcm firebase cloud messaging user token
+   * @param {[string]} tokens firebase cloud messaging user tokens
    * @param {string} title notification title
    * @param {string} body notification body
    * @param {object} data notification data
-   * @param {string} topicName notification topic
    * @param {string} imageUrl notification image url
    * @returns {null}
    */
-  async multicast(parameters: any): Promise<void> {
-    const { topicName, title, body, imageUrl } = parameters;
-    let { fcm, fcms, data } = parameters;
-    fcms = fcms?.length > 0 ? fcms : fcm ? [fcm] : ["null"];
+  async multicast(parameters: {
+    title: string;
+    body: string;
+    tokens: string[];
+    data?: any;
+    imageUrl?: string;
+  }): Promise<void> {
+    const { title, body, imageUrl } = parameters;
+    let { tokens, data } = parameters;
+    tokens = tokens?.length > 0 ? tokens : ["null"];
     const stringifiedData = JSON.stringify(data || {}, null, 2);
     const jsonData = { title, body };
-    data = data ? { stringifiedData } : jsonData;
-    const message = {
-      tokens: fcms,
-      notification: {
-        title,
-        body,
-      },
+    data = data ? { stringifiedData, title, body } : jsonData;
+    const message /* : admin.messaging.MulticastMessage */ = {
+      tokens,
+      notification: { title, body },
       data,
       android: {
+        priority: "high",
         notification: {
           imageUrl: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
         },
       },
       apns: {
+        headers: {
+          "apns-priority": "10",
+        },
         payload: {
           aps: {
             mutableContent: true,
             sound: "default",
           },
         },
-        fcm_options: {
-          image: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
+        fcmOptions: {
+          imageUrl: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
         },
       },
       webpush: {
+        notification: { tag: data?.type || "general" },
         headers: {
+          Urgency: "high",
           image: imageUrl ?? "https://nodejs.org/static/images/logo.svg",
         },
       },
-      topic: topicName,
     };
     // connection
     //   .messaging()
     //   .sendEachForMulticast(message)
-    //   .then((response) => {
+    //   .then((response: any) => {
     //     console.log("response", response);
     //     console.log("response.responses", response.responses);
     //   })
-    //   .catch((error) => console.error(error));
+    //   .catch((error: any) => console.error(error));
   }
 }
 

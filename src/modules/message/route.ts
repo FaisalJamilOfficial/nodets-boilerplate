@@ -7,7 +7,6 @@ import * as conversationController from "../conversation/controller";
 import { verifyUserToken } from "../../middlewares/authenticator";
 import { exceptionHandler } from "../../middlewares/exception-handler";
 import { IRequest } from "../../configs/types";
-import { SendMessageDTO } from "./dto";
 
 // destructuring assignments
 
@@ -43,7 +42,7 @@ router
         user2,
         limit: Number(limit),
         page: Number(page),
-        isDeleted: JSON.parse(String(isDeleted) || "null"),
+        isDeleted: JSON.parse(String(isDeleted || "null")),
       };
       const response = await messageController.getMessages(args);
       res.json(response);

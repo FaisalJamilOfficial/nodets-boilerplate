@@ -78,13 +78,14 @@ router
   )
   .get(
     exceptionHandler(async (req: Request, res: Response) => {
-      const { page, limit } = req.query;
+      const { page, limit, isDeleted } = req.query;
       let { keyword } = req.query;
       keyword = keyword?.toString() || "";
       const args = {
         keyword,
         limit: Number(limit),
         page: Number(page),
+        isDeleted: JSON.parse(String(isDeleted || "null")),
       };
       const response = await ${camelCaseModuleName}Controller.get${pluralPascalCaseModuleName}(args);
       res.json(response);

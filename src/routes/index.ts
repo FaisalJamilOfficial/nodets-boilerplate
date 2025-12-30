@@ -10,7 +10,7 @@ import message from "../modules/message/route";
 import user from "../modules/user/route";
 import { upload } from "../middlewares/uploader";
 import { exceptionHandler } from "../middlewares/exception-handler";
-import { verifyAPIKey, verifyUserToken } from "../middlewares/authenticator";
+import { verifyAPIKey } from "../middlewares/authenticator";
 import { swaggerSpec } from "../configs/swagger";
 import { basicAuth } from "../middlewares/authenticator";
 
@@ -29,14 +29,13 @@ router.use("/user", user);
 // Swagger UI setup
 router.use("/docs", basicAuth, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 router.use("/docs", basicAuth, (_req: Request, res: Response) =>
-  res.redirect(POSTMAN_URL || ""),
+  res.redirect(POSTMAN_URL || "")
 );
 
 router.use("/ping", (_req: Request, res: any) => res.send("OK"));
 
 router.use(
   "/upload/file",
-  verifyUserToken,
   verifyAPIKey,
   upload().single("file"),
   exceptionHandler((req: Request, res: Response) => {
@@ -47,7 +46,6 @@ router.use(
 
 router.use(
   "/upload/files",
-  verifyUserToken,
   verifyAPIKey,
   upload().array("files"),
   exceptionHandler((req: Request, res: Response) => {

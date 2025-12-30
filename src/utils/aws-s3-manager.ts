@@ -20,7 +20,7 @@ const { AWS_BUCKET_NAME, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION } =
 //   region: AWS_REGION,
 // });
 
-class S3BucketManager {
+class AwsS3Manager {
   s3: any;
   constructor() {
     // this.s3 = s3;
@@ -77,4 +77,4 @@ class S3BucketManager {
   }
 }
 
-export default S3BucketManager;
+export default AwsS3Manager;

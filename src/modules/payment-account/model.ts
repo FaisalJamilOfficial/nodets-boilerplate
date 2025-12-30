@@ -26,8 +26,9 @@ const paymentAccountSchema = new Schema(
       required: true,
       index: true,
     },
+    isDeleted: { type: Boolean, select: false, index: true },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default model(MODEL_NAMES.PAYMENT_ACCOUNTS, paymentAccountSchema);

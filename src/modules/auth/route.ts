@@ -34,7 +34,7 @@ router.post(
     args.type = STANDARD;
     const user: any = await authController.registerUser(args as User);
     res.json({ token: user.getSignedjwtToken() });
-  }),
+  })
 );
 
 router.post(
@@ -93,7 +93,7 @@ router.post(
     const { token, googleId } = req.body;
     const googleUser = await new GoogleAuthenticator().authenticate(
       token,
-      googleId,
+      googleId
     );
     const args = { googleId, email: googleUser?.email };
     let user: any = await userController.getUser(args);
@@ -110,7 +110,7 @@ router.post(
       user = await authController.registerUser(userObj);
     }
     res.json({ token: user.getSignedjwtToken() });
-  }),
+  })
 );
 
 router.post(
@@ -119,7 +119,7 @@ router.post(
     const { token, facebookId } = req.body;
     const facebookUser = await new FacebookAuthenticator().authenticate(
       token,
-      facebookId,
+      facebookId
     );
     const args = { facebookId, email: facebookUser?.email };
     let user: any = await userController.getUser(args);
@@ -136,7 +136,7 @@ router.post(
       user = await authController.registerUser(userObj);
     }
     res.json({ token: user.getSignedjwtToken() });
-  }),
+  })
 );
 
 router.post(
@@ -145,7 +145,7 @@ router.post(
     const { token, appleId } = req.body;
     const appleUser = await new AppleAuthenticator().authenticate(
       token,
-      appleId,
+      appleId
     );
     const args = { appleId, email: appleUser?.email };
     let user: any = await userController.getUser(args);
@@ -160,7 +160,7 @@ router.post(
       user = await authController.registerUser(userObj);
     }
     res.json({ token: user.getSignedjwtToken() });
-  }),
+  })
 );
 
 router.post(
@@ -192,7 +192,7 @@ router.get(
     const args = { user, device: device?.toString() || "" };
     const response = await userController.getUserProfile(args);
     res.json(response);
-  }),
+  })
 );
 
 router.get(
@@ -202,7 +202,7 @@ router.get(
     const { _id: admin } = req.admin;
     const adminExists = await adminController.getAdminById(admin);
     res.json(adminExists);
-  }),
+  })
 );
 
 export default router;

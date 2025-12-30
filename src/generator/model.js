@@ -23,7 +23,7 @@ import { MODEL_NAMES } from "../../configs/enum";
 // variable initializations
 
 const ${camelCaseModuleName}Schema = new Schema(
-  { isDeleted: { type: Boolean } },
+  { isDeleted: { type: Boolean, select: false, index: true } },
   { timestamps: true }
 );
 

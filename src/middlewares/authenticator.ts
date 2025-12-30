@@ -51,13 +51,16 @@ export const verifyUserToken = async (
         req.user = verificationObject;
         return next();
       }
-      const user = await userController.getUserById(verificationObject?._id);
+      const query = { user: verificationObject?._id, selection: "+isDeleted" };
+      const user = await userController.getUser(query);
       if (user) {
         if (user.status !== ACCOUNT_STATUSES.ACTIVE)
           next(new ErrorHandler(`Account ${user.status}!`, 403));
-        req.user = user;
-        user.lastUsed = new Date();
-        await user.save();
+        else if (user.isDeleted)
+          next(new ErrorHandler(`Profile deleted!`, 403));
+        req.user = await userController.updateUserById(user._id, {
+          lastUsed: new Date(),
+        });
         return next();
       }
     }
@@ -81,7 +84,7 @@ export const verifyUserToken = async (
 export const verifyAdminToken = async (
   req: any,
   _res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
     const token =
@@ -92,7 +95,7 @@ export const verifyAdminToken = async (
     if (token) {
       const verificationObject: any = jwt.verify(
         token.trim(),
-        JWT_SECRET || "",
+        JWT_SECRET || ""
       );
       const admin = await adminController.getAdminById(verificationObject?._id);
       if (admin) {
@@ -135,7 +138,7 @@ export const verifyOTP = exceptionHandler(
 export const verifyStandardAdmin = (
   req: IRequest,
   _res: object,
-  next: any,
+  next: any
 ): void => {
   if (
     req?.admin?.type === ADMIN_TYPES.STANDARD ||
@@ -175,7 +178,7 @@ export const verifyStandardUser = (
 export const verifyValidUserToken = (
   req: IRequest,
   _res: object,
-  next: any,
+  next: any
 ): void => {
   if (req?.user?._id) next();
   else next(new ErrorHandler("Invalid Token!", 400));
@@ -211,11 +214,18 @@ export const checkUserPhoneExists = exceptionHandler(
  * @throws {ErrorHandler} Throws an error if the API key is invalid.
  */
 export const verifyAPIKey = (req: IRequest, _res: object, next: any): void => {
-  const { api_key } = req.headers;
+  const api_key = req.headers["api-key"];
   if (api_key === API_KEY) next();
   else throw new ErrorHandler("Invalid API key!", 400);
 };
 
+/**
+ * Basic authentication middleware for Swagger Docs.
+ * Sets WWW-Authenticate header and returns 401 status code if authentication fails.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ * @param {NextFunction} next - The next middleware function.
+ */
 export function basicAuth(req: Request, res: Response, next: NextFunction) {
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith("Basic ")) {

@@ -32,7 +32,7 @@ router.put(
     const args = req.pick(["email"]);
     const response = await adminController.updateAdminById(admin, args);
     res.json(response);
-  }),
+  })
 );
 
 export default router;
