@@ -1,8 +1,8 @@
 // module imports
 // import {
 //   S3Client,
-//   DeleteObjectCommand,
-//   CopyObjectCommand,
+//   // DeleteObjectCommand,
+//   // CopyObjectCommand,
 // } from "@aws-sdk/client-s3";
 import multer from "multer";
 // import multerS3 from "multer-s3";
@@ -10,20 +10,27 @@ import { v4 } from "uuid";
 import mime from "mime-types";
 import path from "path";
 
-// destructuring assignments
-const { AWS_BUCKET_NAME, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION } =
-  process.env;
-
-// variable initializations
-// const s3 = new S3Client({
-//   credentials: { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY },
-//   region: AWS_REGION,
-// });
+// file imports
+import { ENVIRONMENT_VARIABLES } from "../configs/enum";
+import { requireEnv } from "../configs/helper";
 
 class AwsS3Manager {
-  s3: any;
+  private static instance: AwsS3Manager;
+
+  private readonly bucket = requireEnv(ENVIRONMENT_VARIABLES.AWS_BUCKET_NAME);
+  // private readonly s3 = new S3Client({
+  //   credentials: {
+  //     accessKeyId: requireEnv(ENVIRONMENT_VARIABLES.AWS_ACCESS_KEY),
+  //     secretAccessKey: requireEnv(ENVIRONMENT_VARIABLES.AWS_SECRET_KEY),
+  //   },
+  //   region: requireEnv(ENVIRONMENT_VARIABLES.AWS_REGION),
+  // });
+
   constructor() {
-    // this.s3 = s3;
+    if (!AwsS3Manager.instance) {
+      AwsS3Manager.instance = this;
+    }
+    return AwsS3Manager.instance;
   }
 
   /**
@@ -32,9 +39,9 @@ class AwsS3Manager {
    */
   upload = multer({
     // storage: multerS3({
-    //   s3,
+    //   s3: this.s3,
     //   contentType: multerS3.AUTO_CONTENT_TYPE,
-    //   bucket: AWS_BUCKET_NAME,
+    //   bucket: this.bucket,
     //   metadata: (req: any, file: any, cb: any) => {
     //     cb(null);
     //   },
@@ -54,9 +61,9 @@ class AwsS3Manager {
     if (!path) return null;
     const keyArray = path.split("/");
     const key = keyArray[keyArray.length - 1];
-    const input = { Bucket: AWS_BUCKET_NAME, Key: key };
+    const input = { Bucket: this.bucket, Key: key };
     // const command = new DeleteObjectCommand(input);
-    // return await s3.send(command);
+    // return await this.s3.send(command);
   }
 
   /**
@@ -67,14 +74,15 @@ class AwsS3Manager {
   async copy(sourceFile: string) {
     const key = v4() + path.extname(sourceFile);
     const input = {
-      Bucket: AWS_BUCKET_NAME,
+      Bucket: this.bucket,
       CopySource: sourceFile,
       Key: key,
     };
     // const command = new CopyObjectCommand(input);
-    // const data = await s3.send(command);
+    // const data = await this.s3.send(command);
     // return { ...data, key };
   }
 }
 
 export default AwsS3Manager;
+// Object.freeze(new AwsS3Manager());

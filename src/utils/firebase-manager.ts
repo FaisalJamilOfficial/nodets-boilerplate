@@ -4,16 +4,18 @@
 // file imports
 import ServiceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
 
-// variable initializations
-const serviceAccount: any = ServiceAccount; /* as admin.ServiceAccount */
-// const connection = admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-// });
-
 class FirebaseManager {
-  // connection: admin.app.App;
+  private static instance: FirebaseManager;
+
+  // private readonly connection = admin.initializeApp({
+  //   credential: admin.credential.cert(ServiceAccount as admin.ServiceAccount),
+  // });
+
   constructor() {
-    // this.connection = connection;
+    if (!FirebaseManager.instance) {
+      FirebaseManager.instance = this;
+    }
+    return FirebaseManager.instance;
   }
 
   /**
@@ -70,7 +72,7 @@ class FirebaseManager {
         },
       },
     };
-    // connection
+    // return this.connection
     //   .messaging()
     //   .sendEachForMulticast(message)
     //   .then((response: any) => {
@@ -82,3 +84,4 @@ class FirebaseManager {
 }
 
 export default FirebaseManager;
+// Object.freeze(new FirebaseManager());

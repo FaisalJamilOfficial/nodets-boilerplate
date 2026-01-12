@@ -6,17 +6,26 @@
 import * as userController from "../modules/user/controller";
 import { getToken } from "../middlewares/authenticator";
 import { ErrorHandler } from "../middlewares/error-handler";
-
-// destructuring assignments
-const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, APP_TITLE } = process.env;
-
-// variable initializations
-// const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+import { ENVIRONMENT_VARIABLES } from "../configs/enum";
+import { requireEnv } from "../configs/helper";
 
 class TwilioManager {
-  client: any;
+  private static instance: TwilioManager;
+
+  private readonly twilioAccountSid = requireEnv(
+    ENVIRONMENT_VARIABLES.TWILIO_ACCOUNT_SID
+  );
+  private readonly twilioAuthToken = requireEnv(
+    ENVIRONMENT_VARIABLES.TWILIO_AUTH_TOKEN
+  );
+  private readonly appTitle = requireEnv(ENVIRONMENT_VARIABLES.APP_TITLE);
+  // private readonly client = twilio(this.twilioAccountSid, this.twilioAuthToken);
+
   constructor() {
-    // this.client = client;
+    if (!TwilioManager.instance) {
+      TwilioManager.instance = this;
+    }
+    return TwilioManager.instance;
   }
 
   /**
@@ -43,7 +52,7 @@ class TwilioManager {
     //   upperCaseAlphabets: false,
     // });
     console.log("OTP -->", otp);
-    const message = `${APP_TITLE} verification code is: ${otp}`;
+    const message = `${this.appTitle} verification code is: ${otp}`;
     await this.send({ phone, message });
     const tokenObj: any = {
       _id: user ?? userExists?._id,
@@ -68,9 +77,9 @@ class TwilioManager {
     const { phone, message } = params;
     if (!phone) throw new ErrorHandler("Please enter phone number!", 400);
     try {
-      // await client.messages.create({
+      // await this.client.messages.create({
       //   body: message,
-      //   from: "+19105438838",
+      //   from: "+12495019121",
       //   to: phone,
       // });
     } catch (error) {
@@ -80,3 +89,4 @@ class TwilioManager {
 }
 
 export default TwilioManager;
+// Object.freeze(new TwilioManager());

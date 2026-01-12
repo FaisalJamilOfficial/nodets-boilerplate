@@ -7,9 +7,13 @@ import { PUBLIC_DIRECTORY } from "../configs/directories";
 // destructuring assignments
 
 class FilesRemover {
-  fs: typeof fs;
+  private static instance: FilesRemover;
+
   constructor() {
-    this.fs = fs;
+    if (!FilesRemover.instance) {
+      FilesRemover.instance = this;
+    }
+    return FilesRemover.instance;
   }
 
   /**
@@ -29,3 +33,4 @@ class FilesRemover {
 }
 
 export default FilesRemover;
+// Object.freeze(new FilesRemover());

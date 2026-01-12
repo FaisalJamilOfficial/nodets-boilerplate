@@ -2,7 +2,14 @@
 // import axios from "axios";
 
 class AxiosManager {
-  constructor() {}
+  private static instance: AxiosManager | null = null;
+
+  constructor() {
+    if (!AxiosManager.instance) {
+      AxiosManager.instance = this;
+    }
+    return AxiosManager.instance;
+  }
 
   /**
    * @description Send axios request
@@ -43,3 +50,4 @@ class AxiosManager {
 }
 
 export default AxiosManager;
+// Object.freeze(new AxiosManager());

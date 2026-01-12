@@ -2,24 +2,38 @@
 // import nodemailer from "nodemailer";
 // import { google } from "googleapis";
 
-// destructuring assignments
-const { BASE_URL, GOOGLE_EMAIL, GOOGLE_APP_PASSWORD, APP_TITLE } = process.env;
-
-// variable initializations
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 587,
-//   secure: false, // true for 465, false for other ports
-//   auth: {
-//     user: GOOGLE_EMAIL,
-//     pass: GOOGLE_APP_PASSWORD,
-//   },
-// });
+// file imports
+import { requireEnv } from "../configs/helper";
+import { ENVIRONMENT_VARIABLES } from "../configs/enum";
 
 class NodeMailer {
-  transporter: any;
+  private static instance: NodeMailer;
+
+  private readonly baseUrl = requireEnv(ENVIRONMENT_VARIABLES.BASE_URL);
+  private readonly appTitle = requireEnv(ENVIRONMENT_VARIABLES.APP_TITLE);
+  private readonly webAppUrl = requireEnv(ENVIRONMENT_VARIABLES.WEB_APP_URL);
+  private readonly googleEmail = requireEnv(ENVIRONMENT_VARIABLES.GOOGLE_EMAIL);
+  private readonly googleAppPassword = requireEnv(
+    ENVIRONMENT_VARIABLES.GOOGLE_APP_PASSWORD
+  );
+  private readonly supportEmail = requireEnv(
+    ENVIRONMENT_VARIABLES.SUPPORT_EMAIL
+  );
+  // private readonly transporter = nodemailer.createTransport({
+  //   host: "smtp.gmail.com",
+  //   port: 587,
+  //   secure: false, // true for 465, false for other ports
+  //   auth: {
+  //     user: this.googleEmail,
+  //     pass: this.googleAppPassword,
+  //   },
+  // });
+
   constructor() {
-    // this.transporter = transporter;
+    if (!NodeMailer.instance) {
+      NodeMailer.instance = this;
+    }
+    return NodeMailer.instance;
   }
 
   /**
@@ -32,8 +46,8 @@ class NodeMailer {
    */
   async sendEmail(params: any) {
     const { to, subject, text, html } = params;
-    // return await transporter.sendMail({
-    //   from: `BACKEND BOILERPLATE <${GOOGLE_EMAIL}>`,
+    // return await this.transporter.sendMail({
+    //   from: `${this.appTitle} <${this.googleEmail}>`,
     //   to,
     //   subject,
     //   text,
@@ -49,13 +63,13 @@ class NodeMailer {
    */
   getResetPasswordEmailTemplate(params: any): string {
     const { user, token } = params;
-    const link = `${BASE_URL}/reset-password/?user=${user}&token=${token}`;
+    const link = `${this.baseUrl}/reset-password/?user=${user}&token=${token}`;
     return `
 Please click on the link below to reset your password, 
 ${link}
 Please note that this link will expire after 10 minutes.
 
-If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
+If you didn't do this, contact us here ${this.supportEmail}`;
   }
 
   /**
@@ -66,13 +80,13 @@ If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
    */
   getEmailVerificationEmailTemplate(params: any): string {
     const { user, token } = params;
-    const link = `${BASE_URL}/api/users/emails?user=${user}&token=${token}`;
+    const link = `${this.baseUrl}/api/users/emails?user=${user}&token=${token}`;
     return `
 Please click on the link below to verify your email address, 
 ${link}
 Please note that this link will expire after 10 minutes.
 
-If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
+If you didn't do this, contact us here ${this.supportEmail}`;
   }
 
   /**
@@ -81,14 +95,28 @@ If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
    * @returns {Object} email template
    */
   getWelcomeUserEmailTemplate(params: any): string {
-    const { name } = params;
-    return `Hi ${name},
-  Thanks for signing up for the ${APP_TITLE}! You’re joining an amazing community of beauty lovers. From now on you’ll enjoy:
-  Exciting new product announcementsSpecial offers and exclusive dealsOur unique take on the latest beauty trends
-  Want more? Follow us on social media and get your daily dose of advice, behind-the-scenes looks and beauty inspiration:
-  Like us on Facebook / Follow us on Instagram
-  Best,
-  Doctor of Computer 😇`;
+    const { name, password, email } = params;
+    return `Dear ${name},
+
+    We are delighted to inform you that an account has been created for you on ${this.appTitle}. You can now access the app using the following credentials:
+    
+    Username: ${email}
+    Password: ${password}
+    
+    Please follow these steps to get started:
+    
+    Navigate to the ${this.webAppUrl}.
+    Use your email address as the username.
+    Enter the temporary password provided above.
+    Upon your first login, you will be prompted to create a new, secure password for your account.
+    
+    If you have any questions or encounter any issues during the login process, please do not hesitate to contact our support team at ${this.supportEmail}.
+    
+    We look forward to having you as a valued member of our portal community!
+    
+    Best regards,
+
+    Team ${this.appTitle}`;
   }
 
   /**
@@ -103,11 +131,12 @@ If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
 Your One Time Password (OTP) is ${otp}. Please do not share this password with anyone.
 Please note that this password will expire after 10 minutes.
   
-If you didn't do this, contact us here ${GOOGLE_EMAIL}`;
+If you didn't do this, contact us here ${this.supportEmail}`;
   }
 }
 
 export default NodeMailer;
+// Object.freeze(new NodeMailer());
 
 // Google oAuth Setup
 

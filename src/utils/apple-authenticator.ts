@@ -1,19 +1,29 @@
+// module imports
 // import jwksClient from "jwks-rsa";
 import jwt, { JwtHeader, SigningKeyCallback } from "jsonwebtoken";
 
+// file imports
+import { ENVIRONMENT_VARIABLES } from "../configs/enum";
+import { requireEnv } from "../configs/helper";
+
 class AppleAuthenticator {
-  private clientId: string;
-  private teamId: string;
-  private keyId: string;
-  private redirectUri: string;
-  private privateKey: string;
+  private static instance: AppleAuthenticator;
+
+  private readonly clientId = requireEnv(ENVIRONMENT_VARIABLES.APPLE_CLIENT_ID);
+  private readonly teamId = requireEnv(ENVIRONMENT_VARIABLES.APPLE_TEAM_ID);
+  private readonly keyId = requireEnv(ENVIRONMENT_VARIABLES.APPLE_KEY_ID);
+  private readonly redirectUri = requireEnv(
+    ENVIRONMENT_VARIABLES.APPLE_REDIRECT_URI
+  );
+  private readonly privateKey = requireEnv(
+    ENVIRONMENT_VARIABLES.APPLE_PRIVATE_KEY
+  );
 
   constructor() {
-    this.clientId = process.env.APPLE_CLIENT_ID || "";
-    this.teamId = process.env.APPLE_TEAM_ID || "";
-    this.keyId = process.env.APPLE_KEY_ID || "";
-    this.redirectUri = process.env.APPLE_REDIRECT_URI || "";
-    this.privateKey = process.env.APPLE_PRIVATE_KEY || "";
+    if (!AppleAuthenticator.instance) {
+      AppleAuthenticator.instance = this;
+    }
+    return AppleAuthenticator.instance;
   }
 
   /**
@@ -157,3 +167,4 @@ class AppleAuthenticator {
 }
 
 export default AppleAuthenticator;
+// Object.freeze(new AppleAuthenticator());

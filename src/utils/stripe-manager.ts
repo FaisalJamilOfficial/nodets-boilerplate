@@ -4,20 +4,26 @@
 // file imports
 import * as paymentAccountController from "../modules/payment-account/controller";
 import * as userController from "../modules/user/controller";
-import { PAYMENT_ACCOUNT_TYPES } from "../configs/enum";
-
-// destructuring assignments
-const { STRIPE_SECRET_KEY, STRIPE_ENDPOINT_SECRET } = process.env;
-const { STRIPE_ACCOUNT, STRIPE_CUSTOMER } = PAYMENT_ACCOUNT_TYPES;
-
-// variable initializations
-// const stripe = new Stripe(STRIPE_SECRET_KEY || "");
-const CURRENCY = "usd";
+import { ENVIRONMENT_VARIABLES, PAYMENT_ACCOUNT_TYPES } from "../configs/enum";
+import { requireEnv } from "../configs/helper";
 
 class StripeManager {
-  stripe: any;
+  private static instance: StripeManager;
+
+  private readonly currency = "usd";
+  private readonly stripeSecretKey = requireEnv(
+    ENVIRONMENT_VARIABLES.STRIPE_SECRET_KEY
+  );
+  private readonly stripeEndpointSecret = requireEnv(
+    ENVIRONMENT_VARIABLES.STRIPE_ENDPOINT_SECRET
+  );
+  // private readonly stripe = new Stripe(this.stripeSecretKey);
+
   constructor() {
-    // this.stripe = stripe;
+    if (!StripeManager.instance) {
+      StripeManager.instance = this;
+    }
+    return StripeManager.instance;
   }
 
   /**
@@ -37,7 +43,7 @@ class StripeManager {
     if (typeof expYear === "number") card.expYear = expYear;
     if (cvc) card.cvc = cvc;
     if (name) card.name = name;
-    // return await stripe.tokens.create({ card });
+    // return await this.stripe.tokens.create({ card });
   }
 
   /**
@@ -46,7 +52,7 @@ class StripeManager {
    * @returns {Object} stripe customer deletion response
    */
   async deleteCustomer(customerId: string) {
-    // return await stripe.customers.del(customerId);
+    // return await this.stripe.customers.del(customerId);
   }
 
   /**
@@ -54,7 +60,7 @@ class StripeManager {
    * @returns {Object} stripe customers deletion response
    */
   async deleteAllCustomers() {
-    // const customersObj = await stripe.customers.list({ limit: 500 });
+    // const customersObj = await this.stripe.customers.list({ limit: 500 });
     // const customers = customersObj.data;
     // for (let index = 0; index < customers.length; index++) {
     //   const element = customers[index];
@@ -89,7 +95,7 @@ class StripeManager {
    * @returns {Object} stripe charge refund response
    */
   async createRefund(charge: string) {
-    // return await stripe.refunds.create({ charge });
+    // return await this.stripe.refunds.create({ charge });
   }
 
   /**
@@ -104,14 +110,14 @@ class StripeManager {
   async createCharge(params: any) {
     const { customer, amount, currency, source, description } = params;
     const chargeObj = {
-      currency: currency ?? CURRENCY,
+      currency: currency ?? this.currency,
       customer,
       amount,
       source,
       description,
     };
 
-    // return await stripe.charges.create(chargeObj);
+    // return await this.stripe.charges.create(chargeObj);
   }
 
   /**
@@ -136,17 +142,17 @@ class StripeManager {
       const customerObj: any = {};
       if (email) customerObj.email = email;
       if (phone) customerObj.phone = phone;
-      // const customer = await stripe.customers.create(customerObj);
+      // const customer = await this.stripe.customers.create(customerObj);
       // userStripeId = customer?.id;
     }
-    // const card = await stripe.customers.createSource(userStripeId, {
+    // const card = await this.stripe.customers.createSource(userStripeId, {
     //   source,
     // });
 
     // card.cardHolderName = cardHolderName;
     // const paymentAccountObj = {
     //   user,
-    //   type: STRIPE_CUSTOMER,
+    //   type: PAYMENT_ACCOUNT_TYPES.STRIPE_CUSTOMER,
     //   account: card,
     // };
     // const paymentAccount = await paymentAccountController.addPaymentAccount(
@@ -165,7 +171,7 @@ class StripeManager {
   async createCustomer(params: any) {
     const { id, email, phone } = params;
     const customerObj = { id, email, phone };
-    // return await stripe.customers.create(customerObj);
+    // return await this.stripe.customers.create(customerObj);
   }
 
   /**
@@ -181,7 +187,7 @@ class StripeManager {
 
     if (paymentAccountExists) return paymentAccountExists;
     else {
-      // const account = await stripe.accounts.create({
+      // const account = await this.stripe.accounts.create({
       //   email,
       //   type: "express",
       //   capabilities: {
@@ -195,7 +201,7 @@ class StripeManager {
       // });
       // const paymentAccountObj = {
       //   user,
-      //   type: STRIPE_ACCOUNT,
+      //   type: PAYMENT_ACCOUNT_TYPES.STRIPE_ACCOUNT,
       //   account,
       // };
       // const paymentAccount = await paymentAccountController.addPaymentAccount(
@@ -221,7 +227,7 @@ class StripeManager {
     let accountObj;
     if (paymentAccountExists) accountObj = paymentAccountExists.account;
     else {
-      // accountObj = await stripe.accounts.create({
+      // accountObj = await this.stripe.accounts.create({
       //   type: "custom",
       //   country: "US",
       //   email,
@@ -233,7 +239,7 @@ class StripeManager {
       const paymentAccountObj = {
         user,
         account: accountObj,
-        type: STRIPE_CUSTOMER,
+        type: PAYMENT_ACCOUNT_TYPES.STRIPE_CUSTOMER,
       };
       await paymentAccountController.addPaymentAccount(paymentAccountObj);
     }
@@ -243,7 +249,7 @@ class StripeManager {
       return_url: returnURL ?? "https://app.page.link/stripesuccess",
       type: "account_onboarding",
     };
-    // return await stripe.accountLinks.create(accountLinkObj);
+    // return await this.stripe.accountLinks.create(accountLinkObj);
   }
 
   /**
@@ -258,11 +264,11 @@ class StripeManager {
     const { amount, currency, description, statementDescriptor } = params;
     const topUpObj = {
       amount,
-      currency: currency ?? CURRENCY,
+      currency: currency ?? this.currency,
       description,
       statementDescriptor,
     };
-    // return await stripe.topUps.create(topUpObj);
+    // return await this.stripe.topUps.create(topUpObj);
   }
 
   /**
@@ -280,14 +286,14 @@ class StripeManager {
       await paymentAccountController.getPaymentAccount({ user });
     const transferObj = {
       amount,
-      currency: currency ?? CURRENCY,
+      currency: currency ?? this.currency,
       destination: paymentAccountExists?.account?._id,
       description,
     };
     if (paymentAccountExists)
       transferObj.destination = paymentAccountExists.account.id;
 
-    // return await stripe.transfers.create(transferObj);
+    // return await this.stripe.transfers.create(transferObj);
   }
 
   /**
@@ -322,7 +328,7 @@ class StripeManager {
       };
     }
 
-    // return await stripe.paymentIntents.create(paymentIntentObj);
+    // return await this.stripe.paymentIntents.create(paymentIntentObj);
   }
 
   /**
@@ -337,7 +343,7 @@ class StripeManager {
     if (amount) {
       captureObj.amount_to_capture = Math.round(Number(amount)) * 100;
     }
-    // return await stripe.paymentIntents.capture(paymentIntent, captureObj);
+    // return await this.stripe.paymentIntents.capture(paymentIntent, captureObj);
   }
 
   /**
@@ -346,7 +352,7 @@ class StripeManager {
    * @returns {Object} cancel payment intent object
    */
   async cancelPaymentIntent(paymentIntent: string) {
-    // return await stripe.paymentIntents.cancel(paymentIntent);
+    // return await this.stripe.paymentIntents.cancel(paymentIntent);
   }
 
   /**
@@ -355,7 +361,7 @@ class StripeManager {
    * @returns {Object} refund payment intent object
    */
   async refundPaymentIntent(paymentIntent: string) {
-    // return await stripe.refunds.create({ payment_intent: paymentIntent });
+    // return await this.stripe.refunds.create({ payment_intent: paymentIntent });
   }
 
   /**
@@ -365,7 +371,7 @@ class StripeManager {
    */
   async getCustomerSources(params: any) {
     const { customer, limit, startingAfter, endingBefore } = params;
-    // return await stripe.paymentMethods.list({
+    // return await this.stripe.paymentMethods.list({
     //   customer,
     //   type: "card",
     //   limit,
@@ -383,7 +389,7 @@ class StripeManager {
   async constructWebhooksEvent(params: any) {
     const { rawBody, signature } = params;
 
-    // const event = stripe.webhooks.constructEvent(
+    // const event = this.stripe.webhooks.constructEvent(
     //   rawBody,
     //   signature,
     //   STRIPE_ENDPOINT_SECRET || ""
@@ -407,3 +413,4 @@ class StripeManager {
 }
 
 export default StripeManager;
+// Object.freeze(new StripeManager());

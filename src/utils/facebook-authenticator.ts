@@ -1,12 +1,25 @@
+// file imports
+import { ENVIRONMENT_VARIABLES } from "../configs/enum";
+import { requireEnv } from "../configs/helper";
+
 class FacebookAuthenticator {
-  private clientId: string;
-  private clientSecret: string;
-  private redirectUri: string;
+  private static instance: FacebookAuthenticator;
+
+  private readonly clientId = requireEnv(
+    ENVIRONMENT_VARIABLES.FACEBOOK_CLIENT_ID
+  );
+  private readonly clientSecret = requireEnv(
+    ENVIRONMENT_VARIABLES.FACEBOOK_CLIENT_SECRET
+  );
+  private readonly redirectUri = requireEnv(
+    ENVIRONMENT_VARIABLES.FACEBOOK_REDIRECT_URI
+  );
 
   constructor() {
-    this.clientId = process.env.FACEBOOK_CLIENT_ID || "";
-    this.clientSecret = process.env.FACEBOOK_CLIENT_SECRET || "";
-    this.redirectUri = process.env.FACEBOOK_REDIRECT_URI || "";
+    if (!FacebookAuthenticator.instance) {
+      FacebookAuthenticator.instance = this;
+    }
+    return FacebookAuthenticator.instance;
   }
 
   /**
@@ -114,3 +127,4 @@ class FacebookAuthenticator {
 }
 
 export default FacebookAuthenticator;
+// Object.freeze(new FacebookAuthenticator());

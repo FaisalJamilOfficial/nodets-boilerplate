@@ -10,15 +10,21 @@ import { IRequest } from "../configs/types";
 import serviceAccount from "../services/backend-boilerplate-official-firebase-adminsdk-o1ajl-593da86247.json";
 
 // variable initializations
-// const connection = admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`,
-// });
 
-let socketIO: any;
+let socketIO: Server;
 class SocketManager {
+  private static instance: SocketManager | null = null;
+
+  // private readonly connection = admin.initializeApp({
+  //   credential: admin.credential.cert(serviceAccount),
+  //   databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`,
+  // });
+
   constructor() {
-    // this.connection = connection;
+    if (!SocketManager.instance) {
+      SocketManager.instance = this;
+    }
+    return SocketManager.instance;
   }
 
   /**
@@ -34,7 +40,7 @@ class SocketManager {
     to = to.toString();
     event = event.toString();
     return await socketIO.to(to).emit(event, data);
-    // return await connection
+    // return await this.connection
     //   .firestore()
     //   .collection("socket")
     //   .doc(to)
@@ -88,6 +94,9 @@ class SocketManager {
           console.log(error);
         }
       });
+      socket.on("ping", (data: Object, callback: Function) => {
+        callback({ status: 200, message: "pong", data });
+      });
       socket.on("disconnect", (reason: any) => {
         console.log("user disconnected " + reason);
       });
@@ -102,3 +111,4 @@ class SocketManager {
 }
 
 export default SocketManager;
+// Object.freeze(new SocketManager());

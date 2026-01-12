@@ -7,9 +7,13 @@ import mime from "mime";
 import { PUBLIC_DIRECTORY } from "../configs/directories";
 
 class FilesUploader {
-  fs: typeof fs;
+  private static instance: FilesUploader;
+
   constructor() {
-    this.fs = fs;
+    if (!FilesUploader.instance) {
+      FilesUploader.instance = this;
+    }
+    return FilesUploader.instance;
   }
 
   /**
@@ -45,3 +49,4 @@ class FilesUploader {
 }
 
 export default FilesUploader;
+// Object.freeze(new FilesUploader());

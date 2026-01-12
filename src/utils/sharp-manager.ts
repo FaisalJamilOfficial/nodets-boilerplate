@@ -5,15 +5,16 @@ import { v4 } from "uuid";
 // file imports
 import FilesUploader from "./files-uploader";
 
-// destructuring assignments
-
-// variable initializations
-const { uploadFile } = new FilesUploader();
-
 class SharpManager {
-  sharp: any;
+  private static instance: SharpManager;
+
+  private readonly uploadFile = new FilesUploader().uploadFile;
+
   constructor() {
-    // this.sharp = sharp;
+    if (!SharpManager.instance) {
+      SharpManager.instance = this;
+    }
+    return SharpManager.instance;
   }
 
   /**
@@ -49,7 +50,7 @@ class SharpManager {
           //   })
           //   .toFile(path + id);
         } else {
-          const file = await uploadFile(images[i]);
+          const file = await this.uploadFile(images[i]);
           id = file.filename;
         }
         array.push({
@@ -105,7 +106,7 @@ class SharpManager {
           //   })
           //   .toFile(path + id);
         } else {
-          const file = await uploadFile(images[i]);
+          const file = await this.uploadFile(images[i]);
           id = file.filename;
         }
 
@@ -120,3 +121,4 @@ class SharpManager {
 }
 
 export default SharpManager;
+// Object.freeze(new SharpManager());

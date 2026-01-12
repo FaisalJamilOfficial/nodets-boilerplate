@@ -2,32 +2,36 @@
 // import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 
 // file imports
-import { ENVIRONMENTS } from "../configs/enum";
-
-// destructuring assignments
-const { NODE_ENV, PLAID_CLIENT_ID, PLAID_SECRET } = process.env;
-const { PRODUCTION } = ENVIRONMENTS;
-
-// variable initializations
-// const configuration = new Configuration({
-//   basePath:
-//     NODE_ENV === PRODUCTION
-//       ? PlaidEnvironments.production
-//       : PlaidEnvironments.development,
-//   baseOptions: {
-//     headers: {
-//       "PLAID-CLIENT-ID": PLAID_CLIENT_ID,
-//       "PLAID-SECRET": PLAID_SECRET,
-//     },
-//   },
-// });
-
-// const client = new PlaidApi(configuration);
+import { ENVIRONMENTS, ENVIRONMENT_VARIABLES } from "../configs/enum";
+import { requireEnv } from "../configs/helper";
 
 class PlaidManager {
-  client: any;
+  private static instance: PlaidManager;
+
+  private readonly nodeEnv = requireEnv(ENVIRONMENT_VARIABLES.NODE_ENV);
+  private readonly plaidSecret = requireEnv(ENVIRONMENT_VARIABLES.PLAID_SECRET);
+  private readonly plaidClientId = requireEnv(
+    ENVIRONMENT_VARIABLES.PLAID_CLIENT_ID
+  );
+  // private readonly configuration = new Configuration({
+  //   basePath:
+  //     this.nodeEnv === ENVIRONMENTS.PRODUCTION
+  //       ? PlaidEnvironments.production
+  //       : PlaidEnvironments.development,
+  //   baseOptions: {
+  //     headers: {
+  //       "PLAID-CLIENT-ID": this.plaidClientId,
+  //       "PLAID-SECRET": this.plaidSecret,
+  //     },
+  //   },
+  // });
+  // private readonly client = new PlaidApi(this.configuration);
+
   constructor() {
-    // this.client = client;
+    if (!PlaidManager.instance) {
+      PlaidManager.instance = this;
+    }
+    return PlaidManager.instance;
   }
 
   /**
@@ -63,7 +67,7 @@ class PlaidManager {
       redirect_uri: redirectURI ?? "https://app.page.link/plaid",
       country_codes: countryCodes ?? ["US"],
     };
-    // return await client.linkTokenCreate(request);
+    // return await this.client.linkTokenCreate(request);
   }
 
   /**
@@ -72,7 +76,7 @@ class PlaidManager {
    * @returns {object} link token
    */
   async exchangePublicToken(publicToken: string) {
-    // return await client.itemPublicTokenExchange({ public_token: publicToken });
+    // return await this.client.itemPublicTokenExchange({ public_token: publicToken });
   }
 
   /**
@@ -87,8 +91,9 @@ class PlaidManager {
       account_id: accountID,
       processor: processor ?? "alpaca",
     };
-    // return await client.processorTokenCreate(request);
+    // return await this.client.processorTokenCreate(request);
   }
 }
 
 export default PlaidManager;
+// Object.freeze(new PlaidManager());

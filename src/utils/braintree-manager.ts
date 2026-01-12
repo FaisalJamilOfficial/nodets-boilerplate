@@ -2,32 +2,30 @@
 // import braintree from "braintree";
 
 // file imports
-import { ENVIRONMENTS } from "../configs/enum";
+import { ENVIRONMENTS, ENVIRONMENT_VARIABLES } from "../configs/enum";
+import { requireEnv } from "../configs/helper";
 
 // destructuring assignments
 const { PRODUCTION } = ENVIRONMENTS;
-const {
-  NODE_ENV,
-  BRAINTREE_MERCHANT_ID,
-  BRAINTREE_PUBLIC_KEY,
-  BRAINTREE_PRIVATE_KEY,
-} = process.env;
-
-// // variable initializations
-// const gateway = new braintree.BraintreeGateway({
-//   environment:
-//     NODE_ENV === PRODUCTION
-//       ? braintree.Environment.Production
-//       : braintree.Environment.Sandbox,
-//   merchantId: BRAINTREE_MERCHANT_ID,
-//   publicKey: BRAINTREE_PUBLIC_KEY,
-//   privateKey: BRAINTREE_PRIVATE_KEY,
-// });
 
 class BraintreeManager {
-  gateway: any;
+  private static instance: BraintreeManager;
+
+  // private readonly gateway = new braintree.BraintreeGateway({
+  //   environment:
+  //     requireEnv(ENVIRONMENT_VARIABLES.NODE_ENV) === PRODUCTION
+  //       ? braintree.Environment.Production
+  //       : braintree.Environment.Sandbox,
+  //   merchantId: requireEnv(ENVIRONMENT_VARIABLES.BRAINTREE_MERCHANT_ID),
+  //   publicKey: requireEnv(ENVIRONMENT_VARIABLES.BRAINTREE_PUBLIC_KEY),
+  //   privateKey: requireEnv(ENVIRONMENT_VARIABLES.BRAINTREE_PRIVATE_KEY),
+  // });
+
   constructor() {
-    // this.gateway = gateway;
+    if (!BraintreeManager.instance) {
+      BraintreeManager.instance = this;
+    }
+    return BraintreeManager.instance;
   }
 
   /**
@@ -36,7 +34,7 @@ class BraintreeManager {
    * @returns {Object} client token
    */
   async generateClientToken(customerId: string) {
-    // return await gateway.clientToken.generate({ customerId });
+    // return await this.gateway.clientToken.generate({ customerId });
   }
 
   /**
@@ -66,7 +64,7 @@ class BraintreeManager {
       creditCard,
       paymentMethodNonce,
     };
-    // return await gateway.customer.create(customerObj);
+    // return await this.gateway.customer.create(customerObj);
   }
 
   /**
@@ -75,7 +73,7 @@ class BraintreeManager {
    * @returns {Object} customer data
    */
   async deleteCustomer(customerId: string) {
-    // return await gateway.customer.delete(customerId);
+    // return await this.gateway.customer.delete(customerId);
   }
 
   /**
@@ -87,7 +85,7 @@ class BraintreeManager {
   async createPaymentMethod(params: any) {
     const { customerId, paymentMethodNonce } = params;
     const paymentMethodObj = { customerId, paymentMethodNonce };
-    // return await gateway.paymentMethod.create(paymentMethodObj);
+    // return await this.gateway.paymentMethod.create(paymentMethodObj);
   }
 
   /**
@@ -96,7 +94,7 @@ class BraintreeManager {
    * @returns {Object} payment method data
    */
   async removePaymentMethod(token: string) {
-    // return await gateway.paymentMethod.delete(token);
+    // return await this.gateway.paymentMethod.delete(token);
   }
 
   /**
@@ -127,7 +125,7 @@ class BraintreeManager {
         submitForSettlement: false,
       },
     };
-    // return await gateway.transaction.sale(transactionObj);
+    // return await this.gateway.transaction.sale(transactionObj);
   }
 
   /**
@@ -138,7 +136,7 @@ class BraintreeManager {
    */
   async adjustTransaction(params: any) {
     const { transactionId, amount } = params;
-    // return await gateway.transaction.adjustAuthorization(transactionId, {
+    // return await this.gateway.transaction.adjustAuthorization(transactionId, {
     //   amount,
     // });
   }
@@ -149,7 +147,7 @@ class BraintreeManager {
    * @returns {Object} transaction
    */
   async submitTransaction(transactionId: string) {
-    // return await gateway.transaction.submitForSettlement(transactionId);
+    // return await this.gateway.transaction.submitForSettlement(transactionId);
   }
 
   /**
@@ -158,7 +156,7 @@ class BraintreeManager {
    * @returns {Object} transaction
    */
   async voidTransaction(transactionId: string) {
-    // return await gateway.transaction.void(transactionId);
+    // return await this.gateway.transaction.void(transactionId);
   }
 
   /**
@@ -167,7 +165,7 @@ class BraintreeManager {
    * @returns {Object} transaction hold data
    */
   async holdTransaction(transactionId: string) {
-    // return await gateway.transaction.holdInEscrow(transactionId);
+    // return await this.gateway.transaction.holdInEscrow(transactionId);
   }
 
   /**
@@ -176,7 +174,7 @@ class BraintreeManager {
    * @returns {Object} transaction refund data
    */
   async refundTransaction(transactionId: string) {
-    // return await gateway.transaction.refund(transactionId);
+    // return await this.gateway.transaction.refund(transactionId);
   }
 
   /**
@@ -185,8 +183,9 @@ class BraintreeManager {
    * @returns {Object} transaction refund data
    */
   async releaseTransaction(transactionId: string) {
-    // return await gateway.transaction.releaseFromEscrow(transactionId);
+    // return await this.gateway.transaction.releaseFromEscrow(transactionId);
   }
 }
 
 export default BraintreeManager;
+// Object.freeze(new BraintreeManager());

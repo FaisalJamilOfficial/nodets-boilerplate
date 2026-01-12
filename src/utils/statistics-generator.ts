@@ -1,8 +1,13 @@
-// file imports
-
-// destructuring assignments
-
 class StatisticsGenerator {
+  private static instance: StatisticsGenerator;
+
+  constructor() {
+    if (!StatisticsGenerator.instance) {
+      StatisticsGenerator.instance = this;
+    }
+    return StatisticsGenerator.instance;
+  }
+
   /**
    * Generate weekly statistics
    * @param {Object} model mongo database model
@@ -251,3 +256,4 @@ class StatisticsGenerator {
 }
 
 export default StatisticsGenerator;
+// Object.freeze(new StatisticsGenerator());

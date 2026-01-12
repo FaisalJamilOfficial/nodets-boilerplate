@@ -4,41 +4,9 @@
 import crypto from "crypto";
 import fs from "fs";
 
-// destructuring assignments
-const { SUMSUB_APP_TOKEN, SUMSUB_SECRET_KEY, SUMSUB_BASE_URL } = process.env;
-
-// variable initializations
-const config: any = { baseURL: SUMSUB_BASE_URL };
-
-// const instance = axios.create();
-// instance.interceptors.request.use(createSignature, function (error: any) {
-//   return Promise.reject(error);
-// });
-
-/**
- * @description Create signature for the request
- * @param {Object} config request configuration
- * @returns {Object} request signature
- */
-// https://developers.sumsub.com/api-reference/#app-tokens
-function createSignature(config: any) {
-  console.log("Creating a signature for the request...");
-
-  var ts = Math.floor(Date.now() / 1000);
-  const signature = crypto.createHmac("sha256", SUMSUB_SECRET_KEY || "");
-  signature.update(ts + config.method.toUpperCase() + config.url);
-
-  if (config.data instanceof FormData) {
-    signature.update(config.data.getBuffer());
-  } else if (config.data) {
-    signature.update(config.data);
-  }
-
-  config.headers["X-App-Access-Ts"] = ts;
-  config.headers["X-App-Access-Sig"] = signature.digest("hex");
-
-  return config;
-}
+// file imports
+import { ENVIRONMENT_VARIABLES } from "../configs/enum";
+import { requireEnv } from "../configs/helper";
 
 // This section contains requests to server using configuration functions
 // The description of the flow can be found here: https://developers.sumsub.com/api-flow/#api-integration-phases
@@ -49,10 +17,62 @@ function createSignature(config: any) {
 // 4) Getting access tokens for SDKs
 
 class SumsubManager {
-  constructor() {}
+  private static instance: SumsubManager;
 
-  externalUserId = "random-JSToken-" + Math.random().toString(36).substr(2, 9);
-  levelName = "basic-kyc-level";
+  private readonly sumsubAppToken = requireEnv(
+    ENVIRONMENT_VARIABLES.SUMSUB_APP_TOKEN
+  );
+  private readonly sumsubSecretKey = requireEnv(
+    ENVIRONMENT_VARIABLES.SUMSUB_SECRET_KEY
+  );
+  private readonly sumsubBaseUrl = requireEnv(
+    ENVIRONMENT_VARIABLES.SUMSUB_BASE_URL
+  );
+  private readonly config: any = { baseURL: this.sumsubBaseUrl };
+  private readonly externalUserId =
+    "random-JSToken-" + Math.random().toString(36).substr(2, 9);
+  private readonly levelName = "basic-kyc-level";
+  // private readonly instance = axios.create();
+
+  constructor() {
+    if (!SumsubManager.instance) {
+      SumsubManager.instance = this;
+      // Setup axios interceptor
+      // this.instance.interceptors.request.use(
+      //   (config) => this.createSignature(config),
+      //   (error: any) => {
+      //     return Promise.reject(error);
+      //   }
+      // );
+    }
+    return SumsubManager.instance;
+  }
+
+  /**
+   * @description Create signature for the request
+   * @param {Object} config request configuration
+   * @returns {Object} request signature
+   */
+  // https://developers.sumsub.com/api-reference/#app-tokens
+  private createSignature(config: any) {
+    console.log("Creating a signature for the request...");
+
+    var ts = Math.floor(Date.now() / 1000);
+    const signature = crypto.createHmac("sha256", this.sumsubSecretKey);
+    signature.update(ts + config.method.toUpperCase() + config.url);
+
+    if (config.data instanceof FormData) {
+      signature.update(config.data.getBuffer());
+    } else if (config.data) {
+      signature.update(config.data);
+    }
+
+    config.headers = config.headers || {};
+    config.headers["X-App-Access-Ts"] = ts;
+    config.headers["X-App-Access-Sig"] = signature.digest("hex");
+
+    return config;
+  }
 
   /**
    * @description Create applicant
@@ -75,13 +95,13 @@ class SumsubManager {
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "X-App-Token": SUMSUB_APP_TOKEN,
+      "X-App-Token": this.sumsubAppToken,
     };
 
-    config.method = method;
-    config.url = url;
-    config.headers = headers;
-    config.data = JSON.stringify(body);
+    this.config.method = method;
+    this.config.url = url;
+    this.config.headers = headers;
+    this.config.data = JSON.stringify(body);
 
     // return (await instance(config))?.data;
   }
@@ -100,22 +120,16 @@ class SumsubManager {
 
     const headers = {
       Accept: "application/json",
-      "X-App-Token": SUMSUB_APP_TOKEN,
+      "X-App-Token": this.sumsubAppToken,
     };
 
-    config.method = method;
-    config.url = url;
-    config.headers = headers;
-    config.data = null;
+    this.config.method = method;
+    this.config.url = url;
+    this.config.headers = headers;
+    this.config.data = null;
 
-    // return (await instance(config))?.data;
+    // return (await this.instance(this.config))?.data;
   }
-
-  /**
-   * @description Get applicant data
-   * @param {string} applicantId applicant id
-   * @returns {Object} applicant data
-   */
 
   /**
    * @description Get applicant data
@@ -131,13 +145,13 @@ class SumsubManager {
 
     const headers = {
       Accept: "application/json",
-      "X-App-Token": SUMSUB_APP_TOKEN,
+      "X-App-Token": this.sumsubAppToken,
     };
 
-    config.method = method;
-    config.url = url;
-    config.headers = headers;
-    config.data = null;
+    this.config.method = method;
+    this.config.url = url;
+    this.config.headers = headers;
+    this.config.data = null;
 
     // return (await axios(config))?.data;
   }
@@ -162,15 +176,15 @@ class SumsubManager {
 
     const headers = {
       Accept: "application/json",
-      "X-App-Token": SUMSUB_APP_TOKEN,
+      "X-App-Token": this.sumsubAppToken,
     };
 
-    config.method = method;
-    config.url = url;
-    config.headers = headers;
-    config.data = null;
+    this.config.method = method;
+    this.config.url = url;
+    this.config.headers = headers;
+    this.config.data = null;
 
-    // return (await instance(config))?.data;
+    // return (await this.instance(this.config))?.data;
   }
 
   /**
@@ -191,6 +205,9 @@ class SumsubManager {
       country: "GBR",
     };
 
+    // Note: FormData import is commented out, uncomment if needed
+    // import FormData from "form-data";
+    const FormData = require("form-data");
     const form: any = new FormData();
     form.append("metadata", JSON.stringify(metadata));
 
@@ -209,16 +226,17 @@ class SumsubManager {
 
     const headers = {
       Accept: "application/json",
-      "X-App-Token": SUMSUB_APP_TOKEN,
+      "X-App-Token": this.sumsubAppToken,
     };
 
-    config.method = method;
-    config.url = url;
-    config.headers = Object.assign(headers, form.getHeaders());
-    config.data = form;
+    this.config.method = method;
+    this.config.url = url;
+    this.config.headers = Object.assign(headers, form.getHeaders());
+    this.config.data = form;
 
     // return (await instance(config))?.data;
   }
 }
 
 export default SumsubManager;
+// Object.freeze(new SumsubManager());
